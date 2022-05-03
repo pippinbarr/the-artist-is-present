@@ -1,7 +1,7 @@
-class Marina extends Person {
+class Player extends Visitor {
 
   constructor(scene, x, y, texture) {
-    super(scene, x, y, texture, '-marina');
+    super(scene, x, y);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -10,15 +10,14 @@ class Marina extends Person {
       scene.input.keyboard.on('keydown', () => {
         this.handleInput();
       });
-    }
-    else {
+    } else {
       scene.input.on('pointerdown', (pointer) => {
         this.handleTouchInput(pointer)
       });
     }
     this.inputEnabled = true;
     this.lookingUp = true;
-    this.suffix = '-marina';
+    this.suffix = `-${this.id}`;
   }
 
   create() {
@@ -35,32 +34,28 @@ class Marina extends Person {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
       if (this.body.velocity.x < 0) {
         this.stop();
-      }
-      else {
+      } else {
         this.left();
       }
     }
     if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
       if (this.body.velocity.x > 0) {
         this.stop();
-      }
-      else {
+      } else {
         this.right();
       }
     }
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
       if (this.body.velocity.y < 0) {
         this.stop();
-      }
-      else {
+      } else {
         this.up();
       }
     }
     if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
       if (this.body.velocity.y > 0) {
         this.stop();
-      }
-      else {
+      } else {
         this.down();
       }
     }
@@ -86,34 +81,29 @@ class Marina extends Person {
       if (dx < 0) {
         if (this.body.velocity.x < 0) {
           this.stop();
-        }
-        else {
+        } else {
           this.left();
         }
       }
       if (dx > 0) {
         if (this.body.velocity.x > 0) {
           this.stop();
-        }
-        else {
+        } else {
           this.right();
         }
       }
-    }
-    else {
+    } else {
       if (dy < 0) {
         if (this.body.velocity.y < 0) {
           this.stop();
-        }
-        else {
+        } else {
           this.up();
         }
       }
       if (dy > 0) {
         if (this.body.velocity.y > 0) {
           this.stop();
-        }
-        else {
+        } else {
           this.down();
         }
       }
@@ -130,24 +120,9 @@ class Marina extends Person {
     this.active = false;
   }
 
-
   unpause() {
     this.inputEnabled = true;
     this.setVelocity(this.pVelocity.x, this.pVelocity.y);
     this.active = true;
-  }
-
-  lookDown(callback, context) {
-    if (!this.lookingUp) return;
-    this.lookingUp = false;
-    this.anims.play('look-down-marina');
-    this.once('animationcomplete', callback, context);
-  }
-
-  lookUp(callback, context) {
-    if (this.lookingUp) return;
-    this.lookingUp = true;
-    this.anims.play('look-up-marina');
-    this.once('animationcomplete', callback, context);
   }
 }

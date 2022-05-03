@@ -8,7 +8,7 @@ let Preloader = new Phaser.Class({
     });
   },
 
-  preload: function() {
+  preload: function () {
     this.load.multiatlas('atlas', 'assets/atlas/atlas.json', 'assets/atlas');
     this.load.spritesheet('marina', 'assets/spritesheets/marina-dress-spritesheet.png', {
       frameWidth: 14,
@@ -27,17 +27,17 @@ let Preloader = new Phaser.Class({
     });
   },
 
-  create: function() {
-    this.createSpritesheetAnimation('marina', 'idle-h-marina', 23, 23, 10, 0);
-    this.createSpritesheetAnimation('marina', 'walking-h-marina', 1, 8, 10, -1);
-    this.createSpritesheetAnimation('marina', 'idle-u-marina', 22, 22, 10, 0);
-    this.createSpritesheetAnimation('marina', 'walking-u-marina', 16, 21, 10, -1);
-    this.createSpritesheetAnimation('marina', 'idle-d-marina', 15, 15, 10, 0);
-    this.createSpritesheetAnimation('marina', 'walking-d-marina', 9, 14, 10, -1);
+  create: function () {
+    this.createSpritesheetAnimation('person-spritesheet', 'idle-h-player', 23, 23, 10, 0);
+    this.createSpritesheetAnimation('person-spritesheet', 'walking-h-player', 1, 8, 10, -1);
+    this.createSpritesheetAnimation('person-spritesheet', 'idle-u-player', 22, 22, 10, 0);
+    this.createSpritesheetAnimation('person-spritesheet', 'walking-u-player', 16, 21, 10, -1);
+    this.createSpritesheetAnimation('person-spritesheet', 'idle-d-player', 15, 15, 10, 0);
+    this.createSpritesheetAnimation('person-spritesheet', 'walking-d-player', 9, 14, 10, -1);
 
-    this.createSpritesheetAnimation('marina-sitting', 'sitting-marina', 1, 1, 3, -1);
-    this.createSpritesheetAnimation('marina-sitting', 'look-down-marina', 1, 4, 3, 0);
-    this.createSpritesheetAnimation('marina-sitting', 'look-up-marina', 4, 1, 3, 0);
+    this.createSpritesheetAnimation('person-spritesheet-sitting', 'sitting-player', 1, 1, 3, -1);
+    // this.createSpritesheetAnimation('marina-sitting', 'look-down-marina', 1, 4, 3, 0);
+    // this.createSpritesheetAnimation('marina-sitting', 'look-up-marina', 4, 1, 3, 0);
 
     // Absolutely hideous hack to avoid this font-loading problem: display invisible text in preloader for
     // a tiny amount of time before going to the menu, which seems to fix it.
@@ -59,17 +59,12 @@ let Preloader = new Phaser.Class({
       QUEUE.push(person);
     }
 
-    // Randomize the whispers
-    WHISPERS.sort((a, b) => 0.5 - Math.random());
-    // Randomize the queue talk
-    QUEUE_TALK.sort((a, b) => 0.5 - Math.random());
-
     setTimeout(() => {
       this.scene.start(START_SCENE);
-    }, 2000);
+    }, 500);
   },
 
-  createSpritesheetAnimation: function(parent, name, start, end, framerate, repeat) {
+  createSpritesheetAnimation: function (parent, name, start, end, framerate, repeat) {
     if (this.anims.get(name) !== undefined) return;
 
     let frames = this.anims.generateFrameNames(parent, {

@@ -1,0 +1,356 @@
+{
+	"textures": [
+		{
+			"image": "atlas.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 506,
+				"h": 306
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "atrium/atrium-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "hallways/hallway1-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 1,
+						"y": 103,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "hallways/hallway2-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 1,
+						"y": 205,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "hallways/hallway3-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 203,
+						"y": 1,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "title/title.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 100,
+						"h": 100
+					},
+					"frame": {
+						"x": 405,
+						"y": 1,
+						"w": 100,
+						"h": 100
+					}
+				},
+				{
+					"filename": "moma-exterior/moma-exterior-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 203,
+						"y": 103,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "tickets/tickets-bg.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 100
+					},
+					"frame": {
+						"x": 203,
+						"y": 205,
+						"w": 200,
+						"h": 100
+					}
+				},
+				{
+					"filename": "moma-exterior/moma-exterior-fg.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 54,
+						"y": 0,
+						"w": 92,
+						"h": 32
+					},
+					"frame": {
+						"x": 405,
+						"y": 103,
+						"w": 92,
+						"h": 32
+					}
+				},
+				{
+					"filename": "red-pixel.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1,
+						"h": 1
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1,
+						"h": 1
+					},
+					"frame": {
+						"x": 499,
+						"y": 103,
+						"w": 1,
+						"h": 1
+					}
+				},
+				{
+					"filename": "white-pixel.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1,
+						"h": 1
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1,
+						"h": 1
+					},
+					"frame": {
+						"x": 502,
+						"y": 103,
+						"w": 1,
+						"h": 1
+					}
+				},
+				{
+					"filename": "tickets/tickets-barrier.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 16,
+						"w": 92,
+						"h": 22
+					},
+					"frame": {
+						"x": 405,
+						"y": 137,
+						"w": 92,
+						"h": 22
+					}
+				},
+				{
+					"filename": "atrium/atrium-table-and-chairs.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 60,
+						"h": 30
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 5,
+						"w": 56,
+						"h": 23
+					},
+					"frame": {
+						"x": 405,
+						"y": 161,
+						"w": 56,
+						"h": 23
+					}
+				},
+				{
+					"filename": "hallways/hallway1-fg.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 28,
+						"w": 32,
+						"h": 56
+					},
+					"frame": {
+						"x": 463,
+						"y": 161,
+						"w": 32,
+						"h": 56
+					}
+				},
+				{
+					"filename": "tickets/tickets-fg.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 200,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 168,
+						"y": 28,
+						"w": 32,
+						"h": 56
+					},
+					"frame": {
+						"x": 405,
+						"y": 186,
+						"w": 32,
+						"h": 56
+					}
+				},
+				{
+					"filename": "moma-exterior/moma-door-left.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 33
+					},
+					"frame": {
+						"x": 439,
+						"y": 186,
+						"w": 20,
+						"h": 33
+					}
+				},
+				{
+					"filename": "moma-exterior/moma-door-right.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 33
+					},
+					"frame": {
+						"x": 461,
+						"y": 219,
+						"w": 20,
+						"h": 33
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:9ce94d5b11945c71f29f4ac81d17d927:d359a6697c8af8eee3364d3a6d7a68bd:cbce6b53f0f49e0bf15173c25c41f876$"
+	}
+}

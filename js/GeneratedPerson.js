@@ -24,6 +24,7 @@ class GeneratedPerson extends Person {
       frameWidth: 14,
       frameHeight: 35,
     };
+
     const id = ++GeneratedPerson.nextId;
 
     const newPalette = generatePalette(palette);
@@ -32,6 +33,7 @@ class GeneratedPerson extends Person {
 
     super(scene, x, y, texture, `-${id}`);
 
+    this.id = id;
     this.palette = newPalette;
     this.body.immovable = true;
   }

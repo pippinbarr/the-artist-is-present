@@ -30,15 +30,7 @@ class MOMAExterior extends TAIPScene {
       .setScale(4)
       .setDepth(10000);
 
-    // Car
-    this.car = this.physics.add.sprite(-100 * 4, 70 * 4, 'atlas', 'exterior/car.png').setScale(4);
-    this.car.body.setOffset(28, 75);
-    this.car.body.setSize(102, 20, false);
-    this.car.body.immovable = true;
-    this.car.depth = 10000 * 4;
-    this.colliders.add(this.car);
-
-
+    // Doors
     this.LEFT_DOOR_X = this.game.canvas.width / 2 - 10 * 4;
     this.RIGHT_DOOR_X = this.game.canvas.width / 2 + 10 * 4;
     this.DOOR_OPEN_AMOUNT = 15 * 4;
@@ -103,20 +95,11 @@ class MOMAExterior extends TAIPScene {
     createColliderRect(this, 0 * 4, 98 * 4, 200 * 4, 2 * 4, this.colliders);
 
     const transitionData = [{
-        key: "tickets",
-        type: "up",
-        x: 100 * 4,
-        y: 32 * 4
-      },
-      {
-        key: "car",
-        type: "down",
-        x: 80 * 4,
-        y: 77 * 4,
-        stop: true,
-        inactive: true
-      }
-    ];
+      key: "tickets",
+      type: "up",
+      x: 100 * 4,
+      y: 32 * 4
+    }];
     this.addTransitions(transitionData);
 
     this.handleEntrances();
@@ -126,30 +109,29 @@ class MOMAExterior extends TAIPScene {
   update(time, delta) {
     super.update(time, delta);
 
-    this.marina.update(time, delta);
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.player.update(time, delta);
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
     this.handleWrap();
     this.handleSensor();
-    this.marina.depth = this.marina.body.y;
+    this.player.depth = this.player.body.y;
   }
 
   handleWrap() {
-    if (this.marina.x < 0 - this.marina.body.width) {
+    if (this.player.x < 0 - this.player.body.width) {
       this.dialog.showMessage(LEAVING_MOMA_ON_FOOT_MESSAGE, () => {
-        this.marina.x = this.game.canvas.width + this.marina.body.width;
+        this.player.x = this.game.canvas.width + this.player.body.width;
       });
-    }
-    else if (this.marina.x > this.game.canvas.width + this.marina.body.width) {
+    } else if (this.player.x > this.game.canvas.width + this.player.body.width) {
       this.dialog.showMessage(LEAVING_MOMA_ON_FOOT_MESSAGE, () => {
-        this.marina.x = 0 - this.marina.body.width;
+        this.player.x = 0 - this.player.body.width;
       });
     }
   }
 
   handleSensor() {
-    if (this.physics.overlap(this.sensor, this.marina)) {
+    if (this.physics.overlap(this.sensor, this.player)) {
       if (!this.sensor.activated) {
         this.sensor.activated = true;
         const leftDoorTween = this.tweens.add({
@@ -169,8 +151,7 @@ class MOMAExterior extends TAIPScene {
           }
         });
       }
-    }
-    else if (this.sensor.activated && this.doorsOpen) {
+    } else if (this.sensor.activated && this.doorsOpen) {
       this.sensor.activated = false;
       const leftDoorTween = this.tweens.add({
         targets: this.leftDoor,
@@ -202,36 +183,9 @@ class MOMAExterior extends TAIPScene {
         this.dialog.y = UPPER_DIALOG_Y;
         this.dialog.showMessage(OUTSIDE_MOMA_MESSAGE, () => {});
       }, 1000);
-    }
-    else if (last.scene === 'car') {
-      this.marina.visible = false;
+    } else if (last.scene === 'SOMETHING ABOUT THE START') {
+      this.player.visible = false;
       this.inputEnabled = false;
-      const carTween = this.tweens.add({
-        targets: this.car,
-        x: 140 * 4,
-        duration: 5000,
-        repeat: 0,
-        onComplete: () => {
-          setTimeout(() => {
-            this.marina.visible = true;
-            this.marina.x = 100 * 4;
-            this.marina.y = 100 * 4;
-            this.marina.faceRight();
-            const marinaTweener = this.tweens.add({
-              targets: this.marina,
-              y: 77 * 4,
-              duration: 750,
-              repeat: 0,
-              onComplete: () => {
-                this.marina.faceUp();
-                this.marina.inputEnabled = true;
-                this.dialog.y = UPPER_DIALOG_Y;
-                this.dialog.showMessage(MOMA_ARRIVAL_MESSAGE, () => {});
-              }
-            });
-          }, 3000);
-        }
-      });
     }
   }
 }
