@@ -28,8 +28,8 @@ class GeneratedPerson extends Person {
     const id = ++GeneratedPerson.nextId;
 
     const newPalette = generatePalette(palette);
-    const texture = generateTexture(scene, swapPalette, newPalette, id, sheetData);
-    generateAnimations(scene, texture, id);
+    const texture = generateTexture(scene.game, swapPalette, newPalette, id, sheetData);
+    generateAnimations(scene.game, texture, id);
 
     super(scene, x, y, texture, `-${id}`);
 

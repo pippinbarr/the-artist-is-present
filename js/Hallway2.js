@@ -40,7 +40,9 @@ class Hallway2 extends TAIPScene {
     ];
     this.addTransitions(transitionData);
 
-    this.soupCansSensor = this.physics.add.sprite(57 * 4, 52 * 4, 'atlas', 'red-pixel.png').setScale(4 * 4, 4 * 4).setVisible(false);
+    this.soupCansSensor = this.physics.add.sprite(57 * 4, 52 * 4, 'atlas', 'red-pixel.png')
+      .setScale(4 * 4, 4 * 4)
+      .setVisible(false);
     this.soupCansSensor.text = SOUP_CANS;
 
     this.addQueue(this.game.canvas.width * 2);
@@ -51,15 +53,15 @@ class Hallway2 extends TAIPScene {
   update(time, delta) {
     super.update();
 
-    this.marina.update(time, delta);
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.player.update(time, delta);
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
 
     handleSensor(this, this.soupCansSensor);
 
     this.handleWhispers();
 
-    this.marina.depth = this.marina.body.y;
+    this.player.depth = this.player.body.y;
   }
 }

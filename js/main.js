@@ -8,6 +8,8 @@ const QUEUE_X = 440;
 const QUEUE_Y = 182;
 const QUEUE_SPACING = 56;
 
+let PLAYER = undefined;
+
 let lastScene = undefined;
 let last = {
   scene: 'tickets',

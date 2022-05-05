@@ -50,7 +50,9 @@ class Tickets extends TAIPScene {
       .setScale(4);
     ticketFG.depth = 100000;
 
-    this.ticketSensor = this.physics.add.sprite(450, 160, 'atlas', 'red-pixel.png').setScale(10, 100).setVisible(false);
+    this.ticketSensor = this.physics.add.sprite(450, 160, 'atlas', 'red-pixel.png')
+      .setScale(10, 100)
+      .setVisible(false);
 
     const transitionData = [{
         key: "moma-exterior",
@@ -73,24 +75,24 @@ class Tickets extends TAIPScene {
   update(time, delta) {
     super.update();
 
-    this.marina.update(time, delta);
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.player.update(time, delta);
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
-    this.physics.overlap(this.marina, this.ticketSensor, () => {
+    this.physics.overlap(this.player, this.ticketSensor, () => {
       this.dialog.y = UPPER_DIALOG_Y;
       this.dialog.showMessage(TICKETS_DESK_MESSAGE, () => {});
       this.ticketSensor.body.checkCollision.none = true;
     });
-    this.physics.collide(this.marina, this.guard, () => {
-      this.marina.stop();
+    this.physics.collide(this.player, this.guard, () => {
+      this.player.stop();
       if (!this.seenGuard) {
         this.dialog.y = UPPER_DIALOG_Y;
         this.dialog.showMessage(TICKETS_GUARD_MESSAGE, () => {});
         this.seenGuard = true;
       }
     });
-    this.marina.depth = this.marina.body.y;
+    this.player.depth = this.player.body.y;
     this.guard.depth = this.guard.body.y;
   }
 }

@@ -29,17 +29,20 @@ class Atrium extends TAIPScene {
       .setScale(4);
 
     // Table and chairs
-    this.tableAndChairs = this.physics.add.sprite(130 * 4 + 30 * 4, 40 * 4 + 15 * 4, 'atlas', 'atrium/atrium-table-and-chairs.png').setScale(4);
+    this.tableAndChairs = this.physics.add.sprite(130 * 4 + 30 * 4, 40 * 4 + 15 * 4, 'atlas', 'atrium/atrium-table-and-chairs.png')
+      .setScale(4);
     this.tableAndChairs.body.setOffset(2, this.tableAndChairs.body.height - 8);
     this.tableAndChairs.body.setSize(this.tableAndChairs.width - 4, 4, false);
     this.tableAndChairs.body.immovable = true;
     this.tableAndChairs.setDepth(250);
     this.colliders.add(this.tableAndChairs);
 
-    this.marinaChairSensor = this.physics.add.sprite(730, 250, 'atlas', 'red-pixel.png').setScale(10, 50);
-    this.marinaChairSensor.visible = false;
+    this.playerChairSensor = this.physics.add.sprite(730, 250, 'atlas', 'red-pixel.png')
+      .setScale(10, 50);
+    this.playerChairSensor.visible = false;
 
-    this.visitorChairSensor = this.physics.add.sprite(580, 250, 'atlas', 'red-pixel.png').setScale(50, 60);
+    this.visitorChairSensor = this.physics.add.sprite(580, 250, 'atlas', 'red-pixel.png')
+      .setScale(50, 60);
     this.visitorChairSensor.visible = false;
 
     // Back wall left
@@ -95,8 +98,12 @@ class Atrium extends TAIPScene {
     this.crying = false;
 
     this.eyelids = this.add.group();
-    this.leftEyelid = this.add.sprite(LEFT_TEAR_X + FIRST_PERSON_SCALE * 0.5, LEFT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png').setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE).setDepth(10000000);
-    this.rightEyelid = this.add.sprite(RIGHT_TEAR_X + FIRST_PERSON_SCALE * 0.5, RIGHT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png').setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE).setDepth(10000000);
+    this.leftEyelid = this.add.sprite(LEFT_TEAR_X + FIRST_PERSON_SCALE * 0.5, LEFT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png')
+      .setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE)
+      .setDepth(10000000);
+    this.rightEyelid = this.add.sprite(RIGHT_TEAR_X + FIRST_PERSON_SCALE * 0.5, RIGHT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png')
+      .setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE)
+      .setDepth(10000000);
     this.leftEyelid.setVisible(false);
     this.rightEyelid.setVisible(false);
 
@@ -135,11 +142,11 @@ class Atrium extends TAIPScene {
   }
 
   checkMarinaSitting() {
-    if (!this.marina.sitting) {
-      this.physics.overlap(this.marina, this.marinaChairSensor, () => {
-        this.marina.sit();
-        this.marina.x = 695.5;
-        this.marina.y = 210;
+    if (!this.player.sitting) {
+      this.physics.overlap(this.player, this.playerChairSensor, () => {
+        this.player.sit();
+        this.player.x = 695.5;
+        this.player.y = 210;
 
         // Start timers to handle the museum closing
         setTimeout(() => {
@@ -162,8 +169,7 @@ class Atrium extends TAIPScene {
       setTimeout(() => {
         this.showMuseumClosingWarningMessage();
       }, 1000);
-    }
-    else {
+    } else {
       this.dialog.showMessage(CLOSING_WARNING_MESSAGE);
     }
   }
@@ -174,8 +180,7 @@ class Atrium extends TAIPScene {
       setTimeout(() => {
         this.closeMuseum();
       }, 2000);
-    }
-    else {
+    } else {
       this.dialog.showMessage(CLOSED_MESSAGE, () => {
         this.scene.switch('gameover');
       })
@@ -186,7 +191,7 @@ class Atrium extends TAIPScene {
     this.dialog.y = UPPER_DIALOG_Y;
     this.dialog.showMessage(MOBILE ? HEAD_DOWN_INSTRUCTIONS_MOBILE : HEAD_DOWN_INSTRUCTIONS, () => {
       setTimeout(() => {
-        this.marina.lookDown(() => {
+        this.player.lookDown(() => {
           setTimeout(() => {
             this.nextSitter();
           }, 1000);
@@ -218,7 +223,7 @@ class Atrium extends TAIPScene {
     this.dialog.y = UPPER_DIALOG_Y;
     this.dialog.showMessage(MOBILE ? HEAD_UP_INSTRUCTIONS_MOBILE : HEAD_UP_INSTRUCTIONS, () => {
       setTimeout(() => {
-        this.marina.lookUp(() => {
+        this.player.lookUp(() => {
           setTimeout(() => {
             const SIT_TIME = SIT_TIMES[Math.floor(Math.random() * SIT_TIMES.length)];
             setTimeout(() => {
@@ -346,11 +351,11 @@ class Atrium extends TAIPScene {
   }
 
   handleCollisions() {
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
-    this.physics.collide(this.marina, this.guards, (marina, guard) => {
-      this.marina.stop();
+    this.physics.collide(this.player, this.guards, (marina, guard) => {
+      this.player.stop();
       let message = GUARD_TALK.pop();
       if (message) this.personSay(guard, message);
     });
@@ -361,13 +366,15 @@ class Atrium extends TAIPScene {
   }
 
   setDepths() {
-    this.marina.depth = this.marina.body.y;
-    this.queue.getChildren().forEach((visitor) => {
-      visitor.depth = visitor.body.y;
-    });
-    this.guards.getChildren().forEach((guard) => {
-      guard.depth = guard.body.y;
-    });
+    this.player.depth = this.player.body.y;
+    this.queue.getChildren()
+      .forEach((visitor) => {
+        visitor.depth = visitor.body.y;
+      });
+    this.guards.getChildren()
+      .forEach((guard) => {
+        guard.depth = guard.body.y;
+      });
     if (this.sitter) {
       this.sitter.depth = this.sitter.sitting ? this.sitter.body.y + 100 : this.sitter.body.y;
     }

@@ -59,6 +59,9 @@ let Preloader = new Phaser.Class({
       QUEUE.push(person);
     }
 
+    PLAYER = new Player(this, this.game.canvas.width / 2, this.game.canvas.height / 2);
+    PLAYER.ignoreDestroy = true;
+
     setTimeout(() => {
       this.scene.start(START_SCENE);
     }, 500);

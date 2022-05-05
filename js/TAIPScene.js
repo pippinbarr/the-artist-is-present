@@ -14,8 +14,8 @@ class TAIPScene extends Phaser.Scene {
     this.marks = this.add.group();
 
     // Player
-    this.player = new Player(this, this.game.canvas.width / 2, this.game.canvas.height / 2, 'player');
-    this.player.anims.play('idle-d-player');
+    this.player = PLAYER;
+    this.player.joinScene(this);
 
     this.dialog = new Dialog(this, this.player);
   }

@@ -1,11 +1,19 @@
 class Player extends Visitor {
 
-  constructor(scene, x, y, texture) {
+  constructor(scene, x, y) {
     super(scene, x, y);
 
+    this.inputEnabled = true;
+    this.lookingUp = true;
+    this.suffix = `-${this.id}`;
+  }
+
+  joinScene(scene) {
     scene.add.existing(this);
     scene.physics.add.existing(this);
+
     this.cursors = scene.input.keyboard.createCursorKeys();
+
     if (!MOBILE) {
       scene.input.keyboard.on('keydown', () => {
         this.handleInput();
@@ -15,9 +23,6 @@ class Player extends Visitor {
         this.handleTouchInput(pointer)
       });
     }
-    this.inputEnabled = true;
-    this.lookingUp = true;
-    this.suffix = `-${this.id}`;
   }
 
   create() {

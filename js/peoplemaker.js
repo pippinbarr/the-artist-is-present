@@ -8,7 +8,8 @@ function generatePalette(from) {
   // THE SHIRT
 
   let shirtColor = Phaser.Display.Color.IntegerToColor(getRandom(from.shirt));
-  let sleeveColor = shirtColor.clone().brighten(10);
+  let sleeveColor = shirtColor.clone()
+    .brighten(10);
 
   let shirtRandom = Math.random();
 
@@ -18,14 +19,14 @@ function generatePalette(from) {
 
   if (shirtRandom < 0.4) {
     palette.lowerSleeve = palette.skin;
-  }
-  else if (shirtRandom < 0.6) {
+  } else if (shirtRandom < 0.6) {
     palette.upperSleeve = palette.skin;
     palette.lowerSleeve = palette.skin;
   }
 
   // The hair
-  const TRANSPARENT = Phaser.Display.Color.IntegerToColor(0x00000000).transparent();
+  const TRANSPARENT = Phaser.Display.Color.IntegerToColor(0x00000000)
+    .transparent();
 
   // Default: short hair
   const HAIR = Phaser.Display.Color.IntegerToColor(getRandom(from.hair));
@@ -39,8 +40,7 @@ function generatePalette(from) {
   if (hairRandom < 0.3) {
     // Medium hair
     palette.midHair = HAIR;
-  }
-  else if (hairRandom < 0.6) {
+  } else if (hairRandom < 0.6) {
     // Long hair
     palette.midHair = HAIR;
     palette.longHair = HAIR;
@@ -79,7 +79,8 @@ function generatePalette(from) {
 function generateTexture(game, swapPalette, newPalette, id, sheetData) {
 
   // Create sheets and animations from base sheet.
-  let sheet = game.textures.get('person-spritesheet').getSourceImage();
+  let sheet = game.textures.get('person-spritesheet')
+    .getSourceImage();
   // let atlasKey, anim, animKey;
   // let canvasTexture, canvas, context, imageData, pixelArray;
 
@@ -146,7 +147,8 @@ function generateTexture(game, swapPalette, newPalette, id, sheetData) {
   game.textures.addSpriteSheet(textureKey, canvasTexture.getSourceImage(), sheetData);
 
   // Destroy temp texture.
-  game.textures.get('person-spritesheet-temp').destroy();
+  game.textures.get('person-spritesheet-temp')
+    .destroy();
 
   return textureKey;
 
@@ -156,24 +158,24 @@ function generateTexture(game, swapPalette, newPalette, id, sheetData) {
   // game.textures.get('person-spritesheet').destroy();
 }
 
-function generateAnimations(scene, texture, id) {
+function generateAnimations(game, texture, id) {
   // Create animations
-  generateAnimation(scene, texture, 'idle-h', id, 23, 23, 10, 0);
-  generateAnimation(scene, texture, 'walking-h', id, 1, 8, 10, -1);
-  generateAnimation(scene, texture, 'idle-u', id, 22, 22, 10, 0);
-  generateAnimation(scene, texture, 'walking-u', id, 16, 21, 10, -1);
-  generateAnimation(scene, texture, 'idle-d', id, 15, 15, 10, 0);
-  generateAnimation(scene, texture, 'walking-d', id, 9, 14, 10, -1);
-  generateAnimation(scene, texture, 'sitting', id, 24, 24, 10, 0);
+  generateAnimation(game, texture, 'idle-h', id, 23, 23, 10, 0);
+  generateAnimation(game, texture, 'walking-h', id, 1, 8, 10, -1);
+  generateAnimation(game, texture, 'idle-u', id, 22, 22, 10, 0);
+  generateAnimation(game, texture, 'walking-u', id, 16, 21, 10, -1);
+  generateAnimation(game, texture, 'idle-d', id, 15, 15, 10, 0);
+  generateAnimation(game, texture, 'walking-d', id, 9, 14, 10, -1);
+  generateAnimation(game, texture, 'sitting', id, 24, 24, 10, 0);
 }
 
-function generateAnimation(scene, sheet, name, id, start, end, framerate, repeat) {
+function generateAnimation(game, sheet, name, id, start, end, framerate, repeat) {
 
   // console.log(`Creating animation: ${name}-${id}`);
 
-  if (scene.anims.get(`${name}-${id}`) !== undefined) return;
+  if (game.anims.get(`${name}-${id}`) !== undefined) return;
 
-  let frames = scene.anims.generateFrameNames(sheet, {
+  let frames = game.anims.generateFrameNames(sheet, {
     start: start - 1,
     end: end - 1,
   });
@@ -185,7 +187,7 @@ function generateAnimation(scene, sheet, name, id, start, end, framerate, repeat
     repeat: repeat,
   };
 
-  scene.anims.create(config);
+  game.anims.create(config);
 }
 
 function getRandom(array) {

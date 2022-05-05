@@ -26,15 +26,14 @@ function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
 }
 
 function handleSensor(scene, sensor) {
-  if (scene.physics.overlap(scene.marina, sensor)) {
+  if (scene.physics.overlap(scene.player, sensor)) {
     if (!sensor.overlap) {
-      scene.marina.up();
+      scene.player.up();
       scene.dialog.y = 100;
       scene.dialog.showMessage(sensor.text, () => {});
       sensor.overlap = true;
     }
-  }
-  else {
+  } else {
     sensor.overlap = false;
   }
 }

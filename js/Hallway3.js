@@ -40,7 +40,9 @@ class Hallway3 extends TAIPScene {
     ];
     this.addTransitions(transitionData);
 
-    this.dancersSensor = this.physics.add.sprite(59 * 4, 52 * 4, 'atlas', 'red-pixel.png').setScale(4 * 4, 4 * 4).setVisible(false);
+    this.dancersSensor = this.physics.add.sprite(59 * 4, 52 * 4, 'atlas', 'red-pixel.png')
+      .setScale(4 * 4, 4 * 4)
+      .setVisible(false);
     this.dancersSensor.text = DANCERS;
 
     this.addQueue(this.game.canvas.width);
@@ -50,13 +52,13 @@ class Hallway3 extends TAIPScene {
   update(time, delta) {
     super.update();
 
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
 
     handleSensor(this, this.dancersSensor);
 
     this.handleWhispers();
-    this.marina.depth = this.marina.body.y;
+    this.player.depth = this.player.body.y;
   }
 }

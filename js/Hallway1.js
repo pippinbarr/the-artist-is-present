@@ -42,9 +42,14 @@ class Hallway1 extends TAIPScene {
       .setScale(4)
       .setDepth(100000);
 
-    this.starryNightSensor = this.physics.add.sprite(77 * 4, 52 * 4, 'atlas', 'red-pixel.png').setScale(4 * 4, 4 * 4).setVisible(false);
+    this.starryNightSensor = this.physics.add.sprite(77 * 4, 52 * 4, 'atlas', 'red-pixel.png')
+      .setScale(4 * 4, 4 * 4)
+      .setVisible(false);
     this.starryNightSensor.text = STARRY_NIGHT;
-    this.oliveTreesSensor = this.physics.add.sprite(137 * 4, 52 * 4, 'atlas', 'red-pixel.png').setScale(4 * 4, 4 * 4).setVisible(false);
+
+    this.oliveTreesSensor = this.physics.add.sprite(137 * 4, 52 * 4, 'atlas', 'red-pixel.png')
+      .setScale(4 * 4, 4 * 4)
+      .setVisible(false);
     this.oliveTreesSensor.text = OLIVE_TREES;
 
     const transitionData = [{
@@ -69,13 +74,14 @@ class Hallway1 extends TAIPScene {
   update(time, delta) {
     super.update();
 
-    this.marina.update(time, delta);
-    this.physics.collide(this.marina, this.colliders, () => {
-      this.marina.stop();
+    this.player.update(time, delta);
+    this.physics.collide(this.player, this.colliders, () => {
+      this.player.stop();
     });
+
     handleSensor(this, this.starryNightSensor);
     handleSensor(this, this.oliveTreesSensor);
-    this.marina.depth = this.marina.body.y;
+    this.player.depth = this.player.body.y;
   }
 
 }
