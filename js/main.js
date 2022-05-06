@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 let MOBILE = false;
 
 const START_SCENE = 'atrium';

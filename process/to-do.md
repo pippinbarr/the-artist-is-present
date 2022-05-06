@@ -7,12 +7,14 @@
 * Time zone support
 * Time of day "lighting" in exterior
 
-## Atrium
+## Tickets
 * Add ability to buy a ticket
 * Add proper guard text
 * Make guard constant
 
 ## The performance
+* ~~Add tape collider~~
+* Add tape message (original didn't care if you were inside or outside)
 * Queue generation length by time of day
 * Make guards constant
 * Get a Marina back into the chair

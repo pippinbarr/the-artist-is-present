@@ -35,7 +35,8 @@ class GeneratedPerson extends Person {
 
     this.id = id;
     this.palette = newPalette;
-    this.body.immovable = true;
+    this.setImmovable(true);
+    // this.body.immovable = true; // This seems to cause wall problems
   }
 
   create() {

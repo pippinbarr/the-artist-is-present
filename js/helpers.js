@@ -3,8 +3,8 @@ function createColliderRect(self, x, y, width, height, group) {
   p.setOrigin(0, 0);
   p.setVisible(false);
   p.setScale(width, height);
-  p.body.immovable = true;
   group.add(p);
+  p.setImmovable(true);
 }
 
 function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
@@ -16,10 +16,10 @@ function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
     let p = self.physics.add.sprite(fromX + x, fromY + y, 'atlas', 'red-pixel.png');
     p.setOrigin(0, 0);
     p.setScale(1, 1);
-    p.body.immovable = true;
     p.setVisible(false);
     // lineGroup.add(p);
     group.add(p);
+    p.setImmovable(true);
     x += dX;
     y += dY;
   }

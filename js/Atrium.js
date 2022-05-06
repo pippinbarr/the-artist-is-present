@@ -45,14 +45,24 @@ class Atrium extends TAIPScene {
       .setScale(50, 60);
     this.visitorChairSensor.visible = false;
 
+    this.tape = this.physics.add.group();
     // Back wall left
-    createColliderRect(this, 0, 0, 312, 202, this.colliders);
+    createColliderRect(this, 0, 0, 312, 202, this.tape);
     // Back wall right
-    createColliderRect(this, 312, 0, 490, 60, this.colliders);
+    createColliderRect(this, 312, 0, 490, 60, this.tape);
     // Bottom wall
-    createColliderRect(this, 0, 392, 800, 8, this.colliders);
+    createColliderRect(this, 0, 392, 800, 8, this.tape);
     // Right wall
-    createColliderRect(this, 799, 0, 2, 400, this.colliders);
+    createColliderRect(this, 799, 0, 2, 400, this.tape);
+    // Tape left top
+    createColliderLine(this, 380, 120, 80, 100, 1, 2, this.tape);
+    // Tape left bottom
+    createColliderLine(this, 456, 272, 80, 90, 1, 2, this.tape);
+    // Tape top
+    createColliderRect(this, 384, 120, 400, 4, this.tape);
+    // Tape bottom
+    createColliderRect(this, 508, 360, 300, 4, this.tape);
+
 
     this.addQueue(0);
 
@@ -348,7 +358,12 @@ class Atrium extends TAIPScene {
 
   handleCollisions() {
     this.physics.collide(this.player, this.colliders, () => {
-      // this.player.stop();
+      this.player.stop();
+    });
+
+    this.physics.collide(this.player, this.tape, () => {
+      this.player.stop();
+      // Check if outside/not turn and give message if so
     });
 
     this.physics.collide(this.player, this.guards, (marina, guard) => {

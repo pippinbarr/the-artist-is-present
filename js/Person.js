@@ -24,27 +24,23 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
   right() {
     this.flipX = false;
-    this.setVelocityX(this.speed);
-    this.setVelocityY(0);
+    this.setVelocity(this.speed, 0);
     this.anims.play('walking-h' + this.suffix);
   }
 
   left() {
     this.flipX = true;
-    this.setVelocityX(-this.speed);
-    this.setVelocityY(0);
+    this.setVelocity(-this.speed, 0);
     this.anims.play('walking-h' + this.suffix);
   }
 
   up() {
-    this.setVelocityX(0);
-    this.setVelocityY(-this.speed);
+    this.setVelocity(0, -this.speed);
     this.anims.play('walking-u' + this.suffix);
   }
 
   down() {
-    this.setVelocityX(0);
-    this.setVelocityY(this.speed);
+    this.setVelocity(0, this.speed);
     this.anims.play('walking-d' + this.suffix);
   }
 

@@ -6,6 +6,7 @@ class Player extends Visitor {
     this.inputEnabled = true;
     this.lookingUp = true;
     this.suffix = `-${this.id}`;
+    this.setImmovable(false);
   }
 
   joinScene(scene) {

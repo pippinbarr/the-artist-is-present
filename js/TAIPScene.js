@@ -27,11 +27,11 @@ class TAIPScene extends Phaser.Scene {
 
   update(time, delta) {
     this.checkExits();
-    // if (this.queue) {
-    //   this.physics.collide(this.player, this.queue, (player, visitor) => {
-    //     this.player.stop();
-    //   });
-    // }
+    if (this.queue) {
+      this.physics.collide(this.player, this.queue, (player, visitor) => {
+        this.player.stop();
+      });
+    }
   }
 
   handleEntrances() {
