@@ -102,12 +102,18 @@ class MOMAExterior extends TAIPScene {
     }];
     this.addTransitions(transitionData);
 
-    this.handleEntrances();
+    this.light = this.add.graphics(0, 0);
+    this.light.fillStyle(0x000000, 1.0);
+    this.light.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
+    this.light.depth = 1000000;
 
+    this.handleEntrances();
   }
 
   update(time, delta) {
     super.update(time, delta);
+
+    this.setLight();
 
     this.player.update(time, delta);
     this.physics.collide(this.player, this.colliders, () => {
@@ -116,6 +122,22 @@ class MOMAExterior extends TAIPScene {
     this.handleWrap();
     this.handleSensor();
     this.player.depth = this.player.body.y;
+  }
+
+  setLight() {
+    let nyc = getNYCTime();
+    let hour = nyc.getHours();
+    let alpha = 0;
+    if (hour > 7 && hour < 17) {
+      alpha = 0;
+    } else if (hour <= 4 || hour >= 23) {
+      alpha = 0.8;
+    } else if (hour <= 7) {
+      alpha = (8 - hour) * 0.2;
+    } else if (hour >= 17) {
+      alpha = (hour + 2 - 17) * 0.1;
+    }
+    this.light.alpha = alpha;
   }
 
   handleWrap() {

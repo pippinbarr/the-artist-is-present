@@ -5,8 +5,8 @@
 
 ## Exterior
 * ~~Time zone support~~
-* Double check time zone makes sense (since I'm literally in EDT right now)
-* Time of day "lighting" in exterior
+* **EMAILED JIM** Double check time zone makes sense (since I'm literally in EDT right now)
+* ~~Time of day "lighting" in exterior~~
 
 ## Tickets
 * Add ability to buy a ticket
