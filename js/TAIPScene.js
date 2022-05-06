@@ -18,21 +18,20 @@ class TAIPScene extends Phaser.Scene {
     this.player.joinScene(this);
 
     this.dialog = new Dialog(this, this.player);
+
+    // Infinite sitting simulation
+    // setInterval(() => {
+    //   this.nextSitter();
+    // }, 5000);
   }
 
   update(time, delta) {
     this.checkExits();
-    if (this.queue) {
-      this.physics.collide(this.player, this.queue, (player, visitor) => {
-        this.player.stop();
-        if (!visitor.spoken) {
-          this.personSay(visitor, QUEUE_TALK.pop());
-          visitor.spoken = true;
-        } else {
-          // this.personSay(visitor, "...");
-        }
-      });
-    }
+    // if (this.queue) {
+    //   this.physics.collide(this.player, this.queue, (player, visitor) => {
+    //     this.player.stop();
+    //   });
+    // }
   }
 
   handleEntrances() {

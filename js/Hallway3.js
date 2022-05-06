@@ -58,7 +58,6 @@ class Hallway3 extends TAIPScene {
 
     handleSensor(this, this.dancersSensor);
 
-    this.handleWhispers();
     this.player.depth = this.player.body.y;
   }
 }

@@ -1,7 +1,7 @@
 const DEBUG = false;
 let MOBILE = false;
 
-const START_SCENE = 'moma-exterior';
+const START_SCENE = 'atrium';
 let QUEUE = [];
 const QUEUE_LENGTH = 30;
 const QUEUE_X = 440;
