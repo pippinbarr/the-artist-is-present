@@ -179,13 +179,22 @@ class MOMAExterior extends TAIPScene {
       this.leftDoor.x -= this.DOOR_OPEN_AMOUNT;
       this.rightDoor.x += this.DOOR_OPEN_AMOUNT;
       this.doorsOpen = true;
+    } else if (last.scene === undefined) {
+      this.player.x = 100 * 4;
+      this.player.y = 75 * 4;
+      this.player.up();
+      this.player.stop();
       setTimeout(() => {
-        this.dialog.y = UPPER_DIALOG_Y;
-        this.dialog.showMessage(OUTSIDE_MOMA_MESSAGE, () => {});
+        let time = new Date();
+        let hour = time.getHours();
+        let displayHour = '';
+        let minute = time.getMinutes();
+        this.dialog.showMessages([
+          MOMA_ARRIVAL_MESSAGE_1,
+          MOMA_ARRIVAL_MESSAGE_2,
+          `It's ${hour > 12 ? hour - 12 : hour}:${minute}${hour >= 12 ? 'pm' : 'am'}.`
+        ]);
       }, 1000);
-    } else if (last.scene === 'SOMETHING ABOUT THE START') {
-      this.player.visible = false;
-      this.inputEnabled = false;
     }
   }
 }

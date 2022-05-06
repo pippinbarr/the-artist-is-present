@@ -12,7 +12,7 @@ let PLAYER = undefined;
 
 let lastScene = undefined;
 let last = {
-  scene: 'tickets',
+  scene: undefined,
   x: undefined,
   y: 80 * 4
 }

@@ -1,9 +1,9 @@
 // MUSEUM MESSAGES
 
-const MOMA_ARRIVAL_MESSAGE = `Here you finally are at the Museum of Modern Art in New York, ready to perform your work "The Artist Is Present".`;
+const MOMA_ARRIVAL_MESSAGE_1 = `Here you finally are at the Museum of Modern Art in New York, ready to experience the performance work "The Artist Is Present" by artist Marina Abramovic.`;
+const MOMA_ARRIVAL_MESSAGE_2 = `(Press ARROW KEYS to move, press again to stop. Press ENTER to skip through these messages)`;
 
 let seenMOMAMessage = false;
-const OUTSIDE_MOMA_MESSAGE = `Now is not the time for wandering outside. Get in there and start the performance!`;
 
 const LEAVING_MOMA_ON_FOOT_MESSAGE = `There's nowhere you need to be except the museum right now.`;
 

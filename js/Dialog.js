@@ -55,6 +55,22 @@ class Dialog extends Phaser.GameObjects.Container {
     super.update();
   }
 
+  showMessages(messages) {
+    let index = 0;
+    this.showMultiMessage(messages, index);
+  }
+
+  showMultiMessage(messages, index) {
+    this.showMessage(messages[index], () => {
+      index++;
+      if (index < messages.length) {
+        setTimeout(() => {
+          this.showMultiMessage(messages, index);
+        }, 1000);
+      }
+    });
+  }
+
   showMessage(text, callback, noPause) {
     // this.scene will be undefined if this Dialog has gone out of scope
     if (!this.scene) return;
