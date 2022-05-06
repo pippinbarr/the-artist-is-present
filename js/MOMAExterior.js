@@ -185,14 +185,15 @@ class MOMAExterior extends TAIPScene {
       this.player.up();
       this.player.stop();
       setTimeout(() => {
-        let time = new Date();
+        let time = getNYCTime();
         let hour = time.getHours();
         let displayHour = '';
-        let minute = time.getMinutes();
+        let minute = (`` + time.getMinutes())
+          .padStart(2, `0`);
         this.dialog.showMessages([
           MOMA_ARRIVAL_MESSAGE_1,
           MOMA_ARRIVAL_MESSAGE_2,
-          `It's ${hour > 12 ? hour - 12 : hour}:${minute}${hour >= 12 ? 'pm' : 'am'}.`
+          `It's ${hour > 12 ? (hour - 12) : hour}:${minute}${hour >= 12 ? 'pm' : 'am'}.`
         ]);
       }, 1000);
     }

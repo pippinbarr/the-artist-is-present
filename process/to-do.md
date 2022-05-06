@@ -4,7 +4,8 @@
 * ~~Fix collisions - you seem able to walk through walls with tapping~~
 
 ## Exterior
-* Time zone support
+* ~~Time zone support~~
+* Double check time zone makes sense (since I'm literally in EDT right now)
 * Time of day "lighting" in exterior
 
 ## Tickets

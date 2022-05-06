@@ -80,42 +80,6 @@ class Atrium extends TAIPScene {
     this.handleEntrances();
 
     this.sitter = QUEUE[0];
-
-    // Background for first person view
-    this.faceBG = this.add.sprite(0, 0, 'atlas', 'white-pixel.png');
-    this.faceBG.tint = 0xFFEEEEEE;
-    this.faceBG.x = this.game.canvas.width / 2;
-    this.faceBG.y = this.game.canvas.height / 2;
-    this.faceBG.setScale(this.game.canvas.width, this.game.canvas.height);
-    this.faceBG.setDepth(1000);
-    this.faceBG.setVisible(false);
-
-    // Tears for first person view
-    this.leftTear = this.add.sprite(LEFT_TEAR_X, LEFT_TEAR_Y, 'atlas', 'white-pixel.png');
-    this.leftTear.startX = LEFT_TEAR_X;
-    this.leftTear.tint = TEAR_COLOR; // A tear color? Is transparency cheating?
-    this.leftTear.setScale(FIRST_PERSON_SCALE);
-    this.leftTear.setDepth(100000);
-    this.leftTear.setVisible(false);
-
-    this.rightTear = this.add.sprite(RIGHT_TEAR_X, RIGHT_TEAR_Y, 'atlas', 'white-pixel.png');
-    this.rightTear.startX = RIGHT_TEAR_X;
-    this.rightTear.tint = TEAR_COLOR; // A tear color? Is transparency cheating?
-    this.rightTear.setScale(FIRST_PERSON_SCALE);
-    this.rightTear.setDepth(100000);
-    this.rightTear.setVisible(false);
-
-    this.crying = false;
-
-    this.eyelids = this.add.group();
-    this.leftEyelid = this.add.sprite(LEFT_TEAR_X + FIRST_PERSON_SCALE * 0.5, LEFT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png')
-      .setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE)
-      .setDepth(10000000);
-    this.rightEyelid = this.add.sprite(RIGHT_TEAR_X + FIRST_PERSON_SCALE * 0.5, RIGHT_TEAR_Y - FIRST_PERSON_SCALE, 'atlas', 'white-pixel.png')
-      .setScale(2 * FIRST_PERSON_SCALE, FIRST_PERSON_SCALE)
-      .setDepth(10000000);
-    this.leftEyelid.setVisible(false);
-    this.rightEyelid.setVisible(false);
   }
 
   addGuards() {

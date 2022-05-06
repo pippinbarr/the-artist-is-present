@@ -1,3 +1,18 @@
+function getNYCTime() {
+  // Get the time now
+  let now = new Date();
+  // Offset the time now (millis) back to UTC millis using the offset
+  let offset = now.getTime() + (now.getTimezoneOffset() * 60000);
+  // Get the UTC time
+  let utc = new Date(offset);
+  // Get the NYC time by adding the DST offset to the UTC time
+  // DST because when the show was on back in 2010 is was DST
+  let nycOffset = utc.getTime() - (4 * 60 * 60000);
+  let nyc = new Date(nycOffset);
+  // Send it back
+  return nyc;
+}
+
 function createColliderRect(self, x, y, width, height, group) {
   let p = self.physics.add.sprite(x, y, 'atlas', 'red-pixel.png');
   p.setOrigin(0, 0);
