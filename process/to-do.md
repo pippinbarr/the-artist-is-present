@@ -1,7 +1,7 @@
 # To dos
 
 ## General
-* Fix collisions - you seem able to walk through walls with tapping
+* ~~Fix collisions - you seem able to walk through walls with tapping~~
 
 ## Exterior
 * Time zone support
@@ -14,7 +14,7 @@
 
 ## The performance
 * ~~Add tape collider~~
-* Add tape message (original didn't care if you were inside or outside)
+* ~~Add tape message (original didn't care if you were inside or outside)~~
 * Queue generation length by time of day
 * Make guards constant
 * Get a Marina back into the chair

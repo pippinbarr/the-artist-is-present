@@ -364,6 +364,7 @@ class Atrium extends TAIPScene {
     this.physics.collide(this.player, this.tape, () => {
       this.player.stop();
       // Check if outside/not turn and give message if so
+      this.dialog.showMessage(TAPE_MESSAGE);
     });
 
     this.physics.collide(this.player, this.guards, (marina, guard) => {

@@ -20,6 +20,8 @@ const SOUP_CANS = "Campbell's Soup Cans\nAndy Warhol\n1962\nSynthetic polymer pa
 
 const DANCERS = "The Dance I\nHenry Matisse\n1909\nOil on canvas";
 
+const TAPE_MESSAGE = `Seems like it would be rude to just walk across the tape...`;
+
 // This is what the atrium guards say
 const GUARD_TALK = [
   "Good luck today. We're ready when you are.",
