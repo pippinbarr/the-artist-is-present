@@ -1,0 +1,48 @@
+THE ARTIST IS PRESENT THE GAME
+CODE DESIGN
+
+Queueing
+
+Basic rhythm is that people need to queue and move up as the person at the front of the queue leaves - I have an approximation of this.
+
+Another component is adding people to the queue over time… basically they could enter the screen from the left at the correct y and just walk until they hit the right position in the queue? Basically like putting them in the queue, but at a location much further away and relying on them to make their way up. (This will then mean some issues with the player stepping into the queue in front of them… maybe there could be a "joining" process where they're not in the queue, but get told their target x…? But again, how to deal with the avatar?)
+
+I guess we can check whether they hit the avatar? And if it's because the avatar is *in* the right position to be in the queue? So have a "joining" variable (since only one person will join at a time?)
+
+
+Classes
+
+** Person
+
+Assets:
+Walk cycles
+(need an idle frame)
+
+Extends to:
+Avatar (with keyboard controls)
+Queuer (with queuing ability!)
+… and maybe people standing around
+
+** static? Queue
+
+Tracks the state of the queue in an array of Person objects (or one of the subclasses).
+Notifies queuers when they should move up (probably should set a flag and then they wait for the space in front of them to clear before actually moving)
+
+Needs capacity to have people going the queue (probably just on a random timer), only needs to animate them on if the player can see the end of the queue. So each PERSON should track which screen they're on as well as their x on that screen.
+
+** GameScreen extends PlayState
+(Do we need this, in fact, or is all they'll really do set up the correct background image and any initial animations…? + collision maps, which would just be another FlxSprite set with alpha of 0?) And all be sufficiently different that it won't make sense to have a superclass?)
+
+To start with let's just have a set of three screens with different colours and number labels on them to simulate the idea of the screens (which I can then draw later on.
+
+** TextBox
+
+For pop-ups of people talking and so on from the game, just appears on the screen and vanishes on a timer or key press…
+
+** static Texts
+
+Static class to store all the different forms of texts - particularly arrays of things people might say if you bump them, say, or museum announcements, and so on.
+
+** static Assets
+
+Static class to store all the image (and sound?) assets for the game, as per usual, plus any additional information about them, like animation frames.

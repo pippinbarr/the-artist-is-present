@@ -1,0 +1,100 @@
+THE ARTIST IS PRESENT THE GAME
+
+
+THE FOYER
+
+Should have a few random people standing around in the foyer (maybe talking to each other? Or not… bobbling heads? What do Sierra do?)
+
+If you walk into them they say stuff about the show (maybe ripped from blog posts and tweets?)
+
+Other than that you can get a ticket (maybe the first queue? Though that would involve people moving to somewhere, such as joining the queue upstairs and that could get fucking crazy…)
+
+People's representation in space might be a bit crazy… I guess some kind of translation from the virtual space to rendering on screen? Particularly the corridor space it might make sense to give the a "physical location" that it translated to the screen.
+
+THE QUEUE
+
+For one thing, it seems easiest to represent it as an array - the person at 0 is at the head of the queue… can use shift() to get them off, and iterating through it gives you people from the start to the end.
+
+One idea is for people to dynamically move in the queue - so all you control from the queue is when the next person is let into the space, the queue starts moving up by detecting that the space in front of them has become free. (How? By checking their position in the queue? e.g. comparing array numbers…? Or by literally seeing that there's no one standing in front of them? - that might lead to more dynamic-looking movement.
+
+Issues with the queue: Obviously it's great if the player leaves the queue, but what about their ability, then, to push in? Maybe we just prevent that - the people just shout at them… just have to work out how to detect it. I guess people can know their queue position and then, if it turns out that there's someone there when there shouldn't be they go psycho… perhaps each person, on moving successfully, can send a message back to the previous person in the queue… which would bypass the avatar and therefore let the previous person be aware of someone pushing in…
+
+Or, once the avatar joins the queue at the back, a flag is set, and if they leave it's flipped and only works for getting in at the *end* of the queue.
+
+We're talking about a max of about 30 people in the queue at any given time, usually fewer.
+
+Cases: what about closing time? Everyone in the queue has to leave… maybe announcements as we come closer to the time. But again, how to control all the people leaving? Or could it just close and go black and fade over to outside again? Maybe that would be better, easier and just as fitting really. Maybe the museum won't close while you're still sitting? No, it should - but maybe a special case guard's voice telling you you have to leave.
+
+
+
+SO. Does the queue need its own class? Yes, I would think so… it tracks who's in the queue and has methods for dealing with changes in the queue.
+
+So to do queueing we need:
+
+QUEUE - keeps an array of People in it in the order they are in the queue, can therefore notify the front person of when they get to go into the show, and update the queue based on them leaving.
+
+PERSON - keeps a pointer to the queue (?) and knows its current position in the queue. Is able to check with the queue on any updates to their position somehow? I.e. that the queue should be moving and they should expect to move up a spot? (We need some logic like this to prevent the player from getting into the queue when they shouldn't be.
+
+
+ANOTHER QUESTION: If you leave the queue it makes sense to just go to the end of the line, but what about the possibility of walking to the front of the queue and going into the exhibit? Not allows - can just have the guard saying "You can't go in there. Get in line like everyone else" and an impassable barrier.
+
+Or should the queue just move in complete unison to avoid issues of the player stepping in ahead of their turn? (And it can close up in unison if they leave the queue.)
+
+OR just if the player's not in the queue and their Y gets to the queue point and we know they're not queueing (a flag) then someone's just like "hey watch it buddy! There's a queue here!) and they can't move. Fine.
+
+I think I'll probably just need to implement something and muddle around with it. Tomorrow.
+
+
+
+
+==== To do ====
+
+* Draw some sketched scenes from the game and see how they feel
+* Keep thinking through the logic of the game
+
+
+==== Scenes ====
+
+1/ Outside MoMA
+
+2/ MoMA foyer - ticket office and stairs to exhibit
+
+3/ Hallways for queueing - consider how to have views of the artist (queuing around the space?)
+
+3b/ Head of the queue (guard etc.)
+
+4/ Actual performance space
+
+5/ Marina's face
+
+GAME OVER
+
+
+==== The process ====
+
+* Enter MoMA (leaving is disallowed as in PQ)
+
+* Go to ticket queue and wait for ticket (automatic transaction, if you don't have a ticket it won't let you go upstairs, guard will warn you if you're sufficiently late that you won't get a chance to sit)
+
+* Walk up the stairs with ticket
+
+* Pass through the hallways and join the queue wherever it is (depending on what time of day + random factors the hallways will have more or less of a queue - but say 30 people maximum or so - even if you get there really early you'll still be behind at least a couple of people…)
+
+* Once at the head of the queue get instructions from guard then pass into the main space
+
+* Walk across the main space to the chair and sit down (get thrown out if you do anything else? Maybe you're allowed to just leave?
+
+* Big picture of her face (press space to leave)
+
+* GAME OVER
+
+
+==== Current complexities I can see ====
+
+* Dynamic queueing… generating the queue length and getting it to move along and reacting to where the player is standing.
+
+* People generator… making up people so that they look varied and interesting.
+
+* Border cases - what happens if you leave the queue and just stick around to "watch the performance"? Should that be allowed? You could just not even queue? Should there be a closer view you can achieve if you do that? Should it let you? If I let you get out of the queue by mistake then yes… but it doesn't necessarily have to be any better than the view from the queue. You could just leave, too…?
+
+* How much drawing am I going to end up having to do? I want to avoid Safety-Instructions levels of work. For instance, walk cycles will require each outfit and skin color to fucking have a cycle? Is there any color palette control shit I could do to avoid this? How dynamic can graphics be?

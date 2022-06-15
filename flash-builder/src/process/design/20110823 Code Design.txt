@@ -1,0 +1,32 @@
+FOR THE SINGLE SCREEN CASE QUEUE (FOR NOW - AND WILL LIKELY USE A EXTRA-WIDE IMAGE TO DO FOUR SCREENS WITH OFFSETS)
+
+
+QUEUE
+
+_queue:Array of People (or Queuers) in the queue
+_joining:Array of People (or Queuers) who exist and are heading to join the queue
+_avatarQueuePosition:Rectangle(?) defining the position in the queue that the avatar can stand in to be a part of the queue (starts at the back, then moves up, of course)
+
+* update()
+Particularly needs to check whether the avatar is a) standing in the queueing position, in which case we add them to the queue (and allow others to join behind them);
+Check if the avatar is queueing by making sure they're still standing in the correct queueing location (so we need a special case for checking that the avatar is in their position - perhaps with some kind of delay such that if they're not in it for N frames then they're pushed out of the queue (perhaps literally just adjusting their y value away from it), then the queue moves up and the _avatarQueuePosition is put back at the back (and messages are triggered etc.)
+
+* addToJoining(p:Person)
+Adds the person to the _joining array and from there Queue will notify them of their target x coordinate so that they will walk to the correct location.
+
+* addToQueue(p:Person)
+Adds the person to the _queue array so that they are officially in the queue and from there will notify them when the queue moves up so that they can walk to the correct location (checking for collision with the person next in line if there is one)
+
+* moveQueueUp()
+Sends the person at the head of the queue out of the _queue array and sets them to walk to the chair where they'll sit (question: should we just consider the sitting location as part of the queue itself? And then we only have to totally remove them after they leave…
+[Called on a FlxTimer based on a random number of minutes the person will spend sitting at the table]
+
+PERSON
+
+Basic behaviour for a (non-avatar) person is the walk toward the target position on the screen. For simplicity's sake, we can assume this is only on the x axis (as this only applies to queueing) - so basically they just have a positive velocity until they hit their target x. The avatar will just ignore this stuff (perhaps just by having their target being their current location at all times)
+
+Also behaviour for displaying correct walk cycles and so on based on velocity.
+
+AVATAR
+
+Just a person, but instead of being controlled by a target destination they are controlled by the keyboard.
