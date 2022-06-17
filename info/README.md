@@ -20,7 +20,7 @@ The Artist Is Present has appeared in the exhibitions [The Name of the Game](ht
 * Read the [Process documentation](../process) for process journal, to do list, and related work
 * Read the [Commit History](https://github.com/pippinbarr/the-artist-is-present/commits/master) for step-by-step information about how the project was built
 * Look at the [Code Repository](https://github.com/pippinbarr/the-artist-is-present) for source code etc., including the original Flash Builder code
-* Check out the [original .swf file of the game](https://github.com/pippinbarr/the-artist-is-present/releases/tag/swf) if you want to
+* Download the [original .swf file of The Artist Is Present](https://github.com/pippinbarr/the-artist-is-present/releases/tag/swf) if you want to
 
 ## License
 _The Artist Is Present_ is an open source game licensed under a [Creative Commons Attribution-NonCommercial 3.0 Unported License](http://creativecommons.org/licenses/by-nc/3.0/). You can obtain the source code from its [code repository](https://github.com/pippinbarr/the-artist-is-present) on GitHub.
