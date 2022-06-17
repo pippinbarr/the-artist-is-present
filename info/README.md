@@ -1,12 +1,11 @@
 # The Artist Is Present
 
-![](images/soup-cans.png)
+![](images/the-artist-is-present-banner.png)
 
+## [Play Online](https://www.pippinbarr.com/the-artist-is-present/) (HTML5, desktop only)
+
+## Description
 *Are games art?! This one definitely is! The Artist is Present is a Sierra-style recreation of the famed performance piece of the same name by artist Marina Abramovic at the Museum of Modern Art in New York City. Have the experience only a lucky few have ever had! Stare into Marina Abramovic’s eyes! Make of it what you will! Just like art!*
-
----
-
-## [Play Online](https://pippinbarr.github.io/the-artist-is-present/) (HTML5, desktop only)
 
 Released on 14 September 2011, *The Artist Is Present* was **originally** written in ActionScript 3 using FlashBuilder 4.5 and the excellent [Flixel](http://www.flixel.org/) library.
 
@@ -16,11 +15,11 @@ This version is being ported to the also excellent [Phaser 3](https://phaser.io/
 
 The Artist Is Present has appeared in the exhibitions [The Name of the Game](http://www.stephenlawrencegallery.net/CB-TheNameOfTheGame-Intro.html) at the [Stephen Lawrence Gallery](http://www.stephenlawrencegallery.net/), It's Art in the Game at [Museum Hilversum](http://www.museumhilversum.nl/), [Space Invaders](http://www.nikolajkunsthal.dk/en/udstillinger/space-invaders) at [Nikolaj Kunsthal](http://www.nikolajkunsthal.dk/en/), [Up Up Down Down Left Right Left Right B A Start](http://www.spacesgallery.org/project/up-up-down-down-left-right-left-right-b-a-start) at [SPACES](http://www.spacesgallery.org/), [Pause: Computer Games and Cultural Contingencies](http://www.khm.de/nocache/aktuelles/veranstaltungen/veranstaltung/article/3037-pause-computer-games-and-cultural-contingencies/nCall/3/) at [Temporary Gallery](http://www.temporarygallery.org/), Brot und Spiele at the [Keine Humboldt Gallerie](http://www.kleinehumboldtgalerie.de/about/geschichte/), [The Aesthetics of Gameplay](http://gameartshow.siggraph.org/gas/) by the [SIGGRAPH Digital Arts Community](http://siggrapharts.ning.com/) (online), and the [Montréal Digital Arts Biennial](http://bianmontreal.ca/en/calendar/physicalite) at the [Musée d'Art Contemporain de Montréal](http://www.macm.org/en/).
 
-#### Read the [Press kit](https://github.com/pippinbarr/the-artist-is-present/blob/master/press/README.md) for press information
-#### Read the [Process documentation](https://github.com/pippinbarr/the-artist-is-present/blob/master/process/README.md) for process journal, to do list, and related work
-#### Read the [Commit History](https://github.com/pippinbarr/the-artist-is-present/commits/master) for step-by-step information about how the project was built
-#### Look at the [Code Repository](https://github.com/pippinbarr/the-artist-is-present) for source code etc., including the original Flash Builder code
+## Documentation
+* Read the [Press kit](../press) for press information
+* Read the [Process documentation](../process) for process journal, to do list, and related work
+* Read the [Commit History](https://github.com/pippinbarr/the-artist-is-present/commits/master) for step-by-step information about how the project was built
+* Look at the [Code Repository](https://github.com/pippinbarr/the-artist-is-present) for source code etc., including the original Flash Builder code
 
----
-
+## License
 _The Artist Is Present_ is an open source game licensed under a [Creative Commons Attribution-NonCommercial 3.0 Unported License](http://creativecommons.org/licenses/by-nc/3.0/). You can obtain the source code from its [code repository](https://github.com/pippinbarr/the-artist-is-present) on GitHub.
