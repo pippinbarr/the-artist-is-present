@@ -1,4 +1,4 @@
-# The Artist Is Present
+# *The Artist Is Present*
 
 ![](images/the-artist-is-present-banner.png)
 
