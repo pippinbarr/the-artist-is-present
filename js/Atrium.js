@@ -37,9 +37,10 @@ class Atrium extends TAIPScene {
     this.tableAndChairs.setDepth(250);
     this.colliders.add(this.tableAndChairs);
 
-    this.playerChairSensor = this.physics.add.sprite(730, 250, 'atlas', 'red-pixel.png')
-      .setScale(10, 50);
-    this.playerChairSensor.visible = false;
+    // This was for TAIP2
+    // this.playerChairSensor = this.physics.add.sprite(730, 250, 'atlas', 'red-pixel.png')
+    //   .setScale(10, 50);
+    // this.playerChairSensor.visible = false;
 
     this.visitorChairSensor = this.physics.add.sprite(580, 250, 'atlas', 'red-pixel.png')
       .setScale(50, 60);
@@ -68,6 +69,8 @@ class Atrium extends TAIPScene {
 
     this.addGuards();
 
+    this.addMarina();
+
     const transitionData = [{
       key: "hallway3",
       type: "left",
@@ -91,11 +94,17 @@ class Atrium extends TAIPScene {
     this.guards.add(this.guard2, true);
   }
 
+  addMarina() {
+    this.marina = this.add.sprite(695.5, 204, `marina-sitting`);
+    this.marina.setScale(4, 4);
+    this.marina.setDepth(250);
+  }
+
   update(time, delta) {
     super.update();
 
     this.handleCollisions();
-    this.checkMarinaSitting();
+    // this.checkMarinaSitting();
     this.checkVisitorSitting();
 
     if (this.movingUp && this.movingUp.x >= QUEUE_X) {
@@ -111,28 +120,28 @@ class Atrium extends TAIPScene {
     this.setDepths();
   }
 
-  checkMarinaSitting() {
-    if (!this.player.sitting) {
-      this.physics.overlap(this.player, this.playerChairSensor, () => {
-        this.player.sit();
-        this.player.x = 695.5;
-        this.player.y = 210;
-
-        // Start timers to handle the museum closing
-        setTimeout(() => {
-          this.showMuseumClosingWarningMessage();
-        }, TIME_TO_MUSEUM_CLOSING_WARNING);
-
-        setTimeout(() => {
-          this.closeMuseum();
-        }, TIME_TO_MUSEUM_CLOSED);
-
-        setTimeout(() => {
-          this.startHeadDownSequence();
-        }, 1000);
-      });
-    }
-  }
+  // checkMarinaSitting() {
+  //   if (!this.player.sitting) {
+  //     this.physics.overlap(this.player, this.playerChairSensor, () => {
+  //       this.player.sit();
+  //       this.player.x = 695.5;
+  //       this.player.y = 210;
+  //
+  //       // Start timers to handle the museum closing
+  //       setTimeout(() => {
+  //         this.showMuseumClosingWarningMessage();
+  //       }, TIME_TO_MUSEUM_CLOSING_WARNING);
+  //
+  //       setTimeout(() => {
+  //         this.closeMuseum();
+  //       }, TIME_TO_MUSEUM_CLOSED);
+  //
+  //       setTimeout(() => {
+  //         this.startHeadDownSequence();
+  //       }, 1000);
+  //     });
+  //   }
+  // }
 
   showMuseumClosingWarningMessage() {
     if (this.dialog.visible) {
@@ -158,16 +167,16 @@ class Atrium extends TAIPScene {
   }
 
   startHeadDownSequence() {
-    this.dialog.y = UPPER_DIALOG_Y;
-    this.dialog.showMessage(MOBILE ? HEAD_DOWN_INSTRUCTIONS_MOBILE : HEAD_DOWN_INSTRUCTIONS, () => {
-      setTimeout(() => {
-        this.player.lookDown(() => {
-          setTimeout(() => {
-            this.nextSitter();
-          }, 1000);
-        }, this);
-      }, 1000);
-    });
+    // this.dialog.y = UPPER_DIALOG_Y;
+    // this.dialog.showMessage(MOBILE ? HEAD_DOWN_INSTRUCTIONS_MOBILE : HEAD_DOWN_INSTRUCTIONS, () => {
+    setTimeout(() => {
+      this.player.lookDown(() => {
+        setTimeout(() => {
+          this.nextSitter();
+        }, 1000);
+      }, this);
+    }, 1000);
+    // });
   }
 
   checkVisitorSitting() {
@@ -190,46 +199,46 @@ class Atrium extends TAIPScene {
   }
 
   startHeadUpSequence() {
-    this.dialog.y = UPPER_DIALOG_Y;
-    this.dialog.showMessage(MOBILE ? HEAD_UP_INSTRUCTIONS_MOBILE : HEAD_UP_INSTRUCTIONS, () => {
-      setTimeout(() => {
-        this.player.lookUp(() => {
+    // this.dialog.y = UPPER_DIALOG_Y;
+    // this.dialog.showMessage(MOBILE ? HEAD_UP_INSTRUCTIONS_MOBILE : HEAD_UP_INSTRUCTIONS, () => {
+    setTimeout(() => {
+      this.player.lookUp(() => {
+        setTimeout(() => {
+          const SIT_TIME = SIT_TIMES[Math.floor(Math.random() * SIT_TIMES.length)];
           setTimeout(() => {
-            const SIT_TIME = SIT_TIMES[Math.floor(Math.random() * SIT_TIMES.length)];
-            setTimeout(() => {
-              this.sitterFinished()
-            }, SIT_TIME * 60 * 1000);
-            this.showSitter();
-          }, 1000);
-        }, this);
-      }, 1000);
-    }, true);
+            this.sitterFinished()
+          }, SIT_TIME * 60 * 1000);
+          // this.showSitter();
+        }, 1000);
+      }, this);
+    }, 1000);
+    // }, true);
   }
 
-  showSitter() {
-    this.faceBG.setVisible(true);
-    this.face = this.add.sprite(0, 0, `person-spritesheet${this.sitter.suffix}`, 14);
-    this.face.x = this.game.canvas.width / 2;
-    this.face.y = this.game.canvas.height / 2 + 280;
-    this.face.setScale(FIRST_PERSON_SCALE);
-    this.face.setDepth(10000);
+  // showSitter() {
+  //   this.faceBG.setVisible(true);
+  //   this.face = this.add.sprite(0, 0, `person-spritesheet${this.sitter.suffix}`, 14);
+  //   this.face.x = this.game.canvas.width / 2;
+  //   this.face.y = this.game.canvas.height / 2 + 280;
+  //   this.face.setScale(FIRST_PERSON_SCALE);
+  //   this.face.setDepth(10000);
+  //
+  //
+  //   this.tryCrying();
+  //   this.startBlinking();
+  // }
 
-
-    this.tryCrying();
-    this.startBlinking();
-  }
-
-  tryCrying() {
-    if (Math.random() < this.sitter.cryProbability) {
-      this.cryTimeout = setTimeout(() => {
-        this.startCrying();
-        this.cryTimeout = setTimeout(() => {
-          this.stopCrying();
-          this.tryCrying();
-        }, CRY_TIME_MIN + Math.random() * CRY_TIME_RANGE);
-      }, CRY_DELAY_MIN + Math.random() * CRY_DELAY_RANGE);
-    }
-  }
+  // tryCrying() {
+  //   if (Math.random() < this.sitter.cryProbability) {
+  //     this.cryTimeout = setTimeout(() => {
+  //       this.startCrying();
+  //       this.cryTimeout = setTimeout(() => {
+  //         this.stopCrying();
+  //         this.tryCrying();
+  //       }, CRY_TIME_MIN + Math.random() * CRY_TIME_RANGE);
+  //     }, CRY_DELAY_MIN + Math.random() * CRY_DELAY_RANGE);
+  //   }
+  // }
 
   hideFace() {
     this.faceBG.setVisible(false);

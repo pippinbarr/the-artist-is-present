@@ -16,6 +16,12 @@ So we currently have a version in which you arrive outside and can navigate at l
 
 It's nice to return to this world, and I feel at least somewhat optimistic about how well this has worked to this point. The queue behaviour is the obvious terrifying element I'm not yet ready to contemplate, but otherwise this is in a good position.
 
+## Sad realization (2022-06-27)
+
+As I slowly tried to rewrap my head around this project today I came to see that I'll more than likely need to restructure everything to be a single scene with a moving camera to handle the idea of a persistent queue. Otherwise I'm going to be reduced to stupidly weird logic around scene switching and what things are moving where at what time.
+
+So... well it at least gives me a target.
+
 # 2011
 
 ## Simplicity kills (2011-08-24)
