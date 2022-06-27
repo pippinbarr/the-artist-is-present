@@ -142,16 +142,25 @@ class TAIPScene extends Phaser.Scene {
     this.marks.toggleVisible();
   }
 
+  // addQueue(xOffset) {
+  //   this.queue = this.add.group();
+  //
+  //   // Add queue
+  //   for (let i = 0; i < QUEUE.length; i++) {
+  //     QUEUE[i].x = QUEUE_X - i * QUEUE_SPACING + xOffset
+  //     QUEUE[i].y = QUEUE_Y;
+  //     this.add.existing(QUEUE[i]);
+  //     this.physics.add.existing(QUEUE[i]);
+  //     this.queue.add(QUEUE[i]);
+  //   }
+  // }
+
   addQueue(xOffset) {
     this.queue = this.add.group();
-
-    // Add queue
-    for (let i = 0; i < QUEUE.length; i++) {
-      QUEUE[i].x = QUEUE_X - i * QUEUE_SPACING + xOffset
-      QUEUE[i].y = QUEUE_Y;
-      this.add.existing(QUEUE[i]);
-      this.physics.add.existing(QUEUE[i]);
-      this.queue.add(QUEUE[i]);
+    for (let i = 0; i < QUEUE_LENGTH; i++) {
+      let person = new Visitor(this, QUEUE_X - i * QUEUE_SPACING, QUEUE_Y);
+      this.queue.add(person);
+      QUEUE.push(person);
     }
   }
 

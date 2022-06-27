@@ -1,21 +1,7 @@
 const DEBUG = true;
 let MOBILE = false;
 
-const START_SCENE = 'atrium';
-let QUEUE = [];
-const QUEUE_LENGTH = 30;
-const QUEUE_X = 440;
-const QUEUE_Y = 182;
-const QUEUE_SPACING = 56;
-
-let PLAYER = undefined;
-
-let lastScene = undefined;
-let last = {
-  scene: undefined,
-  x: undefined,
-  y: 80 * 4
-}
+const START_SCENE = 'world';
 
 let config = {
   type: Phaser.AUTO,
@@ -23,7 +9,7 @@ let config = {
   height: 400,
   scene: [
     Boot, Preloader, TAIPScene, Title, MOMAExterior, Tickets, Hallway1,
-    Hallway2, Hallway3, Atrium, GameOver
+    Hallway2, Hallway3, Atrium, GameOver, World
   ],
   pixelArt: true,
   antialias: false,

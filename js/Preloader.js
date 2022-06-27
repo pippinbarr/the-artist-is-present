@@ -48,19 +48,9 @@ let Preloader = new Phaser.Class({
       wordWrap: true,
       align: 'center'
     };
-    let title = this.add.text(this.game.canvas.width / 2, 100, "LET'S PLAY:\nANCIENT GREEK PUNISHMENT:\nINVERSION EDITION", titleStyle);
+    let title = this.add.text(this.game.canvas.width / 2, 100, "The Artist Is Present", titleStyle);
 
     this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, 'clown_logo');
-
-    // Create the queue of people!
-    for (let i = 0; i < QUEUE_LENGTH; i++) {
-      let person = new Visitor(this, QUEUE_X - i * QUEUE_SPACING, QUEUE_Y);
-      person.ignoreDestroy = true;
-      QUEUE.push(person);
-    }
-
-    PLAYER = new Player(this, this.game.canvas.width / 2, this.game.canvas.height / 2);
-    PLAYER.ignoreDestroy = true;
 
     setTimeout(() => {
       this.scene.start(START_SCENE);
