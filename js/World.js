@@ -37,6 +37,8 @@ class World extends Phaser.Scene {
       .bind(this, 0, 0)();
     addHallway1
       .bind(this, this.game.canvas.width, 0)();
+    addHallway2
+      .bind(this, this.game.canvas.width * 2, 0)();
 
 
     // Player
@@ -63,6 +65,8 @@ class World extends Phaser.Scene {
     updateTicketHall
       .bind(this)();
     updateHallway1
+      .bind(this)();
+    updateHallway2
       .bind(this)();
 
     this.checkExits();
