@@ -39,7 +39,10 @@ class World extends Phaser.Scene {
       .bind(this, this.game.canvas.width, 0)();
     addHallway2
       .bind(this, this.game.canvas.width * 2, 0)();
-
+    addHallway3
+      .bind(this, this.game.canvas.width * 3, 0)();
+    addAtrium
+      .bind(this, this.game.canvas.width * 4, 0)();
 
     // Player
     this.player = new Player(this, 300, this.game.canvas.height + 300);
@@ -67,6 +70,10 @@ class World extends Phaser.Scene {
     updateHallway1
       .bind(this)();
     updateHallway2
+      .bind(this)();
+    updateHallway3
+      .bind(this)();
+    updateAtrium
       .bind(this)();
 
     this.checkExits();
@@ -111,4 +118,41 @@ class World extends Phaser.Scene {
       this.currentScene = this.scenes[transition.to];
     }
   }
+
+  /**
+  personSay
+
+  Causes the person to turn toward the player, displays the message
+  in a dialog, and then has them turn back again.
+  */
+  personSay(person, message) {
+    if (this.dialog.visible) return;
+    if (person.revertTimer) {
+      clearTimeout(person.revertTimer);
+    }
+
+    if (person.x - this.player.x > 10 * 4) {
+      person.faceLeft();
+    } else if (person.x - this.player.x < -10 * 4) {
+      person.faceRight();
+    } else if (this.player.y > person.y) {
+      person.faceDown();
+    } else {
+      person.faceUp();
+    }
+
+    setTimeout(() => {
+      this.dialog.y = -150;
+      this.dialog.showMessage(message, () => {
+        person.revertTimer = setTimeout(() => {
+          if (person instanceof Guard) {
+            person.faceLeft();
+          } else {
+            person.faceRight();
+          }
+        }, 1000);
+      });
+    }, 250 + Math.random() * 250);
+  }
+
 }

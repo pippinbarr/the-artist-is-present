@@ -14,7 +14,7 @@ function addTicketHall(x, y) {
     .setScale(4);
   this.barrier.body.setOffset(6, 34);
   this.barrier.body.setSize(90, 3, false);
-  this.barrier.body.immovable = true;
+  this.barrier.setPushable(false);
   this.barrier.depth = 60 * 4;
   this.colliders.add(this.barrier);
 
