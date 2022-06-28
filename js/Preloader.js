@@ -20,6 +20,11 @@ let Preloader = new Phaser.Class({
       frameHeight: 30,
       endFrame: 4
     });
+    this.load.spritesheet('marina-face', 'assets/spritesheets/marina-face-spritesheet.png', {
+      frameWidth: 200,
+      frameHeight: 100,
+      endFrame: 2
+    });
     this.load.spritesheet('person-spritesheet', 'assets/spritesheets/person-spritesheet2.png', {
       frameWidth: 14,
       frameHeight: 35,
@@ -36,6 +41,20 @@ let Preloader = new Phaser.Class({
     this.createSpritesheetAnimation('person-spritesheet', 'walking-d-player', 9, 14, 10, -1);
 
     this.createSpritesheetAnimation('person-spritesheet-sitting', 'sitting-player', 1, 1, 3, -1);
+
+    this.createSpritesheetAnimation('marina-face', 'marina-looking', 1, 1, 10, -1);
+
+    let frames = this.anims.generateFrameNames(`marina-face`, {
+      frames: [0, 1, 2, 1, 0]
+    });
+
+    let config = {
+      key: `marina-blink`,
+      frames: frames,
+      frameRate: 10,
+      repeat: 0,
+    };
+    this.anims.create(config);
     // this.createSpritesheetAnimation('marina-sitting', 'look-down-marina', 1, 4, 3, 0);
     // this.createSpritesheetAnimation('marina-sitting', 'look-up-marina', 4, 1, 3, 0);
 

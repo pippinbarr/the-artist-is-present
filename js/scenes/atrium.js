@@ -86,7 +86,6 @@ function updateAtrium() {
   // Tape
   this.physics.collide(this.player, this.tape, () => {
     this.player.stop();
-    // Check if outside/not turn and give message if so
     this.dialog.showMessage(TAPE_MESSAGE);
   });
 
@@ -97,7 +96,23 @@ function updateAtrium() {
     if (message) this.personSay(guard, message);
   });
 
+  // Player onto the chair
+  this.physics.overlap(this.player, this.visitorChairSensor, (player, sensor) => {
+    if (this.player.sitting) {
+      return;
+    }
 
+    // Switch to sitting animation and fix positioning
+    this.player.sit();
+    this.player.x = 561 + this.currentScene.x * this.game.canvas.width;
+    this.player.y = 194 + this.currentScene.y * this.game.canvas.height;
+    this.player.setDepth(10000000)
+
+    // Wait 10 seconds then switch to The Face
+    setTimeout(() => {
+      this.scene.start(`marina`);
+    }, 10000);
+  });
 
   //this.handleCollisions();
   //this.checkMarinaSitting();

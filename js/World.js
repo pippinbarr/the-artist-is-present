@@ -44,15 +44,16 @@ class World extends Phaser.Scene {
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
 
+    this.currentScene = this.scenes[`atrium`];
+
     // Player
-    this.player = new Player(this, 300, this.game.canvas.height + 300);
+    this.player = new Player(this, 300 + this.currentScene.x * this.game.canvas.width, 176 + this.currentScene.y * this.game.canvas.height);
     this.player.joinScene(this);
-    this.currentScene = this.scenes[`moma-exterior`];
 
     // Dialog
     this.dialog = new Dialog(this);
 
-    this.cameras.main.setScroll(0, this.game.canvas.height);
+    this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
   }
 
   update() {
@@ -61,7 +62,11 @@ class World extends Phaser.Scene {
     this.physics.collide(this.player, this.colliders, () => {
       this.player.stop();
     });
-    this.player.depth = this.player.body.y;
+
+    if (!this.player.sitting) {
+      // Cheap hack to not reset depth when sitting so you don't go behind the chair
+      this.player.depth = this.player.body.y;
+    }
 
     updateMOMAExterior
       .bind(this)();
