@@ -40,10 +40,11 @@ function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
   }
 }
 
-function handleSensor(scene, sensor) {
+function handleArtSensor(scene, sensor) {
   if (scene.physics.overlap(scene.player, sensor)) {
     if (!sensor.overlap) {
       scene.player.up();
+      scene.player.stop();
       scene.dialog.y = 100;
       scene.dialog.showMessage(sensor.text, () => {});
       sensor.overlap = true;

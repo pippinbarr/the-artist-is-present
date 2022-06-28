@@ -7,9 +7,12 @@ let config = {
   type: Phaser.AUTO,
   width: 800,
   height: 400,
+  // scene: [
+  //   Boot, Preloader, TAIPScene, Title, MOMAExterior, Tickets, Hallway1,
+  //   Hallway2, Hallway3, Atrium, GameOver, World
+  // ],
   scene: [
-    Boot, Preloader, TAIPScene, Title, MOMAExterior, Tickets, Hallway1,
-    Hallway2, Hallway3, Atrium, GameOver, World
+    Boot, Preloader, World
   ],
   pixelArt: true,
   antialias: false,

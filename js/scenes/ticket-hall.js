@@ -45,20 +45,32 @@ function addTicketHall(x, y) {
     .setScale(10, 100)
     .setVisible(false);
 
-  const transitionData = [{
-      key: "moma-exterior",
-      type: "down",
-      x: 100 * 4,
-      y: 90 * 4
-    },
-    {
-      key: "hallway1",
-      type: "right",
-      x: 190 * 4,
-      y: 60 * 4
+  const sceneData = {
+    name: "ticket-hall",
+    x: 0,
+    y: 0,
+    transitions: {
+      down: {
+        to: "moma-exterior",
+        x: x + 100 * 4,
+        y: y + 90 * 4,
+        camOffset: {
+          x: 0,
+          y: 1
+        }
+      },
+      right: {
+        to: "hallway-1",
+        x: x + 190 * 4,
+        y: y + 60 * 4,
+        camOffset: {
+          x: 1,
+          y: 0
+        }
+      }
     }
-  ];
-  // this.addTransitions(transitionData);
+  };
+  this.addScene(sceneData);
 
   // this.handleEntrances();
 }

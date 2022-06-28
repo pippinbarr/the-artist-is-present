@@ -72,10 +72,16 @@ class Dialog extends Phaser.GameObjects.Container {
   }
 
   showMessage(text, callback, noPause) {
-    // this.scene will be undefined if this Dialog has gone out of scope
+    // Will have to think about this question of what to do if they somehow
+    // leave a scene with a message still showing? I think they all freeze you?
+    // But there's that "noPause" idea I see...
     if (!this.scene) return;
 
     if (!noPause) this.scene.scene.pause(this.scene.key);
+
+    // Reset the dialog position to match the current scene's location.
+    this.x = this.scene.currentScene.x * this.scene.game.canvas.width;
+    this.y = this.scene.currentScene.y * this.scene.game.canvas.height;
 
     this.text.text = text;
 

@@ -1,6 +1,5 @@
 function addMOMAExterior(x, y) {
   // BG
-  console.log(this);
   this.add
     .sprite(
       x + this.game.canvas.width / 2,
@@ -36,7 +35,7 @@ function addMOMAExterior(x, y) {
       "moma-exterior/moma-door-left.png"
     )
     .setScale(4, 4)
-    .setDepth(-10);
+    .setDepth(-10)
   this.rightDoor = this.physics.add
     .sprite(
       this.RIGHT_DOOR_X,
@@ -46,8 +45,10 @@ function addMOMAExterior(x, y) {
     )
     .setScale(4, 4)
     .setDepth(-10);
-  this.leftDoor.body.immovable = true;
-  this.rightDoor.body.immovable = true;
+  this.leftDoor.setPushable(false);
+  this.rightDoor.setPushable(false);
+  // this.leftDoor.body.immovable = true;
+  // this.rightDoor.body.immovable = true;
   this.colliders.add(this.leftDoor);
   this.colliders.add(this.rightDoor);
   this.sensor = this.physics.add
@@ -86,15 +87,23 @@ function addMOMAExterior(x, y) {
   // Bottom wall
   createColliderRect(this, x + 0 * 4, y + 98 * 4, 200 * 4, 2 * 4, this.colliders);
 
-  const transitionData = [{
-    key: "tickets",
-    type: "up",
-    x: x + 100 * 4,
-    y: y + 32 * 4
-  }];
-
-  // WILL NEED TO THINK ABOUT THIS
-  this.addTransitions(transitionData);
+  const sceneData = {
+    name: "moma-exterior",
+    x: 0,
+    y: 1,
+    transitions: {
+      up: {
+        to: "ticket-hall",
+        x: x + 100 * 4,
+        y: y + 32 * 4,
+        camOffset: {
+          x: 0,
+          y: -1
+        }
+      }
+    }
+  };
+  this.addScene(sceneData);
 
   this.light = this.add.graphics(x + 0, y + 0);
   this.light.fillStyle(0x000000, 1.0);
@@ -105,9 +114,11 @@ function addMOMAExterior(x, y) {
 }
 
 function updateMOMAExterior() {
+  if (this.currentScene.name === `moma-exterior`) {
+    handleWrap
+      .bind(this)();
+  }
   setLight
-    .bind(this)();
-  handleWrap
     .bind(this)();
   handleSensor
     .bind(this)();
