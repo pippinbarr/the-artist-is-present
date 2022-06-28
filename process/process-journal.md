@@ -22,6 +22,28 @@ As I slowly tried to rewrap my head around this project today I came to see that
 
 So... well it at least gives me a target.
 
+## Progress is being made (2022-06-28)
+
+After the other day's sad defeat by the frustrations of a multi-scene version I've managed to put together the single-world idea. So there's one World scene, and then a bunch of helper functions in separate sub-scene files that actually add the different screens so that the World.js file isn't overwhelming to look at.
+
+In the process of getting the bits and pieces in place I ran into one fun physics bug that using Phaser3 introduced (and which I very much wonder if it's in place in TAIP2??) which is that any free-standing object ends up being pushable, so you get:
+
+![](images/forced-entry.gif)
+
+![](images/moving-chairs.gif)
+
+Which is great. Anyway, the newer version of Phaser introduces a `.setPushable(false)` which solves that particular issue.
+
+At this point the really big-ass next things are
+
+* Allow the player to sit on the chair and switch to the final animation (can do this without a queue)
+* Create a starting queue (follow the original)
+* Make that queue move up properly
+* Make that queue with the player (let them enqueue)
+* Make new people arrive convincingly into the queue
+
+And would that be it? Well various little extra dialogs (the intro dialogs, the guard dialogs, the queue-join dialog, the ticket dialog)
+
 # 2011
 
 ## Simplicity kills (2011-08-24)
