@@ -12,8 +12,6 @@ class Visitor extends GeneratedPerson {
       shoes: [0xFF000000, 0xff4b370c, 0xff474237]
     }
     super(scene, x, y, palette);
-
-    this.cryProbability = 0.2;
   }
 
 }

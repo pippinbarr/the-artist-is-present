@@ -36,6 +36,7 @@ function addMOMAExterior(x, y) {
     )
     .setScale(4, 4)
     .setDepth(-10)
+    .setPushable(false)
   this.rightDoor = this.physics.add
     .sprite(
       this.RIGHT_DOOR_X,
@@ -44,13 +45,12 @@ function addMOMAExterior(x, y) {
       "moma-exterior/moma-door-right.png"
     )
     .setScale(4, 4)
-    .setDepth(-10);
-  this.leftDoor.setPushable(false);
-  this.rightDoor.setPushable(false);
-  // this.leftDoor.body.immovable = true;
-  // this.rightDoor.body.immovable = true;
+    .setDepth(-10)
+    .setPushable(false)
+
   this.colliders.add(this.leftDoor);
   this.colliders.add(this.rightDoor);
+
   this.sensor = this.physics.add
     .sprite(x + this.game.canvas.width / 2, y + 50 * 4, "atlas", "red-pixel.png")
     .setScale(40 * 4, 60 * 4);
@@ -110,7 +110,9 @@ function addMOMAExterior(x, y) {
   this.light.fillRect(x + 0, y + 0, this.game.canvas.width, this.game.canvas.height);
   this.light.depth = 1000000;
 
-  // this.handleEntrances();
+  this.queuer = new Queuer(this, x - 100, y + 300, this.checkpoints);
+  this.queuers.add(this.queuer);
+  this.queuer.start();
 }
 
 function updateMOMAExterior() {
@@ -153,7 +155,7 @@ function handleWrap() {
 }
 
 function handleSensor() {
-  if (this.physics.overlap(this.sensor, this.player)) {
+  if (this.physics.overlap(this.sensor, this.player) || this.physics.overlap(this.sensor, this.queuers)) {
     if (!this.sensor.activated) {
       this.sensor.activated = true;
       const leftDoorTween = this.tweens.add({

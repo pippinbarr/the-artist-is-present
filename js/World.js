@@ -27,6 +27,33 @@ class World extends Phaser.Scene {
     // Transitions
     this.marks = this.add.group();
 
+    // Visitors (not including the player)
+    this.queuers = this.physics.add.group();
+
+    // Queue checkpoints that all queuers who start outside walk along
+    this.checkpointData = [
+      new Phaser.Geom.Point(-100, 400 + 360), // Start
+      new Phaser.Geom.Point(430, 400 + 360), // To door X
+      new Phaser.Geom.Point(430, 260), // Through doors to ticket barrier
+      new Phaser.Geom.Point(50, 260), // To left of ticket barrier
+      new Phaser.Geom.Point(50, 205), // Up to wall
+      new Phaser.Geom.Point(560, 205), // Across and past the window
+      new Phaser.Geom.Point(560, 300), // Down to the door level
+      new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
+      new Phaser.Geom.Point(560 + 600, 230), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 230), // All the way (including bumping into the queue and sitting)
+    ];
+    // Add visuals of the checkpoints
+    this.checkpointsGroup = this.physics.add.group();
+    this.checkpoints = [];
+    this.checkpointData.forEach((coordinate) => {
+      let checkpoint = this.checkpointsGroup.create(coordinate.x, coordinate.y, 'atlas', 'red-pixel.png')
+        .setScale(8)
+        .setDepth(100000)
+        .setAlpha(0.5);
+      this.checkpoints.push(checkpoint);
+    });
+
     // Scenes
     this.scenes = {};
 
@@ -44,10 +71,10 @@ class World extends Phaser.Scene {
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
 
-    this.currentScene = this.scenes[`ticket-hall`];
+    this.currentScene = this.scenes[`moma-exterior`];
 
     // Player
-    this.player = new Player(this, 300 + this.currentScene.x * this.game.canvas.width, 220 + this.currentScene.y * this.game.canvas.height);
+    this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
     this.player.joinScene(this);
 
     // Dialog
@@ -59,14 +86,36 @@ class World extends Phaser.Scene {
   update() {
     super.update();
 
+    this.queuers.children.each((q) => {
+      q.update();
+    });
+
     this.physics.collide(this.player, this.colliders, () => {
       this.player.stop();
     });
 
+    this.physics.collide(this.queuers, this.player, null, (p, q) => {
+      q.pause();
+      p.stop();
+      return true;
+    });
+
+    this.physics.collide(this.queuers, this.colliders, null, (q, c) => {
+      q.pause();
+      return true;
+    });
+
+
+    // Depth
     if (!this.player.sitting) {
       // Cheap hack to not reset depth when sitting so you don't go behind the chair
       this.player.depth = this.player.body.y;
     }
+    this.queuers.children.each((q) => {
+      if (!q.sitting) {
+        q.setDepth(q.body.y);
+      }
+    });
 
     updateMOMAExterior
       .bind(this)();

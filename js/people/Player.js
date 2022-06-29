@@ -4,14 +4,14 @@ class Player extends Visitor {
     super(scene, x, y);
 
     this.inputEnabled = true;
-    this.hasTicket = false;
+    this.hasTicket = true;
     this.suffix = `-${this.id}`;
     this.setImmovable(false);
   }
 
   joinScene(scene) {
     scene.add.existing(this);
-    scene.physics.add.existing(this);
+    // scene.physics.add.existing(this);
 
     this.cursors = scene.input.keyboard.createCursorKeys();
 

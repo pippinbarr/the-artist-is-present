@@ -13,6 +13,11 @@ function getNYCTime() {
   return nyc;
 }
 
+function museumIsOpen() {
+  let time = getNYCTime();
+
+}
+
 function createColliderRect(self, x, y, width, height, group) {
   let p = self.physics.add.sprite(x, y, 'atlas', 'red-pixel.png');
   p.setOrigin(0, 0);
