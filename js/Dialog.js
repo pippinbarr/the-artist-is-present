@@ -71,6 +71,7 @@ class Dialog extends Phaser.GameObjects.Container {
           this.showMultiMessage(messages, index, callback, noPause);
         }, 1000);
       } else {
+        this.scene.scene.resume(this.scene.key);
         callback();
       }
     });
@@ -115,7 +116,7 @@ class Dialog extends Phaser.GameObjects.Container {
     let dialogEventName = MOBILE ? 'touchstart' : 'keydown';
     document.addEventListener(dialogEventName, () => {
       this.setVisible(false);
-      if (!noPause) this.scene.scene.resume(this.scene.key);
+
       if (callback) callback();
     }, {
       once: true

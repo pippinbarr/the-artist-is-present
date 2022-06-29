@@ -97,7 +97,7 @@ class World extends Phaser.Scene {
     this.physics.collide(this.queuers, this.player, null, (p, q) => {
       // Do I need to handle ticket queue stuff here?
       q.pause();
-      p.stop(); // Will this cause any trouble in the queue?
+      p.stop();
 
       if (this.ticketQueue.length > 0) {
         let lastPlace = this.ticketQueue[0];
@@ -110,23 +110,35 @@ class World extends Phaser.Scene {
       // return true;
     });
 
-    this.physics.collide(this.queuers, this.queuers, null, (q1, q2) => {
-      // Need SOMETHING like this to handle people in the queue not
-      // pushing each other out of the way...
-      // q1.pause();
-      if (q1.body.velocity.x > 0) {
+    // HOW DO YOU STOP THEM SHOVING EACH OTHER???
+    this.physics.overlap(this.queuers, this.queuers, (q1, q2) => {
+      let dirQ1 = new Phaser.Math.Vector2(q1.body.velocity.x, q1.body.velocity.y);
+      dirQ1.normalize();
+      let dirQ2 = new Phaser.Math.Vector2(q2.body.velocity.x, q2.body.velocity.y);
+      dirQ2.normalize();
+
+      if (dirQ1.x > 0 && q1.x < q2.x) {
+        q1.pause();
+      } else if (dirQ1.x < 0 && q1.x > q2.x) {
+        q1.pause();
+      } else if (dirQ1.y > 0 && q1.y < q2.y) {
+        q1.pause();
+      } else if (dirQ1.y < 0 && q1.y > q2.y) {
+        q1.pause();
+      } else if (dirQ2.x === 0 && dirQ2.y === 0) {
         q1.pause();
       }
-      if (q2.body.velocity.x > 0) {
-        q2.pause();
-      }
+    });
+
+    this.physics.collide(this.queuers, this.queuers, null, (q1, q2) => {
+      console.log("Collide");
+      // return true;
     });
 
     this.physics.collide(this.queuers, this.colliders, null, (q, c) => {
       q.pause();
       return true;
     });
-
 
     // Depth
     if (!this.player.sitting) {

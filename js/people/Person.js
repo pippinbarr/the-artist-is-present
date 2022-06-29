@@ -6,7 +6,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     scene.physics.world.enableBody(this);
     this.body.setOffset(1, this.height - 4);
     this.body.setSize(this.width - 2, 4, false);
-    this.speed = 600; //100;
+    this.speed = 100; //100;
     this.sitting = false;
     this.suffix = suffix;
     this.x = x;
