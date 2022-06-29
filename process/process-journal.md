@@ -44,6 +44,16 @@ At this point the really big-ass next things are
 
 And would that be it? Well various little extra dialogs (the intro dialogs, the guard dialogs, the queue-join dialog, the ticket dialog)
 
+## Queueing. Yes, it still sucks in 2022. (2022-06-29)
+
+In the to do list I wrote about ticket queuing:
+
+"But it may be doable comparatively simply I'm thinking...!?"
+
+Well no.
+
+I've been having a hard time with it frankly. The collision approaches and APIs for the old version and the new version feel too distant from one another to just slavishly reproduce the original code. As such I've been trying to make a "reasonable" version of queueing and moving through the world and it's hard. Currently I have a good set of waypoints that allow an individual visitor to move from outside into the museum to buy a ticket and from there ostensibly join the queue. The issue is around what happens when the bump into the player or each other and how they respond. I'm trying to make it so that whichever one *can* keep moving does so, but it's confusing as all get-out frankly. I might have something that's looking better now but they do these weird leg spasms where they briefly try to move only to collide again... ideally they wouldn't really try to move until the person they collided with has moved on, but how to detect and manage something like that??? You could check if their position has changed I suppose, but it's getting kludgy. SSIIISISISISIGHGIHGGHGHGHGH.
+
 # 2011
 
 ## Simplicity kills (2011-08-24)
