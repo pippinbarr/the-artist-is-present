@@ -98,7 +98,28 @@ class World extends Phaser.Scene {
       // Do I need to handle ticket queue stuff here?
       q.pause();
       p.stop(); // Will this cause any trouble in the queue?
-      return true;
+
+      if (this.ticketQueue.length > 0) {
+        let lastPlace = this.ticketQueue[0];
+        if (q === lastPlace) {
+          // This was the person at the back of the queue
+          console.log("Player joined the queue.")
+        }
+      }
+
+      // return true;
+    });
+
+    this.physics.collide(this.queuers, this.queuers, null, (q1, q2) => {
+      // Need SOMETHING like this to handle people in the queue not
+      // pushing each other out of the way...
+      // q1.pause();
+      if (q1.body.velocity.x > 0) {
+        q1.pause();
+      }
+      if (q2.body.velocity.x > 0) {
+        q2.pause();
+      }
     });
 
     this.physics.collide(this.queuers, this.colliders, null, (q, c) => {

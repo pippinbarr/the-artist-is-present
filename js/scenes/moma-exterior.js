@@ -110,9 +110,11 @@ function addMOMAExterior(x, y) {
   this.light.fillRect(x + 0, y + 0, this.game.canvas.width, this.game.canvas.height);
   this.light.depth = 1000000;
 
-  this.queuer = new Queuer(this, x - 100, y + 300, this.checkpoints);
-  this.queuers.add(this.queuer);
-  this.queuer.start();
+  setInterval(() => {
+    let queuer = new Queuer(this, x - 100, y + 300, [...this.checkpoints]);
+    this.queuers.add(queuer);
+    queuer.start();
+  }, 2000);
 }
 
 function updateMOMAExterior() {
