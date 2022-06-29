@@ -95,8 +95,9 @@ class World extends Phaser.Scene {
     });
 
     this.physics.collide(this.queuers, this.player, null, (p, q) => {
+      // Do I need to handle ticket queue stuff here?
       q.pause();
-      p.stop();
+      p.stop(); // Will this cause any trouble in the queue?
       return true;
     });
 

@@ -37,7 +37,7 @@ class Queuer extends Visitor {
     }
   }
 
-  pause() {
+  pause(delay = 500, callback) {
     // Don't pause while paused, y'know?
     if (this.paused) return;
 
@@ -65,7 +65,10 @@ class Queuer extends Visitor {
         stop();
         break;
       }
-    }, 500);
+      if (callback) {
+        callback();
+      }
+    }, delay);
   }
 
   moveTo(checkpoint) {

@@ -16,6 +16,8 @@
 * ~~Add ticket requirement~~
 * ~~Make guard constant~~
 * Add the whole ticket queue concept (it's quite detailed in the original sadly)
+  * But it may be doable comparatively simply I'm thinking...!?
+* The classic thing of depth with the extra bit of fg by the door
 
 ## The performance
 * ~~Add tape collider~~

@@ -9,6 +9,7 @@ const LEAVING_MOMA_ON_FOOT_MESSAGE = [`You remember you came here to see Marina 
 
 const BUY_TICKET_MESSAGE = [`That will be $25.00, please...`, `Thank you.`];
 const ALREADY_BOUGHT_TICKET_MESSAGE = [`Excuse me, you have a ticket! Just go in.`];
+const WRONG_TICKET_QUEUE_ENTRY_MESSAGE = [`Excuse me, the line starts to the left!`];
 
 const TICKETS_GUARD_WELCOME_MESSAGE = [`Ticket please...`, `Thank you.`];
 const TICKETS_GUARD_NO_TICKET_MESSAGE = [`You need a ticket to enter.`, `The desk is right over there.`];

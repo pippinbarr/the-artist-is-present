@@ -46,7 +46,14 @@ function addTicketHall(x, y) {
     .setScale(10, 100)
     .setVisible(false);
 
-  this.ticketBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 61 + 40, `atlas`, `red-pixel.png`)
+  this.ticketBarrier = this.physics.add.sprite(x + 498, y + 190, 'atlas', 'red-pixel.png')
+    .setScale(10, 100)
+    .setVisible(false)
+    .setPushable(false)
+
+  this.ticketQueue = [];
+
+  this.entryBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 61 + 40, `atlas`, `red-pixel.png`)
     .setScale(4 * 5, 4 * 20)
     .setVisible(false)
     .setPushable(false)
@@ -82,17 +89,56 @@ function addTicketHall(x, y) {
 }
 
 function updateTicketHall() {
+  // Buying tickets
+  // Player
   this.physics.overlap(this.player, this.ticketSensor, () => {
+    if (this.player.hasTicket) {
+      return;
+    }
+    this.player.hasTicket = true;
+
     this.player.up();
     this.player.stop();
+    // Join the queue officially
+    // (this will help people know they're waiting behind us in a queue)
+    this.ticketQueue.unshift(this.player);
     this.dialog.y = UPPER_DIALOG_Y;
-    this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {});
-    this.player.hasTicket = true;
-    this.ticketSensor.body.checkCollision.none = true;
+    this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {
+      // Take us out of the queue now that we're done
+      this.ticketQueue.pop();
+      this.ticketBarrier.destroy();
+    });
+  });
+
+  // Everyone else
+  this.physics.overlap(this.queuers, this.ticketSensor, (sensor, q) => {
+    if (q.hasTicket) {
+      return;
+    }
+    // If this person isn't already in the queue then they should join it
+    // (This would be if they're the first one in line)
+    if (!this.ticketQueue.includes(q)) {
+      this.ticketQueue.unshift(q);
+    }
+    q.pause(5000, () => {
+      // Queue management, take us out
+      this.ticketQueue.pop();
+      q.hasTicket = true;
+    });
+  });
+
+  this.physics.collide(this.player, this.ticketBarrier, () => {
+    if (!this.player.hasTicket) {
+      this.player.stop();
+      this.dialog.showMessage(WRONG_TICKET_QUEUE_ENTRY_MESSAGE)
+    }
   });
 
   // The ticket hall guard checks your ticket...
-  this.physics.collide(this.player, this.ticketBarrier, () => {
+  this.physics.collide(this.player, this.entryBarrier, () => {
+    if (this.player.showedTicket) {
+      return;
+    }
     this.player.stop();
     if (!this.player.hasTicket) {
       this.dialog.y = UPPER_DIALOG_Y;
@@ -101,7 +147,6 @@ function updateTicketHall() {
       this.dialog.y = UPPER_DIALOG_Y;
       this.dialog.showMessage(TICKETS_GUARD_WELCOME_MESSAGE, () => {});
       this.player.showedTicket = true;
-      this.ticketBarrier.body.checkCollision.none = true;
     }
   });
   // this.player.depth = this.player.body.y;
