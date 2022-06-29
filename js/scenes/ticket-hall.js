@@ -28,6 +28,7 @@ function addTicketHall(x, y) {
   createColliderLine(this, x + 730, y + 330, 75, 80, 5, 5, this.colliders);
 
   this.guard = new Guard(this, x + 708, y + 276);
+  this.colliders.add(this.guard);
   // this.add.existing(this.guard);
   // this.physics.add.existing(this.guard);
 
@@ -44,6 +45,11 @@ function addTicketHall(x, y) {
   this.ticketSensor = this.physics.add.sprite(x + 450, y + 160, 'atlas', 'red-pixel.png')
     .setScale(10, 100)
     .setVisible(false);
+
+  this.ticketBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 61 + 40, `atlas`, `red-pixel.png`)
+    .setScale(4 * 5, 4 * 20)
+    .setVisible(false)
+    .setPushable(false)
 
   const sceneData = {
     name: "ticket-hall",
@@ -77,19 +83,29 @@ function addTicketHall(x, y) {
 
 function updateTicketHall() {
   this.physics.overlap(this.player, this.ticketSensor, () => {
+    this.player.up();
+    this.player.stop();
     this.dialog.y = UPPER_DIALOG_Y;
-    this.dialog.showMessage(TICKETS_DESK_MESSAGE, () => {});
+    this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {});
+    this.player.hasTicket = true;
     this.ticketSensor.body.checkCollision.none = true;
   });
 
-  this.physics.collide(this.player, this.guard, () => {
+  // The ticket hall guard checks your ticket...
+  this.physics.collide(this.player, this.ticketBarrier, () => {
     this.player.stop();
-    if (!this.seenGuard) {
+    if (!this.player.hasTicket) {
       this.dialog.y = UPPER_DIALOG_Y;
-      this.dialog.showMessage(TICKETS_GUARD_MESSAGE, () => {});
-      this.seenGuard = true;
+      this.dialog.showMessage(TICKETS_GUARD_NO_TICKET_MESSAGE, () => {});
+    } else if (!this.player.showedTicket) {
+      this.dialog.y = UPPER_DIALOG_Y;
+      this.dialog.showMessage(TICKETS_GUARD_WELCOME_MESSAGE, () => {});
+      this.player.showedTicket = true;
+      this.ticketBarrier.body.checkCollision.none = true;
     }
   });
   // this.player.depth = this.player.body.y;
   this.guard.depth = this.guard.body.y;
+
+
 }

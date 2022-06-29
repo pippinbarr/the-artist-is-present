@@ -55,23 +55,28 @@ class Dialog extends Phaser.GameObjects.Container {
     super.update();
   }
 
-  showMessages(messages) {
+  showMessage(messages, callback, noPause) {
+    if (!this.scene) return;
+    if (!noPause) this.scene.scene.pause(this.scene.key);
+
     let index = 0;
-    this.showMultiMessage(messages, index);
+    this.showMultiMessage(messages, index, callback, noPause);
   }
 
-  showMultiMessage(messages, index) {
-    this.showMessage(messages[index], () => {
+  showMultiMessage(messages, index, callback, noPause) {
+    this.showDialog(messages[index], () => {
       index++;
       if (index < messages.length) {
         setTimeout(() => {
-          this.showMultiMessage(messages, index);
+          this.showMultiMessage(messages, index, callback, noPause);
         }, 1000);
+      } else {
+        callback();
       }
     });
   }
 
-  showMessage(text, callback, noPause) {
+  showDialog(text, callback, noPause) {
     // Will have to think about this question of what to do if they somehow
     // leave a scene with a message still showing? I think they all freeze you?
     // But there's that "noPause" idea I see...

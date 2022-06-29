@@ -11,10 +11,11 @@
 * Museum locking?
 
 ## Tickets
-* Add ability to buy a ticket
-* Add proper guard text
-* Add ticket requirement
+* ~~Add ability to buy a ticket~~
+* ~~Add proper guard text~~
+* ~~Add ticket requirement~~
 * ~~Make guard constant~~
+* Add thewhole ticket queue concept (it's quite detailed in the original sadly)
 
 ## The performance
 * ~~Add tape collider~~
@@ -24,8 +25,9 @@
 * ~~Create the marina face view~~
 * ~~Allow player to sit down and switch to face view~~
 * ~~Consider how abrupt that transition is (what did the original do?)~~
+* Queue generation (at all)
 * Queue generation length by time of day
-* Replace logic that relied on player-marina with new marina (including timing)
+* Queue movement (with head up and down)
 * Allow player to join the queue
 * Send in new queue members over time (instead of magically adding them)
 * Trigger the "you're next" sequence

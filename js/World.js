@@ -44,10 +44,10 @@ class World extends Phaser.Scene {
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
 
-    this.currentScene = this.scenes[`atrium`];
+    this.currentScene = this.scenes[`ticket-hall`];
 
     // Player
-    this.player = new Player(this, 300 + this.currentScene.x * this.game.canvas.width, 176 + this.currentScene.y * this.game.canvas.height);
+    this.player = new Player(this, 300 + this.currentScene.x * this.game.canvas.width, 220 + this.currentScene.y * this.game.canvas.height);
     this.player.joinScene(this);
 
     // Dialog

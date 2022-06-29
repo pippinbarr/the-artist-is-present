@@ -4,7 +4,7 @@ class Player extends Visitor {
     super(scene, x, y);
 
     this.inputEnabled = true;
-    this.lookingUp = true;
+    this.hasTicket = false;
     this.suffix = `-${this.id}`;
     this.setImmovable(false);
   }

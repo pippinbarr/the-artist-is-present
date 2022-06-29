@@ -12,6 +12,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.x = x;
     this.y = y;
     this.anims.play(`idle-h${this.suffix}`);
+    this.setPushable(false);
   }
 
   create() {

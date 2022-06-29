@@ -19,7 +19,9 @@ function createColliderRect(self, x, y, width, height, group) {
   p.setVisible(false);
   p.setScale(width, height);
   group.add(p);
-  p.setImmovable(true);
+  // p.setImmovable(true);
+  p.setPushable(false);
+  return p;
 }
 
 function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
@@ -34,7 +36,8 @@ function createColliderLine(self, fromX, fromY, distX, distY, dX, dY, group) {
     p.setVisible(false);
     // lineGroup.add(p);
     group.add(p);
-    p.setImmovable(true);
+    // p.setImmovable(true);
+    p.setPushable(false);
     x += dX;
     y += dY;
   }
