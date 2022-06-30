@@ -56,9 +56,11 @@ function addAtrium(x, y) {
   this.guards.add(this.guard2, true);
 
   // marina
-  this.marina = this.add.sprite(x + 695.5, y + 204, `marina-sitting`);
-  this.marina.setScale(4, 4);
-  this.marina.setDepth(250);
+  this.marina = this.add.sprite(x + 695.5, y + 204, `marina-sitting`)
+    .setScale(4, 4)
+    .setDepth(1000);
+
+  this.marina.anims.play(`marina-looks-down`);
 
   // Marina queue
   this.marinaQueue = this.physics.add.group();
@@ -86,7 +88,7 @@ function addAtrium(x, y) {
   };
   this.addScene(sceneData);
 
-  let fakeIndoorQueuers = 1;
+  let fakeIndoorQueuers = 10;
   let fakeIndoorQueueInterval = setInterval(() => {
     let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
     this.queuers.add(queuer);
@@ -136,7 +138,6 @@ function updateAtrium() {
   });
 
   this.physics.collide(this.player, this.marinaBarrier, null, () => {
-    console.log(this.player.isNext);
     if (!this.player.isNext) {
       this.player.stop();
       this.player.isNext = true;

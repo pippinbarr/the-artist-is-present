@@ -1,4 +1,4 @@
-class Marina extends Phaser.Scene {
+class MarinaFace extends Phaser.Scene {
 
   constructor(config) {
     super({

@@ -42,13 +42,29 @@ let Preloader = new Phaser.Class({
 
     this.createSpritesheetAnimation('person-spritesheet-sitting', 'sitting-player', 1, 1, 3, -1);
 
-    this.createSpritesheetAnimation('marina-face', 'marina-looking', 1, 1, 10, -1);
+    this.createSpritesheetAnimation('marina-sitting', 'marina-looking', 1, 1, 5, -1);
+    this.createSpritesheetAnimation('marina-sitting', 'marina-looks-down', 1, 4, 4, 0);
+    // this.createSpritesheetAnimation('marina-sitting', 'marina-looks-up', 4, 1, 4, 0);
 
-    let frames = this.anims.generateFrameNames(`marina-face`, {
-      frames: [0, 1, 2, 1, 0]
+    let frames = this.anims.generateFrameNames(`marina-sitting`, {
+      frames: [3, 2, 1, 0]
     });
 
     let config = {
+      key: `marina-looks-up`,
+      frames: frames,
+      frameRate: 4,
+      repeat: 0,
+    };
+    this.anims.create(config);
+
+    // this.createSpritesheetAnimation('marina-face', 'marina-looking', 1, 1, 10, -1);
+
+    frames = this.anims.generateFrameNames(`marina-face`, {
+      frames: [0, 1, 2, 1, 0]
+    });
+
+    config = {
       key: `marina-blink`,
       frames: frames,
       frameRate: 10,
@@ -79,6 +95,11 @@ let Preloader = new Phaser.Class({
   createSpritesheetAnimation: function (parent, name, start, end, framerate, repeat) {
     if (this.anims.get(name) !== undefined) return;
 
+    if (start > end) {
+      let tempStart = start;
+      start = end;
+      end = tempStart;
+    }
     let frames = this.anims.generateFrameNames(parent, {
       start: start - 1,
       end: end - 1,

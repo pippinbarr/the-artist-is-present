@@ -12,7 +12,7 @@ let config = {
   //   Hallway2, Hallway3, Atrium, GameOver, World
   // ],
   scene: [
-    Boot, Preloader, World, Marina
+    Boot, Preloader, World
   ],
   pixelArt: true,
   antialias: false,

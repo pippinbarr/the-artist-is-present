@@ -95,7 +95,7 @@ class World extends Phaser.Scene {
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
 
-    this.currentScene = this.scenes[`atrium`];
+    this.currentScene = this.scenes[`ticket-hall`];
 
     // Player
     this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
@@ -130,9 +130,14 @@ class World extends Phaser.Scene {
         this.ticketQueue.add(this.player);
         this.player.debugText.text = "IN TICKET QUEUE";
       } else if (!this.marinaQueue.contains(this.player) && this.marinaQueue.contains(q)) {
-        this.marinaQueue.add(this.player);
-        // SHOW THE MESSAGE
-        this.player.debugText.text = "IN MARINA QUEUE";
+        // We only join the queue if the player is to the left of the person
+        let dx = this.player.x - q.x;
+        let dy = this.player.y - q.y;
+        if (dx < 0 && Math.abs(dy) < this.player.body.height) {
+          this.marinaQueue.add(this.player);
+          this.dialog.showMessage(JOIN_MARINA_QUEUE_MESSAGE, () => {})
+          this.player.debugText.text = "IN MARINA QUEUE";
+        }
       }
       // return true;
     });
@@ -275,11 +280,15 @@ class World extends Phaser.Scene {
 
     if (sitter !== this.player) {
       let sitTime = 1000 * SIT_TIMES[Math.floor(Math.random(0 * SIT_TIMES.length))];
+      setTimeout(() => {
+        this.marina.anims.play(`marina-looks-up`);
+      });
       sitter.wait(sitTime, () => {
         this.sitter = null;
         sitter.y -= 50;
         sitter.stand();
         sitter.right();
+        this.marina.anims.play(`marina-looks-down`);
         if (this.player.isNext && !this.player.seenInstructions) {
           this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
             // Now the player is allowed through
@@ -287,10 +296,13 @@ class World extends Phaser.Scene {
           });
         }
       });
-      // Computer sitter so give them a time to get up
-      // SOMETHING REALLY WEIRD IT HAPPENING IN HERE
-
+    } else {
+      setTimeout(() => {
+        this.marina.anims.play(`marina-looks-up`);
+      });
     }
+
+
 
     // Wait 10 seconds then switch to The Face
     // setTimeout(() => {

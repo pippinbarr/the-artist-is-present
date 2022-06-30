@@ -12,7 +12,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.sensor.parent = this;
     scene.queuerSensors.add(this.sensor);
 
-    this.speed = 400; //100;
+    this.speed = 100; //100;
     this.sitting = false;
     this.suffix = suffix;
     this.x = x;

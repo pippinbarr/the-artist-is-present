@@ -40,7 +40,7 @@ function addTicketHall(x, y) {
       "tickets/tickets-fg.png"
     )
     .setScale(4);
-  ticketFG.depth = 100000;
+  ticketFG.depth = 345;
 
   this.ticketSensor = this.physics.add.sprite(x + 450, y + 160, 'atlas', 'red-pixel.png')
     .setScale(10, 100)
@@ -102,6 +102,7 @@ function updateTicketHall() {
       q.hasTicket = true;
       q.debugText.text = "IN TICKET QUEUE";
     }
+    q.faceUp();
     q.wait(5000, () => {
       // Queue management, take us out
       q.hasTicket = true;
