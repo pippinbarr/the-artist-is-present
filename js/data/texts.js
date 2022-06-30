@@ -30,8 +30,10 @@ const JOIN_MARINA_QUEUE_MESSAGE = [`You join the queue to see Marina Abramovic. 
 
 // This is what the atrium guards say
 const GUARD_INSTRUCTIONS = [
-  "Here are the rules",
-  "Rule",
-  "Rule",
-  "Rule"
+  `"Hi. You're next."`,
+  `"There are just a few simple rules I need to give you."`,
+  `"Sit still, don't move around."`,
+  `"Don't talk to her."`,
+  `"Maintain eye contact the entire time you are seated."`,
+  `"That's it. You can go."`
 ];

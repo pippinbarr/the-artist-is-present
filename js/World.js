@@ -37,7 +37,7 @@ class World extends Phaser.Scene {
     this.sitter = null;
 
     // Queue checkpoints that all queuers who start outside walk along
-    this.checkpointData = [
+    this.fromOutsideCheckpointData = [
       new Phaser.Geom.Point(-100, 400 + 360), // Start
       new Phaser.Geom.Point(430, 400 + 360), // To door X
       new Phaser.Geom.Point(430, 260), // Through doors to ticket barrier
@@ -47,18 +47,36 @@ class World extends Phaser.Scene {
       new Phaser.Geom.Point(560, 300), // Down to the door level
       new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
       new Phaser.Geom.Point(560 + 600, 228), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 3 + 70, 228), // The front of the queue! This person is NEXT.
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 228), // Off the screen (the queue barrier will sort them out)
     ];
+
+    // Queue checkpoints that all queuers who start outside walk along
+    this.prequeueCheckpointData = [
+      new Phaser.Geom.Point(560 + 600, 239), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 239), // Off the screen (the queue barrier will sort them out)
+    ];
+
     // Add visuals of the checkpoints
     this.checkpointsGroup = this.physics.add.group();
-    this.checkpoints = [];
-    this.checkpointData.forEach((coordinate) => {
+
+    this.fromOutsideCheckpoints = [];
+    this.fromOutsideCheckpointData.forEach((coordinate) => {
       let checkpoint = this.checkpointsGroup.create(coordinate.x, coordinate.y, 'atlas', 'red-pixel.png')
         .setScale(8)
         .setDepth(100000)
         .setAlpha(0.5);
-      this.checkpoints.push(checkpoint);
+      this.fromOutsideCheckpoints.push(checkpoint);
     });
+
+    this.prequeueCheckpoints = [];
+    this.prequeueCheckpointData.forEach((coordinate) => {
+      let checkpoint = this.checkpointsGroup.create(coordinate.x, coordinate.y, 'atlas', 'red-pixel.png')
+        .setScale(8)
+        .setDepth(100000)
+        .setAlpha(0.5);
+      this.prequeueCheckpoints.push(checkpoint);
+    });
+
 
     // Scenes
     this.scenes = {};
@@ -110,8 +128,11 @@ class World extends Phaser.Scene {
       if (!this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
         // We bumped into someone who is in the queue, so we're in the queue
         this.ticketQueue.add(this.player);
-        console.log("Player joins the queue")
         this.player.debugText.text = "IN TICKET QUEUE";
+      } else if (!this.marinaQueue.contains(this.player) && this.marinaQueue.contains(q)) {
+        this.marinaQueue.add(this.player);
+        // SHOW THE MESSAGE
+        this.player.debugText.text = "IN MARINA QUEUE";
       }
       // return true;
     });
@@ -134,16 +155,12 @@ class World extends Phaser.Scene {
       let bumped = false;
       if (dirQ1.x > 0 && q1.x < q2.x) {
         bumped = true;
-        // console.log("Pausing because I'm behind someone to their left")
       } else if (dirQ1.x < 0 && q1.x > q2.x) {
         bumped = true;
-        // console.log("Pausing because I'm behind someone to their right")
       } else if (dirQ1.y > 0 && q1.y < q2.y) {
         bumped = true;
-        // console.log("Pausing because I'm behind someone to their below")
       } else if (dirQ1.y < 0 && q1.y > q2.y) {
         bumped = true;
-        // console.log("Pausing because I'm behind someone to their above")
       }
       //else if (dirQ2.x === 0 && dirQ2.y === 0) {
       // Will this case accidentally make people be blocked
@@ -155,10 +172,13 @@ class World extends Phaser.Scene {
         if (this.ticketQueue.contains(q2) && !this.ticketQueue.contains(q1)) {
           this.ticketQueue.add(q1);
           q1.debugText.text = "IN TICKET QUEUE";
-          console.log(`${q1.id} joins the queue`)
           // We bumped into someone who is in the queue, so we're in the queue
-          // console.log("Someone joined the queue.")
+        } else if (this.marinaQueue.contains(q2) && !this.marinaQueue.contains(q1)) {
+          this.marinaQueue.add(q1);
+          q1.debugText.text = "IN MARINA QUEUE";
+          // We bumped into someone who is in the queue, so we're in the queue
         }
+
       }
     });
 
@@ -243,27 +263,30 @@ class World extends Phaser.Scene {
       return;
     }
 
-    console.log(`${sitter.id} sits down...`)
-
     sitter.sitting = true;
     sitter.sat = true;
     this.sitter = sitter;
 
     // Switch to sitting animation and fix positioning
     sitter.sit();
-    sitter.x = 561 + this.currentScene.x * this.game.canvas.width;
-    sitter.y = 194 + this.currentScene.y * this.game.canvas.height;
+    sitter.x = 561 + this.scenes[`atrium`].x * this.game.canvas.width;
+    sitter.y = 194 + this.scenes[`atrium`].y * this.game.canvas.height;
     sitter.setDepth(10000000);
 
     if (sitter !== this.player) {
-      let sitTime = 5000;
+      let sitTime = 1000 * SIT_TIMES[Math.floor(Math.random(0 * SIT_TIMES.length))];
       sitter.wait(sitTime, () => {
-        console.log(`${sitter.id} sits stands up...`)
         this.sitter = null;
         sitter.y -= 50;
         sitter.stand();
         sitter.right();
-      })
+        if (this.player.isNext && !this.player.seenInstructions) {
+          this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
+            // Now the player is allowed through
+            this.player.seenInstructions = true
+          });
+        }
+      });
       // Computer sitter so give them a time to get up
       // SOMETHING REALLY WEIRD IT HAPPENING IN HERE
 

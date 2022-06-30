@@ -98,13 +98,11 @@ function updateTicketHall() {
     // If this person isn't already in the queue then they should join it
     // (This would be if they're the first one in line)
     if (!this.ticketQueue.contains(q)) {
-      console.log(`${q.id} joins the queue`)
       this.ticketQueue.add(q);
       q.hasTicket = true;
       q.debugText.text = "IN TICKET QUEUE";
     }
     q.wait(5000, () => {
-      console.log(`${q.id} leaves the queue`)
       // Queue management, take us out
       q.hasTicket = true;
       this.ticketQueue.remove(q);
@@ -151,7 +149,6 @@ function updateTicketHall() {
     // Join the queue officially if we weren't already in it
     // (this will help people know they're waiting behind us in a queue?)
     if (!this.ticketQueue.contains(this.player)) {
-      console.log(`Player joins the queue`)
       this.ticketQueue.add(this.player);
       this.player.debugText.text = "IN TICKET QUEUE";
     }
@@ -161,7 +158,6 @@ function updateTicketHall() {
       // Take us out of the queue now that we're done
       this.ticketQueue.remove(this.player);
       this.player.debugText.text = "NOT IN QUEUE"
-      console.log("Player leaves the queue")
       this.ticketBarrier.destroy();
     });
   });

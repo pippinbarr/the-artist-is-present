@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 let MOBILE = false;
 
 const START_SCENE = `world`;

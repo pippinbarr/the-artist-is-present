@@ -21,10 +21,11 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.setPushable(false);
 
     this.debugText = scene.add.text(this.x - this.displayWidth / 2, this.y - this.displayHeight / 1.5, "NOT IN QUEUE", {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: "red"
-    });
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "red"
+      })
+      .setVisible(DEBUG);
   }
 
   create() {

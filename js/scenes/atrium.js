@@ -60,6 +60,14 @@ function addAtrium(x, y) {
   this.marina.setScale(4, 4);
   this.marina.setDepth(250);
 
+  // Marina queue
+  this.marinaQueue = this.physics.add.group();
+
+  this.marinaBarrier = this.physics.add.sprite(x + 460, y + 243, 'atlas', 'red-pixel.png')
+    .setScale(20, 20)
+    .setVisible(false)
+    .setPushable(false);
+
   const sceneData = {
     name: "atrium",
     x: 4,
@@ -78,14 +86,14 @@ function addAtrium(x, y) {
   };
   this.addScene(sceneData);
 
-  let fakeQueuers = 20;
-  let fakeQueueInterval = setInterval(() => {
-    let queuer = new Queuer(this, this.scenes[`atrium`].x * this.game.canvas.width, this.scenes[`atrium`].y * this.game.canvas.height + 228, [this.checkpoints[this.checkpoints.length - 2], this.checkpoints[this.checkpoints.length - 1]]);
+  let fakeIndoorQueuers = 1;
+  let fakeIndoorQueueInterval = setInterval(() => {
+    let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
     this.queuers.add(queuer);
     queuer.start();
-    fakeQueuers--;
-    if (fakeQueuers === 0) {
-      clearInterval(fakeQueueInterval);
+    fakeIndoorQueuers--;
+    if (fakeIndoorQueuers === 0) {
+      clearInterval(fakeIndoorQueueInterval);
     }
   }, 1000);
 }
@@ -98,15 +106,55 @@ function updateAtrium() {
     this.player.stop();
     this.dialog.showMessage(TAPE_MESSAGE);
   });
+  this.physics.collide(this.queuers, this.tape, (q, t) => {
+    q.stop();
+  });
 
   // Guards
-  this.physics.collide(this.player, this.guards, (marina, guard) => {
+  this.physics.collide(this.player, this.guards, (p, guard) => {
     this.player.stop();
-    // this.personSay(guard, GUARD_INSTRUCTIONS);
+  });
+  this.physics.collide(this.queuers, this.guards, (q, guard) => {
+    q.stop();
+  });
+
+  // Marina barrier for CPU
+  this.physics.overlap(this.queuers, this.marinaBarrier, (barrier, q) => {
+    if (q.isNext) {
+      return;
+    }
+
+    // If this person isn't already in the queue then they should join it
+    // (This would be if they're the first one in line)
+    if (!this.marinaQueue.contains(q)) {
+      this.marinaQueue.add(q);
+    }
+
+    q.isNext = true;
+    q.tryToSit();
+    q.debugText.text = "IN MARINA QUEUE";
+  });
+
+  this.physics.collide(this.player, this.marinaBarrier, null, () => {
+    console.log(this.player.isNext);
+    if (!this.player.isNext) {
+      this.player.stop();
+      this.player.isNext = true;
+      if (!this.sitter) {
+        this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
+          // Now the player is allowed through
+          this.player.seenInstructions = true;
+        });
+      }
+      return true;
+    } else if (!this.sitter && this.player.seenInstructions) {
+      return false;
+    } else {
+      this.player.stop();
+    }
   });
 
   // Queuers onto the chair
-  // Player onto the chair
   this.physics.overlap(this.queuers, this.visitorChairSensor, (sensor, q) => {
     this.sit(q);
   });
@@ -115,20 +163,4 @@ function updateAtrium() {
   this.physics.overlap(this.player, this.visitorChairSensor, (player, sensor) => {
     this.sit(this.player);
   });
-
-  //this.handleCollisions();
-  //this.checkMarinaSitting();
-  //this.checkVisitorSitting();
-
-  // if (this.movingUp && this.movingUp.x >= QUEUE_X) {
-  //   this.movingUp.stop();
-  //   this.movingUp = undefined;
-  //   for (let i = 1; i < QUEUE.length; i++) {
-  //     setTimeout(() => {
-  //       QUEUE[i].right();
-  //     }, i * 300 + Math.random() * 250);
-  //   }
-  // }
-
-  // this.setDepths();
 }

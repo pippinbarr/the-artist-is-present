@@ -18,8 +18,6 @@ class Queuer extends Visitor {
     let start = this.checkpoints.shift();
     this.x = start.x;
     this.y = start.y - (this.height / 2) * this.scaleY + 2 * 4;
-
-    // console.log(this.sensor.body.width, this.sensor.body.height);
   }
 
   start() {
@@ -54,6 +52,7 @@ class Queuer extends Visitor {
       } else {
         // We can sit!
         this.scene.sitter = this;
+        this.scene.marinaQueue.remove(this);
         // Move right and we'll sit using the sensor
         this.right();
       }
@@ -73,10 +72,6 @@ class Queuer extends Visitor {
     // Don't pause while paused, y'know?
     if (this.paused) return;
     if (this.blocker) return;
-
-    // if (blocker) {
-    //   console.log(`${this.id} pausing, blocked by ${blocker.id}`);
-    // }
 
     this.blocker = blocker;
 
