@@ -2,7 +2,6 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
   constructor(scene, x, y, texture, suffix) {
     super(scene, x, y, texture)
-    this.id = Math.random();
     this.setScale(4);
     scene.physics.world.enableBody(this);
     this.body.setOffset(1, this.height - 4);
@@ -13,7 +12,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.sensor.parent = this;
     scene.queuerSensors.add(this.sensor);
 
-    this.speed = 200; //100;
+    this.speed = 400; //100;
     this.sitting = false;
     this.suffix = suffix;
     this.x = x;
@@ -94,6 +93,13 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.anims.play('sitting' + this.suffix);
     this.setVelocity(0, 0);
     this.sitting = true;
+    this.flipX = false;
+  }
+
+  stand() {
+    this.anims.play('idle-h' + this.suffix);
+    this.setVelocity(0, 0);
+    this.sitting = false;
     this.flipX = false;
   }
 

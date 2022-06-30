@@ -33,6 +33,9 @@ class World extends Phaser.Scene {
     // Visitors (not including the player)
     this.queuers = this.physics.add.group();
 
+    // Who is sitting with Marina? Nobody at the start...
+    this.sitter = null;
+
     // Queue checkpoints that all queuers who start outside walk along
     this.checkpointData = [
       new Phaser.Geom.Point(-100, 400 + 360), // Start
@@ -44,7 +47,7 @@ class World extends Phaser.Scene {
       new Phaser.Geom.Point(560, 300), // Down to the door level
       new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
       new Phaser.Geom.Point(560 + 600, 228), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 5, 228), // All the way (including bumping into the queue and sitting)
+      new Phaser.Geom.Point(560 + 600 + 800 * 3 + 70, 228), // The front of the queue! This person is NEXT.
     ];
     // Add visuals of the checkpoints
     this.checkpointsGroup = this.physics.add.group();
@@ -74,7 +77,7 @@ class World extends Phaser.Scene {
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
 
-    this.currentScene = this.scenes[`moma-exterior`];
+    this.currentScene = this.scenes[`atrium`];
 
     // Player
     this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
@@ -233,6 +236,43 @@ class World extends Phaser.Scene {
       this.cameras.main.setScroll(x, y);
       this.currentScene = this.scenes[transition.to];
     }
+  }
+
+  sit(sitter) {
+    if (sitter.sitting || sitter.sat) {
+      return;
+    }
+
+    console.log(`${sitter.id} sits down...`)
+
+    sitter.sitting = true;
+    sitter.sat = true;
+    this.sitter = sitter;
+
+    // Switch to sitting animation and fix positioning
+    sitter.sit();
+    sitter.x = 561 + this.currentScene.x * this.game.canvas.width;
+    sitter.y = 194 + this.currentScene.y * this.game.canvas.height;
+    sitter.setDepth(10000000);
+
+    if (sitter !== this.player) {
+      let sitTime = 5000;
+      sitter.wait(sitTime, () => {
+        console.log(`${sitter.id} sits stands up...`)
+        this.sitter = null;
+        sitter.y -= 50;
+        sitter.stand();
+        sitter.right();
+      })
+      // Computer sitter so give them a time to get up
+      // SOMETHING REALLY WEIRD IT HAPPENING IN HERE
+
+    }
+
+    // Wait 10 seconds then switch to The Face
+    // setTimeout(() => {
+    //   this.scene.start(`marina`);
+    // }, 10000);
   }
 
   /**

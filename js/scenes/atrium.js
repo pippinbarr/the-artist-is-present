@@ -26,6 +26,7 @@ function addAtrium(x, y) {
   this.visitorChairSensor = this.physics.add.sprite(x + 580, y + 250, 'atlas', 'red-pixel.png')
     .setScale(50, 60);
   this.visitorChairSensor.visible = false;
+  this.atriumRightWallGroup = this.physics.add.group();
 
   this.tape = this.physics.add.group();
   // Back wall left
@@ -35,7 +36,7 @@ function addAtrium(x, y) {
   // Bottom wall
   createColliderRect(this, x + 0, y + 392, 800, 8, this.colliders);
   // Right wall
-  createColliderRect(this, x + 799, y + 0, 2, 400, this.colliders);
+  createColliderRect(this, x + 799, y + 0, 2, 400, this.atriumRightWallGroup);
   // Tape left top
   createColliderLine(this, x + 380, y + 120, 80, 100, 1, 2, this.tape);
   // Tape left bottom
@@ -77,7 +78,16 @@ function addAtrium(x, y) {
   };
   this.addScene(sceneData);
 
-  // this.sitter = QUEUE[0];
+  let fakeQueuers = 20;
+  let fakeQueueInterval = setInterval(() => {
+    let queuer = new Queuer(this, this.scenes[`atrium`].x * this.game.canvas.width, this.scenes[`atrium`].y * this.game.canvas.height + 228, [this.checkpoints[this.checkpoints.length - 2], this.checkpoints[this.checkpoints.length - 1]]);
+    this.queuers.add(queuer);
+    queuer.start();
+    fakeQueuers--;
+    if (fakeQueuers === 0) {
+      clearInterval(fakeQueueInterval);
+    }
+  }, 1000);
 }
 
 function updateAtrium() {
@@ -92,26 +102,18 @@ function updateAtrium() {
   // Guards
   this.physics.collide(this.player, this.guards, (marina, guard) => {
     this.player.stop();
-    let message = GUARD_TALK.pop();
-    if (message) this.personSay(guard, message);
+    // this.personSay(guard, GUARD_INSTRUCTIONS);
+  });
+
+  // Queuers onto the chair
+  // Player onto the chair
+  this.physics.overlap(this.queuers, this.visitorChairSensor, (sensor, q) => {
+    this.sit(q);
   });
 
   // Player onto the chair
   this.physics.overlap(this.player, this.visitorChairSensor, (player, sensor) => {
-    if (this.player.sitting) {
-      return;
-    }
-
-    // Switch to sitting animation and fix positioning
-    this.player.sit();
-    this.player.x = 561 + this.currentScene.x * this.game.canvas.width;
-    this.player.y = 194 + this.currentScene.y * this.game.canvas.height;
-    this.player.setDepth(10000000)
-
-    // Wait 10 seconds then switch to The Face
-    setTimeout(() => {
-      this.scene.start(`marina`);
-    }, 10000);
+    this.sit(this.player);
   });
 
   //this.handleCollisions();

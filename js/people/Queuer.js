@@ -35,8 +35,29 @@ class Queuer extends Visitor {
     if (this.scene.physics.overlap(this, this.checkpoint)) {
       this.checkpoint.setTint(0xFFFFFFFF);
       this.checkpoint = this.checkpoints.shift();
-      this.moveTo(this.checkpoint);
+
+      if (this.checkpoint) {
+        this.moveTo(this.checkpoint);
+      } else {
+        // There are no new checkpoints so we're at the head of the queue!
+        this.tryToSit();
+      }
     }
+  }
+
+  tryToSit() {
+    this.stop();
+    this.wait(3000, () => {
+      if (this.scene.sitter) {
+        // Someone is sitting so let's wait and try again
+        this.tryToSit();
+      } else {
+        // We can sit!
+        this.scene.sitter = this;
+        // Move right and we'll sit using the sensor
+        this.right();
+      }
+    });
   }
 
   wait(delay, callback) {

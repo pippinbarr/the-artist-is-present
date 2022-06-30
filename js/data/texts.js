@@ -29,7 +29,9 @@ const TAPE_MESSAGE = [`Seems like it would be rude to just walk across the tape.
 const JOIN_MARINA_QUEUE_MESSAGE = [`You join the queue to see Marina Abramovic. Now all you have to do is wait.`];
 
 // This is what the atrium guards say
-const GUARD_TALK = [
-  "Good luck today. We're ready when you are.",
-  "Please take your seat when you're ready.",
+const GUARD_INSTRUCTIONS = [
+  "Here are the rules",
+  "Rule",
+  "Rule",
+  "Rule"
 ];
