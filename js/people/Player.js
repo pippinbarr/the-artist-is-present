@@ -27,11 +27,11 @@ class Player extends Visitor {
   }
 
   create() {
-
+    super.create();
   }
 
   update() {
-
+    super.update();
   }
 
   handleInput(e) {

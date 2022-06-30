@@ -55,36 +55,35 @@ class Dialog extends Phaser.GameObjects.Container {
     super.update();
   }
 
-  showMessage(messages, callback, noPause) {
+  showMessage(messages, callback, pause = true) {
     if (!this.scene) return;
-    if (!noPause) this.scene.scene.pause(this.scene.key);
+    if (pause) {
+      this.scene.scene.pause();
+      this.scene.physics.pause();
+    }
 
     let index = 0;
-    this.showMultiMessage(messages, index, callback, noPause);
+    this.showMultiMessage(messages, index, callback, pause);
   }
 
-  showMultiMessage(messages, index, callback, noPause) {
+  showMultiMessage(messages, index, callback, pause) {
     this.showDialog(messages[index], () => {
       index++;
       if (index < messages.length) {
         setTimeout(() => {
-          this.showMultiMessage(messages, index, callback, noPause);
+          this.showMultiMessage(messages, index, callback, pause);
         }, 1000);
       } else {
-        this.scene.scene.resume(this.scene.key);
+        if (pause) {
+          this.scene.scene.resume();
+          this.scene.physics.resume();
+        }
         callback();
       }
-    });
+    }, pause);
   }
 
-  showDialog(text, callback, noPause) {
-    // Will have to think about this question of what to do if they somehow
-    // leave a scene with a message still showing? I think they all freeze you?
-    // But there's that "noPause" idea I see...
-    if (!this.scene) return;
-
-    if (!noPause) this.scene.scene.pause(this.scene.key);
-
+  showDialog(text, callback, pause = true) {
     // Reset the dialog position to match the current scene's location.
     this.x = this.scene.currentScene.x * this.scene.game.canvas.width;
     this.y = this.scene.currentScene.y * this.scene.game.canvas.height;

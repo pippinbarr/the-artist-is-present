@@ -10,6 +10,7 @@ class Queuer extends Visitor {
 
     this.intent = `stop`;
     this.paused = false;
+    this.blocker = null;
 
     this.checkpoints = checkpoints;
 
@@ -18,6 +19,7 @@ class Queuer extends Visitor {
     this.x = start.x;
     this.y = start.y - (this.height / 2) * this.scaleY + 2 * 4;
 
+    // console.log(this.sensor.body.width, this.sensor.body.height);
   }
 
   start() {
@@ -37,9 +39,25 @@ class Queuer extends Visitor {
     }
   }
 
-  pause(delay = 500, callback) {
+  wait(delay, callback) {
+    if (this.paused) return;
+    super.stop();
+    this.paused = true;
+    setTimeout(() => {
+      this.tryToMove(callback);
+    }, delay);
+  }
+
+  pause(blocker, callback) {
     // Don't pause while paused, y'know?
     if (this.paused) return;
+    if (this.blocker) return;
+
+    // if (blocker) {
+    //   console.log(`${this.id} pausing, blocked by ${blocker.id}`);
+    // }
+
+    this.blocker = blocker;
 
     // Stop movement (and animation???)
     super.stop();
@@ -47,7 +65,21 @@ class Queuer extends Visitor {
 
     // Wait a bit, then try to keep going on your way
     setTimeout(() => {
+      this.tryToMove(callback);
+    }, 2500);
+  }
+
+  tryToMove(callback) {
+    // Check if we still overlap our blocker
+    if (this.blocker && this.scene.physics.overlap(this.sensor, this.blocker.sensor)) {
+      // If yes, then try to move a little later
+      setTimeout(() => {
+        this.tryToMove(callback);
+      }, 500);
+    } else {
+      // If not then we can resume moving
       this.paused = false;
+      this.blocker = null;
       switch (this.intent) {
       case `up`:
         this.up();
@@ -68,7 +100,7 @@ class Queuer extends Visitor {
       if (callback) {
         callback();
       }
-    }, delay);
+    }
   }
 
   moveTo(checkpoint) {

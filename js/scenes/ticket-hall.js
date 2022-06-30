@@ -51,7 +51,7 @@ function addTicketHall(x, y) {
     .setVisible(false)
     .setPushable(false)
 
-  this.ticketQueue = [];
+  this.ticketQueue = this.physics.add.group();
 
   this.entryBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 61 + 40, `atlas`, `red-pixel.png`)
     .setScale(4 * 5, 4 * 20)
@@ -89,26 +89,6 @@ function addTicketHall(x, y) {
 }
 
 function updateTicketHall() {
-  // Buying tickets
-  // Player
-  this.physics.overlap(this.player, this.ticketSensor, () => {
-    if (this.player.hasTicket) {
-      return;
-    }
-    this.player.hasTicket = true;
-
-    this.player.up();
-    this.player.stop();
-    // Join the queue officially
-    // (this will help people know they're waiting behind us in a queue)
-    this.ticketQueue.unshift(this.player);
-    this.dialog.y = UPPER_DIALOG_Y;
-    this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {
-      // Take us out of the queue now that we're done
-      this.ticketQueue.pop();
-      this.ticketBarrier.destroy();
-    });
-  });
 
   // Everyone else
   this.physics.overlap(this.queuers, this.ticketSensor, (sensor, q) => {
@@ -117,13 +97,18 @@ function updateTicketHall() {
     }
     // If this person isn't already in the queue then they should join it
     // (This would be if they're the first one in line)
-    if (!this.ticketQueue.includes(q)) {
-      this.ticketQueue.unshift(q);
-    }
-    q.pause(5000, () => {
-      // Queue management, take us out
-      this.ticketQueue.pop();
+    if (!this.ticketQueue.contains(q)) {
+      console.log(`${q.id} joins the queue`)
+      this.ticketQueue.add(q);
       q.hasTicket = true;
+      q.debugText.text = "IN TICKET QUEUE";
+    }
+    q.wait(5000, () => {
+      console.log(`${q.id} leaves the queue`)
+      // Queue management, take us out
+      q.hasTicket = true;
+      this.ticketQueue.remove(q);
+      q.debugText.text = "NOT IN QUEUE";
     });
   });
 
@@ -147,10 +132,39 @@ function updateTicketHall() {
       this.dialog.y = UPPER_DIALOG_Y;
       this.dialog.showMessage(TICKETS_GUARD_WELCOME_MESSAGE, () => {});
       this.player.showedTicket = true;
+      this.entryBarrier.destroy();
     }
   });
-  // this.player.depth = this.player.body.y;
+
+  // Buying tickets
+  // Player
+  this.physics.overlap(this.player, this.ticketSensor, () => {
+    if (this.player.hasTicket) {
+      return;
+    }
+
+    this.player.hasTicket = true;
+
+    this.player.up();
+    this.player.stop();
+
+    // Join the queue officially if we weren't already in it
+    // (this will help people know they're waiting behind us in a queue?)
+    if (!this.ticketQueue.contains(this.player)) {
+      console.log(`Player joins the queue`)
+      this.ticketQueue.add(this.player);
+      this.player.debugText.text = "IN TICKET QUEUE";
+    }
+
+    this.dialog.y = UPPER_DIALOG_Y;
+    this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {
+      // Take us out of the queue now that we're done
+      this.ticketQueue.remove(this.player);
+      this.player.debugText.text = "NOT IN QUEUE"
+      console.log("Player leaves the queue")
+      this.ticketBarrier.destroy();
+    });
+  });
+
   this.guard.depth = this.guard.body.y;
-
-
 }

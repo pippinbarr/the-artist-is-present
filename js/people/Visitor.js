@@ -14,4 +14,8 @@ class Visitor extends GeneratedPerson {
     super(scene, x, y, palette);
   }
 
+  update() {
+    super.update();
+  }
+
 }

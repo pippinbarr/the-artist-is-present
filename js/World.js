@@ -24,6 +24,9 @@ class World extends Phaser.Scene {
     // Collisions
     this.colliders = this.physics.add.group();
 
+    // Sensors
+    this.queuerSensors = this.physics.add.group();
+
     // Transitions
     this.marks = this.add.group();
 
@@ -40,8 +43,8 @@ class World extends Phaser.Scene {
       new Phaser.Geom.Point(560, 205), // Across and past the window
       new Phaser.Geom.Point(560, 300), // Down to the door level
       new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
-      new Phaser.Geom.Point(560 + 600, 230), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 5, 230), // All the way (including bumping into the queue and sitting)
+      new Phaser.Geom.Point(560 + 600, 228), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 228), // All the way (including bumping into the queue and sitting)
     ];
     // Add visuals of the checkpoints
     this.checkpointsGroup = this.physics.add.group();
@@ -86,6 +89,7 @@ class World extends Phaser.Scene {
   update() {
     super.update();
 
+    this.player.update();
     this.queuers.children.each((q) => {
       q.update();
     });
@@ -94,44 +98,68 @@ class World extends Phaser.Scene {
       this.player.stop();
     });
 
-    this.physics.collide(this.queuers, this.player, null, (p, q) => {
-      // Do I need to handle ticket queue stuff here?
+    // this.physics.overlap(this.queuers, this.player, )
+
+    this.physics.collide(this.queuers, this.player, (p, q) => {
       q.pause();
       p.stop();
 
-      if (this.ticketQueue.length > 0) {
-        let lastPlace = this.ticketQueue[0];
-        if (q === lastPlace) {
-          // This was the person at the back of the queue
-          console.log("Player joined the queue.")
-        }
+      if (!this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
+        // We bumped into someone who is in the queue, so we're in the queue
+        this.ticketQueue.add(this.player);
+        console.log("Player joins the queue")
+        this.player.debugText.text = "IN TICKET QUEUE";
       }
-
       // return true;
     });
 
     // HOW DO YOU STOP THEM SHOVING EACH OTHER???
-    this.physics.overlap(this.queuers, this.queuers, (q1, q2) => {
+    this.physics.overlap(this.queuerSensors, this.queuerSensors, (q1s, q2s) => {
+      let q1 = q1s.parent;
+      let q2 = q2s.parent;
+
+      if (q1 === this.player || q2 === this.player) return;
+
       let dirQ1 = new Phaser.Math.Vector2(q1.body.velocity.x, q1.body.velocity.y);
       dirQ1.normalize();
       let dirQ2 = new Phaser.Math.Vector2(q2.body.velocity.x, q2.body.velocity.y);
       dirQ2.normalize();
 
+      // Check if we're the one walking into the other person
+      // and if so consider them as blocking us
+
+      let bumped = false;
       if (dirQ1.x > 0 && q1.x < q2.x) {
-        q1.pause();
+        bumped = true;
+        // console.log("Pausing because I'm behind someone to their left")
       } else if (dirQ1.x < 0 && q1.x > q2.x) {
-        q1.pause();
+        bumped = true;
+        // console.log("Pausing because I'm behind someone to their right")
       } else if (dirQ1.y > 0 && q1.y < q2.y) {
-        q1.pause();
+        bumped = true;
+        // console.log("Pausing because I'm behind someone to their below")
       } else if (dirQ1.y < 0 && q1.y > q2.y) {
-        q1.pause();
-      } else if (dirQ2.x === 0 && dirQ2.y === 0) {
-        q1.pause();
+        bumped = true;
+        // console.log("Pausing because I'm behind someone to their above")
+      }
+      //else if (dirQ2.x === 0 && dirQ2.y === 0) {
+      // Will this case accidentally make people be blocked
+      // by the person behind them though?
+      // q1.pause(q2);
+
+      if (bumped) {
+        q1.pause(q2);
+        if (this.ticketQueue.contains(q2) && !this.ticketQueue.contains(q1)) {
+          this.ticketQueue.add(q1);
+          q1.debugText.text = "IN TICKET QUEUE";
+          console.log(`${q1.id} joins the queue`)
+          // We bumped into someone who is in the queue, so we're in the queue
+          // console.log("Someone joined the queue.")
+        }
       }
     });
 
-    this.physics.collide(this.queuers, this.queuers, null, (q1, q2) => {
-      console.log("Collide");
+    this.physics.collide(this.queuers, this.queuers, (q1, q2) => {
       // return true;
     });
 

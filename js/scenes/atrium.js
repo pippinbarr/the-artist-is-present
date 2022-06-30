@@ -29,13 +29,13 @@ function addAtrium(x, y) {
 
   this.tape = this.physics.add.group();
   // Back wall left
-  createColliderRect(this, x + 0, y + 0, 312, 202, this.tape);
+  createColliderRect(this, x + 0, y + 0, 312, 202, this.colliders);
   // Back wall right
-  createColliderRect(this, x + 312, y + 0, 490, 60, this.tape);
+  createColliderRect(this, x + 312, y + 0, 490, 60, this.colliders);
   // Bottom wall
-  createColliderRect(this, x + 0, y + 392, 800, 8, this.tape);
+  createColliderRect(this, x + 0, y + 392, 800, 8, this.colliders);
   // Right wall
-  createColliderRect(this, x + 799, y + 0, 2, 400, this.tape);
+  createColliderRect(this, x + 799, y + 0, 2, 400, this.colliders);
   // Tape left top
   createColliderLine(this, x + 380, y + 120, 80, 100, 1, 2, this.tape);
   // Tape left bottom
