@@ -18,12 +18,25 @@ function addTicketHall(x, y) {
   this.barrier.depth = 60 * 4;
   this.colliders.add(this.barrier);
 
+  this.ticketEntryBarrier = this.physics.add
+    .sprite(x + 75, y + 60 * 4 + 2, "atlas", "red-pixel.png")
+    .setScale(150, 4)
+    .setPushable(false)
+    .setVisible(false);
+  // this.ticketEntryBarrier.body.setOffset(6, 34);
+  // this.ticketEntryBarrier.body.setSize(90, 3, false);
+  // this.barrier.setPushable(false);
+  // this.barrier.depth = 60 * 4;
+
+
+  this.ticketsLeft = this.physics.add.group();
+  createColliderRect(this, x + 1, y + 200, 1, 200, this.ticketsLeft);
+
   createColliderRect(this, x + 0, y + 200, 600, 5, this.colliders);
   createColliderRect(this, x + 0, y + 392, 320, 8, this.colliders);
   createColliderRect(this, x + 480, y + 392, 320, 8, this.colliders);
   createColliderRect(this, x + 674, y + 268, 130, 8, this.colliders);
   createColliderRect(this, x + 734, y + 330, 100, 2, this.colliders);
-  createColliderRect(this, x + 1, y + 200, 1, 200, this.colliders);
   createColliderLine(this, x + 600, y + 200, 75, 80, 5, 5, this.colliders);
   createColliderLine(this, x + 730, y + 330, 75, 80, 5, 5, this.colliders);
 
@@ -43,17 +56,17 @@ function addTicketHall(x, y) {
   ticketFG.depth = 345;
 
   this.ticketSensor = this.physics.add.sprite(x + 450, y + 160, 'atlas', 'red-pixel.png')
-    .setScale(10, 100)
+    .setScale(10, 120)
     .setVisible(false);
 
   this.ticketBarrier = this.physics.add.sprite(x + 498, y + 190, 'atlas', 'red-pixel.png')
-    .setScale(10, 100)
+    .setScale(11, 100)
     .setVisible(false)
     .setPushable(false)
 
   this.ticketQueue = this.physics.add.group();
 
-  this.entryBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 61 + 40, `atlas`, `red-pixel.png`)
+  this.entryBarrier = this.physics.add.sprite(x + 4 * 181 + 10, y + 4 * 62 + 40, `atlas`, `red-pixel.png`)
     .setScale(4 * 5, 4 * 20)
     .setVisible(false)
     .setPushable(false)
@@ -89,6 +102,21 @@ function addTicketHall(x, y) {
 }
 
 function updateTicketHall() {
+  // Player tries to leave
+  this.physics.collide(this.player, this.ticketsLeft, (player, wall) => {
+    this.player.stop();
+    this.dialog.showMessage(LEAVING_TICKET_SCREEN, () => {});
+  });
+
+  // Player tries to enter the ticket area with a ticket
+  this.physics.collide(this.player, this.ticketEntryBarrier, null, (player, barrier) => {
+    if (this.player.hasTicket) {
+      this.player.stop();
+      this.dialog.showMessage(ALREADY_BOUGHT_TICKET_MESSAGE, () => {});
+    } else {
+      return false;
+    }
+  });
 
   // Everyone else
   this.physics.overlap(this.queuers, this.ticketSensor, (sensor, q) => {
@@ -111,7 +139,7 @@ function updateTicketHall() {
     });
   });
 
-  this.physics.collide(this.player, this.ticketBarrier, () => {
+  this.physics.collide(this.player, this.ticketBarrier, null, () => {
     if (!this.player.hasTicket) {
       this.player.stop();
       this.dialog.showMessage(WRONG_TICKET_QUEUE_ENTRY_MESSAGE)
@@ -159,6 +187,7 @@ function updateTicketHall() {
       // Take us out of the queue now that we're done
       this.ticketQueue.remove(this.player);
       this.player.debugText.text = "NOT IN QUEUE"
+      this.player.hasTicket = true;
       this.ticketBarrier.destroy();
     });
   });

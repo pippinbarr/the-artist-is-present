@@ -48,8 +48,9 @@ function addMOMAExterior(x, y) {
     .setDepth(-10)
     .setPushable(false)
 
-  this.colliders.add(this.leftDoor);
-  this.colliders.add(this.rightDoor);
+  this.doors = this.physics.add.group();
+  this.doors.add(this.leftDoor);
+  this.doors.add(this.rightDoor);
 
   this.sensor = this.physics.add
     .sprite(x + this.game.canvas.width / 2, y + 50 * 4, "atlas", "red-pixel.png")
@@ -85,7 +86,7 @@ function addMOMAExterior(x, y) {
     this.colliders
   );
   // Bottom wall
-  createColliderRect(this, x + 0 * 4, y + 98 * 4, 200 * 4, 2 * 4, this.colliders);
+  createColliderRect(this, x + 0 * 4, y + 98 * 4, 200 * 4, 200 * 4, this.colliders);
 
   const sceneData = {
     name: "moma-exterior",
@@ -110,6 +111,17 @@ function addMOMAExterior(x, y) {
   this.light.fillRect(x + 0, y + 0, this.game.canvas.width, this.game.canvas.height);
   this.light.depth = 1000000;
 
+  this.exitBarriers = this.physics.add.group();
+  let leftExitBarrier = this.physics.add.sprite(x, y + 368, `atlas`, `red-pixel.png`)
+    .setScale(10, 58)
+    .setPushable(false);
+  let rightExitBarrier = this.physics.add.sprite(x + 798, y + 368, `atlas`, `red-pixel.png`)
+    .setScale(10, 58)
+    .setPushable(false);
+  this.exitBarriers.add(leftExitBarrier);
+  this.exitBarriers.add(rightExitBarrier);
+  this.exitBarriers.setVisible(false);
+
   let fakeEntranceQueuers = 10;
   let fakeEntranceQueueInterval = setInterval(() => {
     let queuer = new Queuer(this, x - 100, y + 300, [...this.fromOutsideCheckpoints]);
@@ -124,13 +136,15 @@ function addMOMAExterior(x, y) {
 
 function updateMOMAExterior() {
   if (this.currentScene.name === `moma-exterior`) {
-    handleWrap
+    handleLeaving
       .bind(this)();
   }
+
   setLight
     .bind(this)();
   handleSensor
     .bind(this)();
+
 }
 
 function setLight() {
@@ -149,19 +163,26 @@ function setLight() {
   this.light.alpha = alpha;
 }
 
-function handleWrap() {
-  if (this.player.x < 0 - this.player.body.width) {
-    this.dialog.showMessage(LEAVING_MOMA_ON_FOOT_MESSAGE, () => {
-      this.player.x = this.game.canvas.width + this.player.body.width;
-    });
-  } else if (this.player.x > this.game.canvas.width + this.player.body.width) {
-    this.dialog.showMessage(LEAVING_MOMA_ON_FOOT_MESSAGE, () => {
-      this.player.x = 0 - this.player.body.width;
-    });
-  }
+function handleLeaving() {
+  this.physics.collide(this.player, this.exitBarriers, (player, exit) => {
+    if (museumIsOpen()) {
+      this.player.stop();
+      this.dialog.showMessage(LEAVING_MOMA_ON_FOOT_MESSAGE, () => {});
+      return true;
+    }
+  });
 }
 
 function handleSensor() {
+  // No sensor if the museum is closed right now
+  if (!museumIsOpen()) {
+    this.physics.collide(this.player, this.doors, (player, door) => {
+      this.player.stop();
+      this.dialog.showMessage(MOMA_CLOSED_MESSAGE, () => {});
+    });
+    return;
+  }
+
   if (this.physics.overlap(this.sensor, this.player) || this.physics.overlap(this.sensor, this.queuers)) {
     if (!this.sensor.activated) {
       this.sensor.activated = true;

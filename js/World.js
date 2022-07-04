@@ -2,8 +2,10 @@
 let QUEUE = [];
 const QUEUE_LENGTH = 30;
 const QUEUE_X = 440;
-const QUEUE_Y = 182;
+const QUEUE_Y = 239;
 const QUEUE_SPACING = 56;
+
+const MARINA_HEAD_DELAY = 3000;
 
 // const TRANSITION_OFFSET = 7 * 4;
 
@@ -36,6 +38,31 @@ class World extends Phaser.Scene {
     // Who is sitting with Marina? Nobody at the start...
     this.sitter = null;
 
+    this.createCheckpoints();
+
+    this.createScenes();
+
+    this.currentScene = this.scenes[`ticket-hall`];
+
+    // Player
+    this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
+    this.player.joinScene(this);
+
+    // Point the camera at the current scene
+    this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
+
+    // Dialog
+    this.dialog = new Dialog(this);
+
+    // Set up the intro message
+    let introMessage = [...INTRO_MESSAGE];
+    let now = getNYCTime();
+    let nowString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, `0`)}${now.getHours() > 11 ? "pm" : "am"}`
+    introMessage.push(`It is ${nowString}.`);
+    // this.dialog.showMessage(introMessage, () => {});
+  }
+
+  createCheckpoints() {
     // Queue checkpoints that all queuers who start outside walk along
     this.fromOutsideCheckpointData = [
       new Phaser.Geom.Point(-100, 400 + 360), // Start
@@ -50,10 +77,10 @@ class World extends Phaser.Scene {
       new Phaser.Geom.Point(560 + 600 + 800 * 5, 228), // Off the screen (the queue barrier will sort them out)
     ];
 
-    // Queue checkpoints that all queuers who start outside walk along
+    // Queue checkpoints that all queuers who start inside walk along
     this.prequeueCheckpointData = [
-      new Phaser.Geom.Point(560 + 600, 239), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 5, 239), // Off the screen (the queue barrier will sort them out)
+      new Phaser.Geom.Point(560 + 600, QUEUE_Y), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, QUEUE_Y), // Off the screen (the queue barrier will sort them out)
     ];
 
     // Add visuals of the checkpoints
@@ -76,8 +103,9 @@ class World extends Phaser.Scene {
         .setAlpha(0.5);
       this.prequeueCheckpoints.push(checkpoint);
     });
+  }
 
-
+  createScenes() {
     // Scenes
     this.scenes = {};
 
@@ -94,45 +122,74 @@ class World extends Phaser.Scene {
       .bind(this, this.game.canvas.width * 3, 0)();
     addAtrium
       .bind(this, this.game.canvas.width * 4, 0)();
-
-    this.currentScene = this.scenes[`ticket-hall`];
-
-    // Player
-    this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
-    this.player.joinScene(this);
-
-    // Dialog
-    this.dialog = new Dialog(this);
-
-    this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
   }
 
   update() {
     super.update();
 
+    // Standard updates
     this.player.update();
-    this.queuers.children.each((q) => {
-      q.update();
+    this.queuers.children.each(q => q.update());
+
+    // Player stops on collision
+    this.physics.collide(this.player, this.colliders, () => this.player.stop());
+
+    this.handleQueuerPlayerCollisions();
+
+    this.handleQueuerCollisions();
+
+    this.handleQueueLeaving();
+
+    // Just that they do collide (I think this can't actually happen because
+    // of the sensor-based overlap)
+    this.physics.collide(this.queuers, this.queuers);
+
+    // This one stops them walking through anything solid, though if the simulation
+    // is working they shouldn't actually try
+    this.physics.collide(this.queuers, this.colliders, null, (q, c) => {
+      q.pause();
+      return true;
     });
 
-    this.physics.collide(this.player, this.colliders, () => {
-      this.player.stop();
-    });
+    this.setDepths();
 
-    // this.physics.overlap(this.queuers, this.player, )
+    this.updateScenes();
 
+    this.checkExits();
+  }
+
+  handleQueueLeaving() {
+    if (this.marinaQueue.contains(this.player)) {
+      console.log(this.player.body.y, QUEUE_Y, this.player.body.height)
+      if (this.player.body.y > QUEUE_Y + 2 * this.player.body.height ||
+        this.player.body.y < QUEUE_Y - 2 * this.player.body.height) {
+        this.marinaQueue.remove(this.player);
+        console.log("Left the queue")
+      }
+    }
+  }
+
+  handleQueuerPlayerCollisions() {
+    // When queuers and player collide we handle basic stopping/pausing
+    // as well as queueing changes
     this.physics.collide(this.queuers, this.player, (p, q) => {
       q.pause();
       p.stop();
 
-      if (!this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
+      if (!this.player.hasTicket && !this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
         // We bumped into someone who is in the queue, so we're in the queue
-        this.ticketQueue.add(this.player);
-        this.player.debugText.text = "IN TICKET QUEUE";
+        // We only join the queue if the player is to the left of the person
+        let dx = this.player.body.x - q.body.x;
+        let dy = this.player.body.y - q.body.y;
+        if (dx < 0 && Math.abs(dy) < this.player.body.height) {
+          this.ticketQueue.add(this.player);
+          this.dialog.showMessage(JOIN_TICKET_QUEUE_MESSAGE, () => {})
+          this.player.debugText.text = "IN TICKET QUEUE";
+        }
       } else if (!this.marinaQueue.contains(this.player) && this.marinaQueue.contains(q)) {
         // We only join the queue if the player is to the left of the person
-        let dx = this.player.x - q.x;
-        let dy = this.player.y - q.y;
+        let dx = this.player.body.x - q.body.x;
+        let dy = this.player.body.y - q.body.y;
         if (dx < 0 && Math.abs(dy) < this.player.body.height) {
           this.marinaQueue.add(this.player);
           this.dialog.showMessage(JOIN_MARINA_QUEUE_MESSAGE, () => {})
@@ -141,8 +198,11 @@ class World extends Phaser.Scene {
       }
       // return true;
     });
+  }
 
-    // HOW DO YOU STOP THEM SHOVING EACH OTHER???
+  handleQueuerCollisions() {
+    // Handle queuers getting close to each other
+    // (pause the one "behind" or initiating the collision)
     this.physics.overlap(this.queuerSensors, this.queuerSensors, (q1s, q2s) => {
       let q1 = q1s.parent;
       let q2 = q2s.parent;
@@ -156,7 +216,6 @@ class World extends Phaser.Scene {
 
       // Check if we're the one walking into the other person
       // and if so consider them as blocking us
-
       let bumped = false;
       if (dirQ1.x > 0 && q1.x < q2.x) {
         bumped = true;
@@ -167,13 +226,11 @@ class World extends Phaser.Scene {
       } else if (dirQ1.y < 0 && q1.y > q2.y) {
         bumped = true;
       }
-      //else if (dirQ2.x === 0 && dirQ2.y === 0) {
-      // Will this case accidentally make people be blocked
-      // by the person behind them though?
-      // q1.pause(q2);
 
       if (bumped) {
+        // q1 stops moving
         q1.pause(q2);
+        // Handle the situation where this causes us to have joined a queue
         if (this.ticketQueue.contains(q2) && !this.ticketQueue.contains(q1)) {
           this.ticketQueue.add(q1);
           q1.debugText.text = "IN TICKET QUEUE";
@@ -183,20 +240,12 @@ class World extends Phaser.Scene {
           q1.debugText.text = "IN MARINA QUEUE";
           // We bumped into someone who is in the queue, so we're in the queue
         }
-
       }
     });
+  }
 
-    this.physics.collide(this.queuers, this.queuers, (q1, q2) => {
-      // return true;
-    });
-
-    this.physics.collide(this.queuers, this.colliders, null, (q, c) => {
-      q.pause();
-      return true;
-    });
-
-    // Depth
+  setDepths() {
+    // Set depth
     if (!this.player.sitting) {
       // Cheap hack to not reset depth when sitting so you don't go behind the chair
       this.player.depth = this.player.body.y;
@@ -206,7 +255,14 @@ class World extends Phaser.Scene {
         q.setDepth(q.body.y);
       }
     });
+    this.guards.children.each((g) => {
+      if (!g.sitting) {
+        g.setDepth(g.body.y);
+      }
+    });
+  }
 
+  updateScenes() {
     updateMOMAExterior
       .bind(this)();
     updateTicketHall
@@ -219,8 +275,6 @@ class World extends Phaser.Scene {
       .bind(this)();
     updateAtrium
       .bind(this)();
-
-    this.checkExits();
   }
 
   addScene(data) {
@@ -282,7 +336,7 @@ class World extends Phaser.Scene {
       let sitTime = 1000 * SIT_TIMES[Math.floor(Math.random(0 * SIT_TIMES.length))];
       setTimeout(() => {
         this.marina.anims.play(`marina-looks-up`);
-      });
+      }, MARINA_HEAD_DELAY);
       sitter.wait(sitTime, () => {
         this.sitter = null;
         sitter.y -= 50;
@@ -299,7 +353,11 @@ class World extends Phaser.Scene {
     } else {
       setTimeout(() => {
         this.marina.anims.play(`marina-looks-up`);
-      });
+        setTimeout(() => {
+          this.scene.start(`marina-face`);
+        }, 2000);
+      }, MARINA_HEAD_DELAY);
+
     }
 
 
@@ -344,6 +402,16 @@ class World extends Phaser.Scene {
         }, 1000);
       });
     }, 250 + Math.random() * 250);
+  }
+
+  ejectPlayer(message) {
+    this.currentScene = this.scenes[`moma-exterior`];
+    this.player.x = 140 + this.currentScene.x * this.game.canvas.width + this.game.canvas.width / 2;
+    this.player.y = this.currentScene.y * this.game.canvas.height + 300;
+    this.player.faceDown();
+    // Point the camera at the current scene
+    this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
+    this.dialog.showMessage(message);
   }
 
 }

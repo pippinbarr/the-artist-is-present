@@ -1,3 +1,5 @@
+const TIME_TO_SIT = 15 * 1000;
+
 function addAtrium(x, y) {
   // Atrium BG
   this.add
@@ -38,9 +40,9 @@ function addAtrium(x, y) {
   // Right wall
   createColliderRect(this, x + 799, y + 0, 2, 400, this.atriumRightWallGroup);
   // Tape left top
-  createColliderLine(this, x + 380, y + 120, 80, 100, 1, 2, this.tape);
+  createColliderLine(this, x + 380, y + 120, 80 + 4, 120 - 10, 1, 2, this.tape);
   // Tape left bottom
-  createColliderLine(this, x + 456, y + 272, 80, 90, 1, 2, this.tape);
+  createColliderLine(this, x + 456 - 8, y + 272 - 14, 80 + 8, 102, 1, 2, this.tape);
   // Tape top
   createColliderRect(this, x + 384, y + 120, 400, 4, this.tape);
   // Tape bottom
@@ -51,7 +53,7 @@ function addAtrium(x, y) {
   // Add guards
   this.guards = this.add.group();
   this.guard1 = new Guard(this, x + 115 * 4, y + 39 * 4 + 2, this.dialog);
-  this.guard2 = new Guard(this, x + 118 * 4, y + 50 * 4 + 2, this.dialog);
+  this.guard2 = new Guard(this, x + 121 * 4, y + 52 * 4 + 2, this.dialog);
   this.guards.add(this.guard1, true);
   this.guards.add(this.guard2, true);
 
@@ -65,7 +67,7 @@ function addAtrium(x, y) {
   // Marina queue
   this.marinaQueue = this.physics.add.group();
 
-  this.marinaBarrier = this.physics.add.sprite(x + 460, y + 243, 'atlas', 'red-pixel.png')
+  this.marinaBarrier = this.physics.add.sprite(x + 464, y + 243, 'atlas', 'red-pixel.png')
     .setScale(20, 20)
     .setVisible(false)
     .setPushable(false);
@@ -88,7 +90,7 @@ function addAtrium(x, y) {
   };
   this.addScene(sceneData);
 
-  let fakeIndoorQueuers = 10;
+  let fakeIndoorQueuers = 5;
   let fakeIndoorQueueInterval = setInterval(() => {
     let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
     this.queuers.add(queuer);
@@ -145,23 +147,40 @@ function updateAtrium() {
         this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
           // Now the player is allowed through
           this.player.seenInstructions = true;
+          // Start a time to sit timer!
+          setTimeout(() => {
+            if (this.sitter !== this.player) {
+              // If we get here and they're not sitting down yet then
+              // they screwed it up.
+              // Eject them.
+              this.ejectPlayer(SIT_FAIL);
+            }
+          }, TIME_TO_SIT);
         });
       }
       return true;
     } else if (!this.sitter && this.player.seenInstructions) {
       return false;
-    } else {
+    } else if (this.marinaQueue.contains(this.player)) {
       this.player.stop();
+      this.dialog.showMessage(PLEASE_WAIT, () => {});
     }
   });
 
   // Queuers onto the chair
   this.physics.overlap(this.queuers, this.visitorChairSensor, (sensor, q) => {
+    this.marinaQueue.remove(q);
     this.sit(q);
   });
 
   // Player onto the chair
   this.physics.overlap(this.player, this.visitorChairSensor, (player, sensor) => {
+    this.marinaQueue.remove(this.player);
     this.sit(this.player);
+  });
+
+  this.physics.collide(this.player, this.atriumRightWallGroup, (player, wall) => {
+    this.player.stop();
+    this.dialog.showMessage(LEAVE_MARINA_AREA, () => {});
   });
 }

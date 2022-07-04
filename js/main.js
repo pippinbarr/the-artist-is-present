@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 let MOBILE = false;
 
 const START_SCENE = `world`;
@@ -12,7 +12,7 @@ let config = {
   //   Hallway2, Hallway3, Atrium, GameOver, World
   // ],
   scene: [
-    Boot, Preloader, World
+    Boot, Preloader, World, MarinaFace
   ],
   pixelArt: true,
   antialias: false,

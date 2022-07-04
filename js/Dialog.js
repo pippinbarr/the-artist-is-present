@@ -55,7 +55,7 @@ class Dialog extends Phaser.GameObjects.Container {
     super.update();
   }
 
-  showMessage(messages, callback, pause = true) {
+  showMessage(messages, callback = () => {}, pause = true) {
     if (!this.scene) return;
     if (pause) {
       this.scene.scene.pause();

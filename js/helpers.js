@@ -16,6 +16,54 @@ function getNYCTime() {
 function museumIsOpen() {
   let time = getNYCTime();
 
+  let day = time.getDay();
+  let date = time.getDate();
+  let month = time.getMonth();
+
+  if (!openingHours(time)) {
+    return false;
+  }
+
+  // Closed Tuesday
+  if (day === 2) {
+    return false;
+  }
+
+  // Closed Christmas
+  if (date === 25 && month === 11) {
+    return false;
+  }
+
+  // Closed Thanksgiving
+  if (day === 4 && month === 10) {
+    let temp = new Date(time);
+    let fourThursdaysAgo = temp.setDate(temp.getDate() - 28);
+    if (fourThursdaysAgo.getMonth() === 9) {
+      // It's thanksgiving because we're on the fourth thursday
+      return false;
+    }
+  }
+
+  // If we're all the way down here it's open
+  return true;
+}
+
+function openingHours(time) {
+  let hour = time.getHours();
+  let minute = time.getMinutes();
+
+  return ((hour === 10 && minute >= 30) ||
+    (hour >= 11 && hour < 17) ||
+    (hour === 17 && minute < 30));
+}
+
+// IN PROGRESS
+function timeToClosing() {
+  let time = getNYCTime();
+  let closing = new Date(time);
+  closing.setHours(17);
+  closing.setMinutes(30);
+  closing.setSeconds(0);
 }
 
 function createColliderRect(self, x, y, width, height, group) {
