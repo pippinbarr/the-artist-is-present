@@ -1,7 +1,7 @@
-const DEBUG = true;
+const DEBUG = false;
 let MOBILE = false;
 
-const START_SCENE = `world`;
+const START_SCENE = `title`;
 
 let config = {
   type: Phaser.AUTO,
@@ -12,7 +12,7 @@ let config = {
   //   Hallway2, Hallway3, Atrium, GameOver, World
   // ],
   scene: [
-    Boot, Preloader, World, MarinaFace
+    Boot, Preloader, Title, World, Debug
   ],
   pixelArt: true,
   antialias: false,

@@ -5,7 +5,9 @@ class Player extends Visitor {
 
     this.inputEnabled = true;
     this.hasTicket = false;
+    this.obstructions = 0; // How many times has the player just stood in the way of an NPC?
     this.suffix = `-${this.id}`;
+    this.nextInQueue = null; // Who is the player waiting behind?
     this.setImmovable(false);
   }
 

@@ -10,6 +10,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.sensor = scene.physics.add.sprite(this.body.x, this.body.y, `atlas`, `red-pixel.png`);
     this.sensor.body.setSize(this.body.width * 1.25, this.body.height * 1.75, false);
     this.sensor.parent = this;
+    this.sensor.setVisible(false);
     scene.queuerSensors.add(this.sensor);
 
     this.speed = 100; //100;
@@ -20,7 +21,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.anims.play(`idle-h${this.suffix}`);
     this.setPushable(false);
 
-    this.debugText = scene.add.text(this.x - this.displayWidth / 2, this.y - this.displayHeight / 1.5, "NOT IN QUEUE", {
+    this.debugText = scene.add.text(this.x - this.displayWidth / 2, this.y - this.displayHeight / 1.5, NO_Q_SYMBOL, {
         fontSize: 20,
         fontWeight: "bold",
         color: "red"

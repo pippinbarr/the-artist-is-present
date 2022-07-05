@@ -123,19 +123,21 @@ function updateTicketHall() {
     if (q.hasTicket) {
       return;
     }
+
     // If this person isn't already in the queue then they should join it
     // (This would be if they're the first one in line)
     if (!this.ticketQueue.contains(q)) {
       this.ticketQueue.add(q);
       q.hasTicket = true;
-      q.debugText.text = "IN TICKET QUEUE";
+      q.debugText.text = TICKET_Q_SYMBOL;
     }
+
     q.faceUp();
     q.wait(5000, () => {
       // Queue management, take us out
       q.hasTicket = true;
       this.ticketQueue.remove(q);
-      q.debugText.text = "NOT IN QUEUE";
+      q.debugText.text = NO_Q_SYMBOL;
     });
   });
 
@@ -179,14 +181,14 @@ function updateTicketHall() {
     // (this will help people know they're waiting behind us in a queue?)
     if (!this.ticketQueue.contains(this.player)) {
       this.ticketQueue.add(this.player);
-      this.player.debugText.text = "IN TICKET QUEUE";
+      this.player.debugText.text = TICKET_Q_SYMBOL;
     }
 
     this.dialog.y = UPPER_DIALOG_Y;
     this.dialog.showMessage(BUY_TICKET_MESSAGE, () => {
       // Take us out of the queue now that we're done
       this.ticketQueue.remove(this.player);
-      this.player.debugText.text = "NOT IN QUEUE"
+      this.player.debugText.text = NO_Q_SYMBOL
       this.player.hasTicket = true;
       this.ticketBarrier.destroy();
     });

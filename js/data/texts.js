@@ -48,8 +48,35 @@ const GUARD_INSTRUCTIONS = [
   `"That's it. You can go."`
 ];
 const PLEASE_WAIT = [
-  `Please wait here until it's your turn.`
+  `"Please wait here until it's your turn."`
 ];
 const SIT_FAIL = [
   `Having watched you fool around for far too long without taking your seat, a security guard escorts you off the premises.`
 ];
+
+// CLOSING TIME
+const MUSEUM_CLOSING = [
+  `"Attention all patrons, The Museum of Modern Art will be closing in fifteen minutes."`
+]
+const MUSEUM_CLOSED = [
+  `The Museum of Modern Art is now closed. Have a nice day.`
+];
+
+// BAD BEHAVIOUR
+const EXCUSE_ME_MESSAGE = [
+  `"Excuse me..."`
+];
+const SHOVING_MESSAGE = [
+  `Having been shoved by you far too many times, the museum patron alerts a security guard who politely escorts you off the premises.`
+];
+const SLOW_QUEUEING_MESSAGE = [
+  `"If you can't queue properly then get out of the queue!"`
+];
+const OBSTRUCTION_MESSAGE = [
+  `Museum security observes your total unwillingness to move aside for other patrons and a security guard politely escorts you off the premises.`
+];
+
+// DEBUG
+const MARINA_Q_SYMBOL = `MQ`;
+const TICKET_Q_SYMBOL = `TQ`;
+const NO_Q_SYMBOL = `!Q`;

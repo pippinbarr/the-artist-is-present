@@ -10,6 +10,7 @@ let Preloader = new Phaser.Class({
 
   preload: function () {
     this.load.multiatlas('atlas', 'assets/atlas/atlas.json', 'assets/atlas');
+
     this.load.spritesheet('marina', 'assets/spritesheets/marina-dress-spritesheet.png', {
       frameWidth: 14,
       frameHeight: 35,

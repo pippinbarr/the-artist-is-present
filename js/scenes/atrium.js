@@ -12,7 +12,7 @@ function addAtrium(x, y) {
     .setScale(4);
 
   // Table and chairs
-  this.tableAndChairs = this.physics.add.sprite(x + 130 * 4 + 30 * 4, y + 40 * 4 + 15 * 4, 'atlas', 'atrium/atrium-table-and-chairs.png')
+  this.tableAndChairs = this.physics.add.sprite(x + 130 * 4 + 30 * 4, y + 40 * 4 + 15 * 4 + 2, 'atlas', 'atrium/atrium-table-and-chairs.png')
     .setScale(4);
   this.tableAndChairs.body.setOffset(2, this.tableAndChairs.body.height - 8);
   this.tableAndChairs.body.setSize(this.tableAndChairs.width - 4, 4, false);
@@ -58,7 +58,7 @@ function addAtrium(x, y) {
   this.guards.add(this.guard2, true);
 
   // marina
-  this.marina = this.add.sprite(x + 695.5, y + 204, `marina-sitting`)
+  this.marina = this.add.sprite(x + 695.5, y + 204 + 2, `marina-sitting`)
     .setScale(4, 4)
     .setDepth(1000);
 
@@ -90,16 +90,34 @@ function addAtrium(x, y) {
   };
   this.addScene(sceneData);
 
-  let fakeIndoorQueuers = 5;
-  let fakeIndoorQueueInterval = setInterval(() => {
-    let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
-    this.queuers.add(queuer);
-    queuer.start();
-    fakeIndoorQueuers--;
-    if (fakeIndoorQueuers === 0) {
-      clearInterval(fakeIndoorQueueInterval);
+  setupInitialQueue.bind(this)();
+}
+
+function setupInitialQueue() {
+  let queueLength = 0;
+  if (museumIsOpen()) {
+    let time = getNYCTime();
+    let hours = time.getHours();
+    let minutes = time.getMinutes();
+    if (hours === 10 && minutes <= 45) {
+      queueLength = (minutes - 30) * 1 + 2;
+    } else if (hours < 17 || (hours === 17 && minutes < 15)) {
+      queueLength = Math.floor(Math.random() * 10) + 20;
+    } else {
+      queueLength = 10;
     }
-  }, 1000);
+
+    let queueCreationInterval = setInterval(() => {
+      let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
+      this.queuers.add(queuer);
+      queuer.start();
+      queueLength--;
+      if (queueLength === 0) {
+        clearInterval(queueCreationInterval);
+      }
+    }, 1000);
+  }
+
 }
 
 function updateAtrium() {
@@ -136,12 +154,15 @@ function updateAtrium() {
 
     q.isNext = true;
     q.tryToSit();
-    q.debugText.text = "IN MARINA QUEUE";
+    q.debugText.text = MARINA_Q_SYMBOL;
   });
 
   this.physics.collide(this.player, this.marinaBarrier, null, () => {
     if (!this.player.isNext) {
       this.player.stop();
+      if (!this.marinaQueue.contains(this.player)) {
+        this.marinaQueue.add(this.player);
+      }
       this.player.isNext = true;
       if (!this.sitter) {
         this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {

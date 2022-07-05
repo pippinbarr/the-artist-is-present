@@ -42,10 +42,10 @@ class World extends Phaser.Scene {
 
     this.createScenes();
 
-    this.currentScene = this.scenes[`ticket-hall`];
+    this.currentScene = this.scenes[`moma-exterior`];
 
     // Player
-    this.player = new Player(this, 400 + this.currentScene.x * this.game.canvas.width, 320 + this.currentScene.y * this.game.canvas.height);
+    this.player = new Player(this, 350 + this.currentScene.x * this.game.canvas.width, 270 + this.currentScene.y * this.game.canvas.height);
     this.player.joinScene(this);
 
     // Point the camera at the current scene
@@ -54,27 +54,45 @@ class World extends Phaser.Scene {
     // Dialog
     this.dialog = new Dialog(this);
 
+    this.marinaFace = this.add.sprite(this.scenes[`atrium`].x * this.game.canvas.width + this.game.canvas.width / 2, this.scenes[`atrium`].y * this.game.canvas.height + this.game.canvas.height / 2, `marina-face`)
+      .setScale(4)
+      .setDepth(10000001)
+      .setVisible(false);
+    this.BLINK_MINIMUM = 5;
+    this.BLINK_VARIANCE = 5;
+    this.marinaBlink();
+
     // Set up the intro message
     let introMessage = [...INTRO_MESSAGE];
     let now = getNYCTime();
     let nowString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, `0`)}${now.getHours() > 11 ? "pm" : "am"}`
-    introMessage.push(`It is ${nowString}.`);
-    // this.dialog.showMessage(introMessage, () => {});
+    introMessage.push(`It's ${nowString}.`);
+    setTimeout(() => {
+      this.dialog.showMessage(introMessage);
+    }, 1000);
+  }
+
+  marinaBlink() {
+    this.marinaFace.anims.play(`marina-blink`);
+    let nextBlinkDelay = 1000 * Math.random() * this.BLINK_VARIANCE + this.BLINK_MINIMUM;
+    setTimeout(() => {
+      this.marinaBlink();
+    }, nextBlinkDelay)
   }
 
   createCheckpoints() {
     // Queue checkpoints that all queuers who start outside walk along
     this.fromOutsideCheckpointData = [
-      new Phaser.Geom.Point(-100, 400 + 360), // Start
-      new Phaser.Geom.Point(430, 400 + 360), // To door X
-      new Phaser.Geom.Point(430, 260), // Through doors to ticket barrier
+      new Phaser.Geom.Point(-100, 400 + 350), // Start
+      new Phaser.Geom.Point(400, 400 + 350), // To door X
+      new Phaser.Geom.Point(400, 260), // Through doors to ticket barrier
       new Phaser.Geom.Point(50, 260), // To left of ticket barrier
       new Phaser.Geom.Point(50, 205), // Up to wall
       new Phaser.Geom.Point(560, 205), // Across and past the window
       new Phaser.Geom.Point(560, 300), // Down to the door level
       new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
-      new Phaser.Geom.Point(560 + 600, 228), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 5, 228), // Off the screen (the queue barrier will sort them out)
+      new Phaser.Geom.Point(560 + 600, 229), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 229), // Off the screen (the queue barrier will sort them out)
     ];
 
     // Queue checkpoints that all queuers who start inside walk along
@@ -91,7 +109,8 @@ class World extends Phaser.Scene {
       let checkpoint = this.checkpointsGroup.create(coordinate.x, coordinate.y, 'atlas', 'red-pixel.png')
         .setScale(8)
         .setDepth(100000)
-        .setAlpha(0.5);
+        .setAlpha(0.5)
+        .setVisible(DEBUG)
       this.fromOutsideCheckpoints.push(checkpoint);
     });
 
@@ -100,7 +119,8 @@ class World extends Phaser.Scene {
       let checkpoint = this.checkpointsGroup.create(coordinate.x, coordinate.y, 'atlas', 'red-pixel.png')
         .setScale(8)
         .setDepth(100000)
-        .setAlpha(0.5);
+        .setAlpha(0.5)
+        .setVisible(DEBUG)
       this.prequeueCheckpoints.push(checkpoint);
     });
   }
@@ -155,16 +175,31 @@ class World extends Phaser.Scene {
 
     this.updateScenes();
 
+    this.handleClosing();
+
     this.checkExits();
+  }
+
+  handleClosing() {
+    // Only worry about closing stuff if the player's in the museum
+    if (this.currentScene.name !== `moma-exterior`) {
+      if (museumClosingInFifteenMinutes()) {
+        if (!this.seenFifteenMinuteWarning) {
+          this.seenFifteenMinuteWarning = true;
+          this.dialog.showMessage(MUSEUM_CLOSING);
+        }
+      } else if (!museumIsOpen()) {
+        // The museum has closed with the player inside it
+        this.ejectPlayer(MUSEUM_CLOSED);
+      }
+    }
   }
 
   handleQueueLeaving() {
     if (this.marinaQueue.contains(this.player)) {
-      console.log(this.player.body.y, QUEUE_Y, this.player.body.height)
       if (this.player.body.y > QUEUE_Y + 2 * this.player.body.height ||
         this.player.body.y < QUEUE_Y - 2 * this.player.body.height) {
         this.marinaQueue.remove(this.player);
-        console.log("Left the queue")
       }
     }
   }
@@ -172,9 +207,16 @@ class World extends Phaser.Scene {
   handleQueuerPlayerCollisions() {
     // When queuers and player collide we handle basic stopping/pausing
     // as well as queueing changes
-    this.physics.collide(this.queuers, this.player, (p, q) => {
-      q.pause();
+    this.physics.collide(this.queuers, this.player, null, (p, q) => {
+      q.pause(this.player);
       p.stop();
+
+      // Handle shoving by player (we can rely on it being the player who shoved
+      // because the other queuers use their sensors to stop colliding)
+      q.shovedCount++;
+      if (q.shovedCount > 5) {
+        this.ejectPlayer(SHOVING_MESSAGE);
+      }
 
       if (!this.player.hasTicket && !this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
         // We bumped into someone who is in the queue, so we're in the queue
@@ -184,7 +226,7 @@ class World extends Phaser.Scene {
         if (dx < 0 && Math.abs(dy) < this.player.body.height) {
           this.ticketQueue.add(this.player);
           this.dialog.showMessage(JOIN_TICKET_QUEUE_MESSAGE, () => {})
-          this.player.debugText.text = "IN TICKET QUEUE";
+          this.player.debugText.text = TICKET_Q_SYMBOL;
         }
       } else if (!this.marinaQueue.contains(this.player) && this.marinaQueue.contains(q)) {
         // We only join the queue if the player is to the left of the person
@@ -192,8 +234,9 @@ class World extends Phaser.Scene {
         let dy = this.player.body.y - q.body.y;
         if (dx < 0 && Math.abs(dy) < this.player.body.height) {
           this.marinaQueue.add(this.player);
+          this.player.nextInQueue = q;
           this.dialog.showMessage(JOIN_MARINA_QUEUE_MESSAGE, () => {})
-          this.player.debugText.text = "IN MARINA QUEUE";
+          this.player.debugText.text = MARINA_Q_SYMBOL;
         }
       }
       // return true;
@@ -207,6 +250,7 @@ class World extends Phaser.Scene {
       let q1 = q1s.parent;
       let q2 = q2s.parent;
 
+      // Don't handle this if it's the player...???
       if (q1 === this.player || q2 === this.player) return;
 
       let dirQ1 = new Phaser.Math.Vector2(q1.body.velocity.x, q1.body.velocity.y);
@@ -233,11 +277,11 @@ class World extends Phaser.Scene {
         // Handle the situation where this causes us to have joined a queue
         if (this.ticketQueue.contains(q2) && !this.ticketQueue.contains(q1)) {
           this.ticketQueue.add(q1);
-          q1.debugText.text = "IN TICKET QUEUE";
+          q1.debugText.text = TICKET_Q_SYMBOL;
           // We bumped into someone who is in the queue, so we're in the queue
         } else if (this.marinaQueue.contains(q2) && !this.marinaQueue.contains(q1)) {
           this.marinaQueue.add(q1);
-          q1.debugText.text = "IN MARINA QUEUE";
+          q1.debugText.text = MARINA_Q_SYMBOL;
           // We bumped into someone who is in the queue, so we're in the queue
         }
       }
@@ -287,7 +331,7 @@ class World extends Phaser.Scene {
         .setDepth(100000);
     });
 
-    // this.marks.toggleVisible();
+    this.marks.setVisible(DEBUG);
   }
 
   // NOTE TO SELF!!!
@@ -314,6 +358,7 @@ class World extends Phaser.Scene {
       let y = this.cameras.main.scrollY + this.game.canvas.height * transition.camOffset.y;
       this.cameras.main.setScroll(x, y);
       this.currentScene = this.scenes[transition.to];
+      this.player.obstructions = 0;
     }
   }
 
@@ -353,19 +398,12 @@ class World extends Phaser.Scene {
     } else {
       setTimeout(() => {
         this.marina.anims.play(`marina-looks-up`);
+        // Now show the marina face
         setTimeout(() => {
-          this.scene.start(`marina-face`);
-        }, 2000);
+          this.marinaFace.setVisible(true);
+        }, 3000);
       }, MARINA_HEAD_DELAY);
-
     }
-
-
-
-    // Wait 10 seconds then switch to The Face
-    // setTimeout(() => {
-    //   this.scene.start(`marina`);
-    // }, 10000);
   }
 
   /**
@@ -406,8 +444,14 @@ class World extends Phaser.Scene {
 
   ejectPlayer(message) {
     this.currentScene = this.scenes[`moma-exterior`];
+    this.marinaFace.setVisible(false);
+    this.ticketQueue.remove(this.player);
+    this.marinaQueue.remove(this.player);
+    this.debugText.text = NO_Q_SYMBOL;
+    this.player.obstructions = 0;
     this.player.x = 140 + this.currentScene.x * this.game.canvas.width + this.game.canvas.width / 2;
     this.player.y = this.currentScene.y * this.game.canvas.height + 300;
+    this.player.setVelocity(0, 0);
     this.player.faceDown();
     // Point the camera at the current scene
     this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);

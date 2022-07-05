@@ -11,6 +11,8 @@ class Queuer extends Visitor {
     this.intent = `stop`;
     this.paused = false;
     this.blocker = null;
+    this.blockCount = 0;
+    this.shovedCount = 0;
 
     this.checkpoints = checkpoints;
 
@@ -18,6 +20,11 @@ class Queuer extends Visitor {
     let start = this.checkpoints.shift();
     this.x = start.x;
     this.y = start.y - (this.height / 2) * this.scaleY + 2 * 4;
+    this.body.updateFromGameObject();
+
+    setInterval(() => {
+      this.shovedCount = 0;
+    }, 2000);
   }
 
   start() {
@@ -74,6 +81,7 @@ class Queuer extends Visitor {
     if (this.blocker) return;
 
     this.blocker = blocker;
+    this.blockCount = 0;
 
     // Stop movement (and animation???)
     super.stop();
@@ -82,20 +90,62 @@ class Queuer extends Visitor {
     // Wait a bit, then try to keep going on your way
     setTimeout(() => {
       this.tryToMove(callback);
-    }, 2500);
+    }, 250);
   }
 
   tryToMove(callback) {
-    // Check if we still overlap our blocker
-    if (this.blocker && this.scene.physics.overlap(this.sensor, this.blocker.sensor)) {
-      // If yes, then try to move a little later
+    if (this.scene.dialog.visible) {
+      // If there's a dialog visible it may be ours, but regardless we don't
+      // want to move so wait and try again
       setTimeout(() => {
         this.tryToMove(callback);
-      }, 500);
+      }, 250);
+      return;
+    }
+
+    // Check if we still overlap our blocker
+    if (this.blocker && this.scene.physics.overlap(this.sensor, this.blocker.sensor)) {
+      this.blockCount++;
+      // Check if it's the player and we've been waiting too damn long
+      if (this.blocker === this.scene.player && this.blockCount % 20 === 0) {
+        if (this.scene.marinaQueue.contains(this.scene.player)) {
+          // We've been waiting for the player in the queue
+          // Check if they should have moved up (no overlap with next in queue)
+          // console.log(`Waiting on the player. Who is waiting for ${this.scene.player.nextInQueue ? this.scene.player.nextInQueue.id : 'nobody'}.`);
+          if (this.scene.player.nextInQueue && !this.scene.physics.overlap(this.scene.player.sensor, this.scene.player.nextInQueue.sensor)) {
+            this.scene.player.obstructions++; // The player has been a dick in the queue
+            console.log("Obstructed in the queue.")
+            if (this.scene.player.obstructions >= 3) {
+              this.scene.player.y += 50;
+              this.scene.player.obstructions = 0;
+              this.scene.dialog.showMessage(SLOW_QUEUEING_MESSAGE);
+            }
+          } else if (this.scene.player.nextInQueue) {
+            // Reset the counter since they did move up
+            this.scene.player.obstructions = 0;
+            console.log("Resetting obstructions because they are queueing right.")
+          }
+        } else if (this.scene.currentScene.name !== `moma-exterior`) {
+          // If it's not the marina queue and we're in the museum then security
+          // will handle it if the player takes too long
+          this.scene.dialog.showMessage(EXCUSE_ME_MESSAGE);
+          this.scene.player.obstructions++; // The player has been a dick in the museum
+          if (this.scene.player.obstructions >= 5) {
+            this.scene.ejectPlayer(OBSTRUCTION_MESSAGE);
+          }
+        } else {
+          // Otherwise we're outside and a bit helpless.
+          this.scene.dialog.showMessage(EXCUSE_ME_MESSAGE);
+        }
+      }
+      setTimeout(() => {
+        this.tryToMove(callback);
+      }, 250);
     } else {
       // If not then we can resume moving
       this.paused = false;
       this.blocker = null;
+      this.blockCount = 0;
       switch (this.intent) {
       case `up`:
         this.up();
@@ -120,8 +170,10 @@ class Queuer extends Visitor {
   }
 
   moveTo(checkpoint) {
-    let dx = this.body.x - checkpoint.x;
-    let dy = this.body.y - checkpoint.y;
+    let dx = this.body.x - checkpoint.body.x;
+    let dy = this.body.y - checkpoint.body.y;
+
+    // console.log(this.body.x, this.body.y, checkpoint.x, checkpoint.y, dx, dy)
 
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0) this.right();

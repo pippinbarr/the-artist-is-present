@@ -2,10 +2,22 @@
 
 ## General
 * ~~Fix collisions - you seem able to walk through walls with tapping~~
+* ~~Dialogs need to be on a timer so they don't just stay up and free the player to not need to queue (or I get rid of the excuse mes and just push the person out actually.)~~
+* ~~Integrating texts (this will be a way to check on functionality too)~~
+* ~~Moma exterior people seemed not to queue properly...? fuck~~
+* ~~There's a general shoving out of the way idea in general (will have to mediate with the queueing stuff though)~~
+* ~~Red pixel on avatar?~~
+* **COULD NOT REPRODUCE** ~~Just noticed some broken long hair (blonde with black tips)~~
 
-* Just noticed some broken long hair (blonde with black tips)
-* Integrating texts (this will be a way to check on functionality too)
-* There's a general shoving out of the way idea in general (will have to mediate with the queueing stuff though)
+* With timed messages you run the risk of them happening while a dialog is already displaying. Could either
+  * Have such messages repeat attempts until they succeed
+  * Alter dialogs so that you can append further messages to the current dialog (this would be kind of slick actually and not even so hard?) The beauty being that it totally avoids the issue of timing...
+  * What about stacking callbacks though :/ (Doable I think?)
+
+## Title
+* ~~Oh yeah, the title screen. Click to continue etc. See the original.~~
+* **I COULD NOT BEAR IT** ~~Can I bear the slight text shifting of the title and authors texts? I'm guessing not :(~~
+* ~~A little more twizzling left here~~
 
 ## Exterior
 * ~~Time zone support~~
@@ -14,6 +26,14 @@
 * ~~Time of day dialog~~
 * ~~Museum locking~~
 * ~~Handle leaving exterior sides based on time~~
+* ~~Player not hitting the door!?~~
+* ~~Reinstate opening message~~
+
+### The exterior generation
+* ~~Consider allowing the player to get there first?! Seems unfair to let them wait before the museum opens only to find that there's already a huge queue?! But also... whatever the original did is kind of fair if this is just a port and not an improvement?~~
+
+* ~~Generate new people only at a rate that won't overflow ticket queue OR marina queue~~
+* **NAH** ~~Generate more people early?~~
 
 ## Tickets
 * ~~Add ability to buy a ticket~~
@@ -25,8 +45,6 @@
 * ~~The classic thing of depth with the extra bit of fg by the door~~
 * **ADDED MESSAGE** ~~Ticket queue currently gets "joined" even if you bump into any person in the queue (not just the back person) - this mostly matters in terms of the message. The concern is that this queue isn't necessarily guaranteed to always flow left to right... though I suppose we could force the rate...??~~
 * ~~Enter ticket area with a ticket message~~
-
-* Ensure no more than 5 people can join ticket queue (plus player) based on the timing (and time of day?! Nah, just have a semi-steady flow, though also need a max length on the marina queue!)
 
 ## The performance
 * ~~Add tape collider~~
@@ -49,13 +67,13 @@
 * **SEPARATE SCENE, SEE HOW IT GOES** ~~Still need to trigger marina face (I wonder whether we might even load it as a simultaneous scene and show/hide it)~~
 * ~~Some timing niceties.... like a delay before head up/down and you're next~~
 * **MADE THE ENTRY POINT SMALLER...** ~~I worry about the legibility of the tape entrance point... it's kind of impossible to see for the player :/~~
-
-* Queue generation length by time of day (I guess just teleport in a bunch of people while the player is still outside, on an interval small enough that they don't mess each other up.)
+* ~~Queue generation length by time of day (I guess just teleport in a bunch of people while the player is still outside, on an interval small enough that they don't mess each other up.)~~
 
 ### Punishment
-* Remember the logic around a timer to sit down or you get kicked out (but that seems so unbelievably mean? Make it really lenient I guess.)
-* Add ejection for pushing
-* Add push-out from queue for stalling
+* ~~Remember the logic around a timer to sit down or you get kicked out (but that seems so unbelievably mean? Make it really lenient I guess.)~~
+* ~~Add ejection for pushing~~
+* ~~Add push-out from queue for stalling (essentially just a case of blocking someone, but different because it needs to account for queue etiquette and the idea there's a free space in front of you... fucking hell...)~~
+* ~~Correct push out for marina queue (should only count a block if the player is behind someone and not overlapping them anymore...)~~
 
 ## The museum
-* Add closing timer and dialog (including interrupting current sitting player)
+* ~~Add closing timer and dialog (including interrupting current sitting player)~~

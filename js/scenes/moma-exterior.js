@@ -122,16 +122,29 @@ function addMOMAExterior(x, y) {
   this.exitBarriers.add(rightExitBarrier);
   this.exitBarriers.setVisible(false);
 
-  let fakeEntranceQueuers = 10;
-  let fakeEntranceQueueInterval = setInterval(() => {
-    let queuer = new Queuer(this, x - 100, y + 300, [...this.fromOutsideCheckpoints]);
-    this.queuers.add(queuer);
-    queuer.start();
-    fakeEntranceQueuers--;
-    if (fakeEntranceQueuers === 0) {
-      clearInterval(fakeEntranceQueueInterval);
+  setupExteriorQueue.bind(this)();
+  // addExteriorQueuer.bind(this)();
+}
+
+function setupExteriorQueue() {
+  setInterval(() => {
+    if (museumIsOpen() &&
+      this.ticketQueue.countActive() <= 5 &&
+      this.marinaQueue.countActive() <= 25 &&
+      Math.random() < 0.25) {
+      addExteriorQueuer.bind(this)();
     }
-  }, 1000);
+  }, 5000);
+
+  // setInterval(() => {
+  //   addExteriorQueuer.bind(this)();
+  // }, 1000);
+}
+
+function addExteriorQueuer() {
+  this.queuer = new Queuer(this, 0, 0, [...this.fromOutsideCheckpoints]);
+  this.queuers.add(this.queuer);
+  this.queuer.start();
 }
 
 function updateMOMAExterior() {
@@ -139,6 +152,10 @@ function updateMOMAExterior() {
     handleLeaving
       .bind(this)();
   }
+
+  this.physics.collide(this.player, this.doors, (p, d) => {
+    this.player.stop();
+  });
 
   setLight
     .bind(this)();

@@ -14,6 +14,8 @@ function getNYCTime() {
 }
 
 function museumIsOpen() {
+  return true;
+
   let time = getNYCTime();
 
   let day = time.getDay();
@@ -57,13 +59,9 @@ function openingHours(time) {
     (hour === 17 && minute < 30));
 }
 
-// IN PROGRESS
-function timeToClosing() {
+function museumClosingInFifteenMinutes() {
   let time = getNYCTime();
-  let closing = new Date(time);
-  closing.setHours(17);
-  closing.setMinutes(30);
-  closing.setSeconds(0);
+  return (time.getHours() === 17 && time.getMinutes() === 30);
 }
 
 function createColliderRect(self, x, y, width, height, group) {

@@ -24,9 +24,11 @@ package
 			"Wednesday - Monday\n10:30AM to 5:30PM.\n\n" +
 			"Closed Christmas and Thanksgiving.");
 
+// Added
 		public static const MOMA_CLOSING:Array = new Array(
 			"The Museum of Modern Art is now closed. Have a nice day.");
 
+// Added
 		public static const MOMA_CLOSING_IN_FIFTEEN:Array = new Array(
 			"\"Attention all patrons, The Museum of Modern Art will be closing in fifteen minutes.\"");
 
@@ -110,12 +112,15 @@ package
 		public static const PLEASE_WAIT:Array = new Array(
 			"Please wait here until it's your turn.");
 
+// REJECTED
 		public static const SHOVE:Array = new Array(
 			"If you're just going to stand there then get out of the way.");
 
+// Added
 		public static const MOVE_IT:Array = new Array(
 			"If you can't queue properly then get out of the queue!");
 
+// Added
 		public static const SHOVE_FAIL:Array = new Array(
 			"Having been shoved by you far too many times, the museum patron " +
 			"alerts a security guard who politely escorts you off the premises.");
