@@ -1,7 +1,7 @@
 const DEBUG = false;
 let MOBILE = false;
 
-const START_SCENE = `title`;
+const START_SCENE = `world`;
 
 let config = {
   type: Phaser.AUTO,

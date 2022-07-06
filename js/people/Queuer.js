@@ -20,7 +20,6 @@ class Queuer extends Visitor {
     let start = this.checkpoints.shift();
     this.x = start.x;
     this.y = start.y - (this.height / 2) * this.scaleY + 2 * 4;
-    this.body.updateFromGameObject();
 
     setInterval(() => {
       this.shovedCount = 0;
@@ -114,7 +113,7 @@ class Queuer extends Visitor {
           // console.log(`Waiting on the player. Who is waiting for ${this.scene.player.nextInQueue ? this.scene.player.nextInQueue.id : 'nobody'}.`);
           if (this.scene.player.nextInQueue && !this.scene.physics.overlap(this.scene.player.sensor, this.scene.player.nextInQueue.sensor)) {
             this.scene.player.obstructions++; // The player has been a dick in the queue
-            console.log("Obstructed in the queue.")
+            // console.log("Obstructed in the queue.")
             if (this.scene.player.obstructions >= 3) {
               this.scene.player.y += 50;
               this.scene.player.obstructions = 0;
@@ -123,7 +122,7 @@ class Queuer extends Visitor {
           } else if (this.scene.player.nextInQueue) {
             // Reset the counter since they did move up
             this.scene.player.obstructions = 0;
-            console.log("Resetting obstructions because they are queueing right.")
+            // console.log("Resetting obstructions because they are queueing right.")
           }
         } else if (this.scene.currentScene.name !== `moma-exterior`) {
           // If it's not the marina queue and we're in the museum then security
@@ -172,8 +171,6 @@ class Queuer extends Visitor {
   moveTo(checkpoint) {
     let dx = this.body.x - checkpoint.body.x;
     let dy = this.body.y - checkpoint.body.y;
-
-    // console.log(this.body.x, this.body.y, checkpoint.x, checkpoint.y, dx, dy)
 
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0) this.right();

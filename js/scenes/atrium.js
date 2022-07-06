@@ -107,17 +107,36 @@ function setupInitialQueue() {
       queueLength = 10;
     }
 
-    let queueCreationInterval = setInterval(() => {
+    for (let i = 0; i < queueLength; i++) {
       let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
+      let x = this.marinaBarrier.x - 100 - i * 100;
+      let y = this.prequeueCheckpoints[0].y - (queuer.height / 2) * queuer.scaleY + 2 * 4;
+      queuer.setPosition(x, y);
+      queuer.body.updateFromGameObject();
       this.queuers.add(queuer);
       queuer.start();
-      queueLength--;
-      if (queueLength === 0) {
-        clearInterval(queueCreationInterval);
-      }
-    }, 1000);
-  }
+    }
 
+    // addAtriumQueuer.bind(this)(queueLength);
+  }
+}
+
+function addAtriumQueuer(leftToAdd) {
+  if (this.dialog.inProgress) {
+    setTimeout(() => {
+      addAtriumQueuer.bind(this)(leftToAdd);
+    }, 250);
+  } else {
+    let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
+    this.queuers.add(queuer);
+    queuer.start();
+    leftToAdd--;
+    if (leftToAdd > 0) {
+      setTimeout(() => {
+        addAtriumQueuer.bind(this)(leftToAdd);
+      }, 1500);
+    }
+  }
 }
 
 function updateAtrium() {

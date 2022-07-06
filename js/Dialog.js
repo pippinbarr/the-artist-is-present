@@ -37,6 +37,10 @@ class Dialog extends Phaser.GameObjects.Container {
 
     this.setDepth(100000000);
     this.setVisible(false);
+    this.inProgress = false;
+
+    this.queue = [];
+    this.currentTimeout = undefined;
   }
 
   makeBox(w, h, color) {
@@ -55,12 +59,32 @@ class Dialog extends Phaser.GameObjects.Container {
     super.update();
   }
 
+  cancel() {
+    // Cancel the current and any other dialogs
+    clearTimeout(this.currentTimeout);
+    this.setVisible(false);
+    this.inProgress = false;
+    this.queue = [];
+  }
+
   showMessage(messages, callback = () => {}, pause = true) {
-    if (!this.scene) return;
-    if (pause) {
-      this.scene.scene.pause();
-      this.scene.physics.pause();
+    // There's already a message displaying, so queue this one.
+    if (this.inProgress) {
+      this.queue.push(({
+        message: messages,
+        callback: callback,
+        pause: pause
+      }));
+      return;
     }
+
+    if (!this.scene) return;
+
+    this.inProgress = true;
+    // if (pause) {
+    this.scene.scene.pause();
+    this.scene.physics.pause();
+    // }
 
     let index = 0;
     this.showMultiMessage(messages, index, callback, pause);
@@ -70,14 +94,26 @@ class Dialog extends Phaser.GameObjects.Container {
     this.showDialog(messages[index], () => {
       index++;
       if (index < messages.length) {
-        setTimeout(() => {
+        this.currentTimeout = setTimeout(() => {
+          this.currentTimeout = null;
           this.showMultiMessage(messages, index, callback, pause);
         }, 1000);
       } else {
-        if (pause) {
+        // if (pause) {
+        if (this.queue.length > 0) {
+          // If there's a message waiting in the queue,
+          // then show it now.
+          let next = this.queue.shift();
+          this.currentTimeout = setTimeout(() => {
+            this.showMessage(next.message, next.callback);
+          }, 1000);
+        } else {
+          // Otherwise we can let the scene start again
           this.scene.scene.resume();
           this.scene.physics.resume();
+          this.inProgress = false;
         }
+        // }
         callback();
       }
     }, pause);

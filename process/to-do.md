@@ -8,11 +8,15 @@
 * ~~There's a general shoving out of the way idea in general (will have to mediate with the queueing stuff though)~~
 * ~~Red pixel on avatar?~~
 * **COULD NOT REPRODUCE** ~~Just noticed some broken long hair (blonde with black tips)~~
+  * ~~Later this turned out to be stacked people walking at the same time, giving the appearance of multilayered haircuts.~~
 
-* With timed messages you run the risk of them happening while a dialog is already displaying. Could either
-  * Have such messages repeat attempts until they succeed
-  * Alter dialogs so that you can append further messages to the current dialog (this would be kind of slick actually and not even so hard?) The beauty being that it totally avoids the issue of timing...
-  * What about stacking callbacks though :/ (Doable I think?)
+* I seemed to be able to quickly rejoin the queue while already in the queue? Also everyone behind me wasn't in the queue (not that that matters as much)
+
+* ~~With timed messages you run the risk of them happening while a dialog is already displaying. Could either~~
+  * **NO**~~Have such messages repeat attempts until they succeed~~
+  * **NOT QUITE**~~Alter dialogs so that you can append further messages to the current dialog (this would be kind of slick actually and not even so hard?) The beauty being that it totally avoids the issue of timing...~~
+  * **INDEED**~~What about stacking callbacks though :/ (Doable I think?)~~
+  * ~~Create a QUEUE of upcoming messages, and the ability to cancel all messages~~
 
 ## Title
 * ~~Oh yeah, the title screen. Click to continue etc. See the original.~~
@@ -68,6 +72,10 @@
 * ~~Some timing niceties.... like a delay before head up/down and you're next~~
 * **MADE THE ENTRY POINT SMALLER...** ~~I worry about the legibility of the tape entrance point... it's kind of impossible to see for the player :/~~
 * ~~Queue generation length by time of day (I guess just teleport in a bunch of people while the player is still outside, on an interval small enough that they don't mess each other up.)~~
+* ~~Still getting a generation thing where there are overlapping people created in the hallway? (I wonder if it's to do with browser focus and not just the dialog? HMMM.)~~
+* ~~In fact the game also crashed when I messed around with focus~~
+
+* Set up the correct timing!
 
 ### Punishment
 * ~~Remember the logic around a timer to sit down or you get kicked out (but that seems so unbelievably mean? Make it really lenient I guess.)~~

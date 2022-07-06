@@ -23,6 +23,9 @@ class World extends Phaser.Scene {
     // this.cameras.main.setBounds(0, 0, this.game.canvas.width * 6, this.game.canvas.height * 3);
     this.cameras.main.removeBounds();
 
+    // Dialog
+    this.dialog = new Dialog(this);
+
     // Collisions
     this.colliders = this.physics.add.group();
 
@@ -51,8 +54,6 @@ class World extends Phaser.Scene {
     // Point the camera at the current scene
     this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
 
-    // Dialog
-    this.dialog = new Dialog(this);
 
     this.marinaFace = this.add.sprite(this.scenes[`atrium`].x * this.game.canvas.width + this.game.canvas.width / 2, this.scenes[`atrium`].y * this.game.canvas.height + this.game.canvas.height / 2, `marina-face`)
       .setScale(4)
@@ -65,7 +66,9 @@ class World extends Phaser.Scene {
     // Set up the intro message
     let introMessage = [...INTRO_MESSAGE];
     let now = getNYCTime();
-    let nowString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, `0`)}${now.getHours() > 11 ? "pm" : "am"}`
+    let hour = now.getHours();
+    let minutes = now.getMinutes();
+    let nowString = `${hour <= 12 ? hour : hour - 12}:${minutes.toString().padStart(2, `0`)}${hour > 11 ? "pm" : "am"}`
     introMessage.push(`It's ${nowString}.`);
     setTimeout(() => {
       this.dialog.showMessage(introMessage);
@@ -83,7 +86,7 @@ class World extends Phaser.Scene {
   createCheckpoints() {
     // Queue checkpoints that all queuers who start outside walk along
     this.fromOutsideCheckpointData = [
-      new Phaser.Geom.Point(-100, 400 + 350), // Start
+      new Phaser.Geom.Point(-100, 400 + 350), // Start (should be -100?)
       new Phaser.Geom.Point(400, 400 + 350), // To door X
       new Phaser.Geom.Point(400, 260), // Through doors to ticket barrier
       new Phaser.Geom.Point(50, 260), // To left of ticket barrier
@@ -384,7 +387,7 @@ class World extends Phaser.Scene {
       }, MARINA_HEAD_DELAY);
       sitter.wait(sitTime, () => {
         this.sitter = null;
-        sitter.y -= 50;
+        sitter.y -= 30;
         sitter.stand();
         sitter.right();
         this.marina.anims.play(`marina-looks-down`);
@@ -447,7 +450,7 @@ class World extends Phaser.Scene {
     this.marinaFace.setVisible(false);
     this.ticketQueue.remove(this.player);
     this.marinaQueue.remove(this.player);
-    this.debugText.text = NO_Q_SYMBOL;
+    this.player.debugText.text = NO_Q_SYMBOL;
     this.player.obstructions = 0;
     this.player.x = 140 + this.currentScene.x * this.game.canvas.width + this.game.canvas.width / 2;
     this.player.y = this.currentScene.y * this.game.canvas.height + 300;
@@ -455,7 +458,10 @@ class World extends Phaser.Scene {
     this.player.faceDown();
     // Point the camera at the current scene
     this.cameras.main.setScroll(this.currentScene.x * this.game.canvas.width, this.currentScene.y * this.game.canvas.height);
-    this.dialog.showMessage(message);
+    this.dialog.cancel();
+    setTimeout(() => {
+      this.dialog.showMessage(message);
+    }, 1000);
   }
 
 }

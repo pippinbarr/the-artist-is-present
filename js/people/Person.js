@@ -8,7 +8,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     this.body.setSize(this.width - 2, 4, false);
 
     this.sensor = scene.physics.add.sprite(this.body.x, this.body.y, `atlas`, `red-pixel.png`);
-    this.sensor.body.setSize(this.body.width * 1.25, this.body.height * 1.75, false);
+    this.sensor.body.setSize(this.body.width * 1.33, this.body.height * 1.75, false);
     this.sensor.parent = this;
     this.sensor.setVisible(false);
     scene.queuerSensors.add(this.sensor);
