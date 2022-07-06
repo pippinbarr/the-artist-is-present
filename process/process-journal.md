@@ -70,6 +70,18 @@ Hilarious queue stuff and other stuff happened as you can see:
 
 So, I'm not getting this done before the end of sabbatical, but I am getting it done next week for suresies.
 
+## We "made it" (6 July 2022)
+
+Well I've sent the game to Jim and Mary for a little light testing, but realistically I think it should be pretty robust by now. Since my last write up I obvious did... everything, though there was a weekend in there were I did... nothing.
+
+At one point I was debugging hair:
+
+![](images/hair-debugging.png)
+
+Because there seemed to be people with multicolor hair showing up. I created this debug scene to just create a ton of people at a time so I could look at their hair, but eventually it turned out that it was just multiple overlaid people showing up in a scene and walking in synch. That old chestnut.
+
+Anyhow, the game is essentially done and soon to be released. This is quite a big one since it's my most "famous" game and it feels good to have got it back out into the world again. Sweat smile.
+
 # 2011
 
 ## Simplicity kills (2011-08-24)
