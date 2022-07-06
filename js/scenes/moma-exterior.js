@@ -137,6 +137,9 @@ function updateMOMAExterior() {
 
   this.physics.collide(this.player, this.doors, (p, d) => {
     this.player.stop();
+    if (!museumIsOpen()) {
+      this.dialog.showMessage(MOMA_CLOSED_MESSAGE, () => {});
+    }
   });
 
   setLight
@@ -203,10 +206,6 @@ function handleLeaving() {
 function handleSensor() {
   // No sensor if the museum is closed right now
   if (!museumIsOpen()) {
-    this.physics.collide(this.player, this.doors, (player, door) => {
-      this.player.stop();
-      this.dialog.showMessage(MOMA_CLOSED_MESSAGE, () => {});
-    });
     return;
   }
 

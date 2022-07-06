@@ -9,8 +9,7 @@
 * ~~Red pixel on avatar?~~
 * **COULD NOT REPRODUCE** ~~Just noticed some broken long hair (blonde with black tips)~~
   * ~~Later this turned out to be stacked people walking at the same time, giving the appearance of multilayered haircuts.~~
-
-* I seemed to be able to quickly rejoin the queue while already in the queue? Also everyone behind me wasn't in the queue (not that that matters as much)
+* ~~I seemed to be able to quickly rejoin the queue while already in the queue? Maybe just when on the point of being kicked out? Also everyone behind me wasn't in the queue (not that that matters as much)~~
 
 * ~~With timed messages you run the risk of them happening while a dialog is already displaying. Could either~~
   * **NO**~~Have such messages repeat attempts until they succeed~~

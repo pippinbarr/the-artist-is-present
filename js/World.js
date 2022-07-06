@@ -219,6 +219,7 @@ class World extends Phaser.Scene {
       q.shovedCount++;
       if (q.shovedCount > 5) {
         this.ejectPlayer(SHOVING_MESSAGE);
+        return;
       }
 
       if (!this.player.hasTicket && !this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
