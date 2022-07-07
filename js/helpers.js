@@ -14,6 +14,7 @@ function getNYCTime() {
 }
 
 function museumIsOpen() {
+  return true;
   let time = getNYCTime();
 
   let day = time.getDay();
