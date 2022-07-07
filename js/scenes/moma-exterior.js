@@ -155,18 +155,13 @@ function tryToAddQueuer() {
 
   this.framesSinceExteriorQueuerCheck = 0;
 
-  setTimeout(() => {
+  if (museumIsOpen() &&
+    this.ticketQueue.countActive() <= 5 &&
+    this.marinaQueue.countActive() <= 25 &&
+    Math.random() < 0.25 &&
+    !this.dialog.inProgress) {
     addExteriorQueuer.bind(this)();
-  }, 200);
-
-
-  // if (museumIsOpen() &&
-  //   this.ticketQueue.countActive() <= 5 &&
-  //   this.marinaQueue.countActive() <= 25 &&
-  //   Math.random() < 0.25 &&
-  //   !this.dialog.inProgress) {
-  //   addExteriorQueuer.bind(this)();
-  // }
+  }
 }
 
 function addExteriorQueuer() {
