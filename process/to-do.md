@@ -1,5 +1,23 @@
 # To dos
 
+## Buggytime
+* ~~WAY too easy to join the queue, notably because you can join vertically.~~
+* **THIS SEEMS OKAY NOW**~~Managed to freeze the game up by push up on the person at the front of the queue~~
+* **NOW IT'S RIGHT**~~Leaving queue detection is wrong~~
+* ~~Leaving the queue horizontally?~~
+* ~~Weird collision with movement when I go back from the end of the queue, hit someone coming toward it, cause them to join the queue, and then to keep trying to walk right~~
+* ~~Issues with obstructing queuers where they keep walking despite overlap. It's part of the whole idea of having them ignore certain configurations so you don't stop them when there's no need for them to stop.~~
+* ~~Person behind me in the queue didn't wait until I was done (something to do with this.sitter?)~~
+* ~~Sitting timer didn't start (or trigger at least)~~
+* ~~Actually some pretty worrying freezes when you leave the queue in general, struggling to reproduce reliably (I wonder if it had anything to do with a higher player speed?)~~
+  * ~~Haven't reproduced for a whiiiillle...?~~
+  * ~~Going to have to come up with quite some test for this.~~
+  * ~~Got one on "seems like it would be rude to just walk across the tape" (no error in console though fuck it)~~
+  * **YES THAT'S IT**~~Feels like it's an issue with a dialog not unpausing the world right?~~
+* ~~Double dialog on TAPE message when hitting the front of the queue...~~
+* ~~Queue leaving when you're next (esp. because of no next person) is a bit of an issue.~~
+* ~~Saw queue-leaving when I was actually due to sit down (e.g. I was inside the tape, shouldn't really show it then? Maybe just no queue leaving once you're in? Or something else?)~~
+
 ## General
 * ~~Fix collisions - you seem able to walk through walls with tapping~~
 * ~~Dialogs need to be on a timer so they don't just stay up and free the player to not need to queue (or I get rid of the excuse mes and just push the person out actually.)~~

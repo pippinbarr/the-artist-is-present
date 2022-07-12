@@ -70,6 +70,7 @@ class Dialog extends Phaser.GameObjects.Container {
   showMessage(messages, callback = () => {}, pause = true) {
     // There's already a message displaying, so queue this one.
     if (this.inProgress) {
+      // console.log(`In Progress so added message starting "${messages[0]}" to queue.`)
       this.queue.push(({
         message: messages,
         callback: callback,
@@ -82,6 +83,7 @@ class Dialog extends Phaser.GameObjects.Container {
 
     this.inProgress = true;
     // if (pause) {
+    // console.log("Dialog pausing.");
     this.scene.scene.pause();
     this.scene.physics.pause();
     // }
@@ -100,7 +102,10 @@ class Dialog extends Phaser.GameObjects.Container {
         }, 1000);
       } else {
         // if (pause) {
+        this.inProgress = false;
+
         if (this.queue.length > 0) {
+          // console.log("There's a queued message...")
           // If there's a message waiting in the queue,
           // then show it now.
           let next = this.queue.shift();
@@ -108,10 +113,10 @@ class Dialog extends Phaser.GameObjects.Container {
             this.showMessage(next.message, next.callback);
           }, 1000);
         } else {
+          // console.log("Resuming scene at end of dialogues.");
           // Otherwise we can let the scene start again
           this.scene.scene.resume();
           this.scene.physics.resume();
-          this.inProgress = false;
         }
         // }
         callback();

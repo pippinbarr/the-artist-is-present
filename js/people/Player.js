@@ -2,12 +2,14 @@ class Player extends Visitor {
 
   constructor(scene, x, y) {
     super(scene, x, y);
-
+    this.name = "player";
     this.inputEnabled = true;
     this.hasTicket = false;
     this.obstructions = 0; // How many times has the player just stood in the way of an NPC?
     this.suffix = `-${this.id}`;
     this.nextInQueue = null; // Who is the player waiting behind?
+    this.previousInQueue = null;
+    this.speed = 100; // 100
     this.setImmovable(false);
   }
 

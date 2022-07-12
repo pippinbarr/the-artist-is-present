@@ -71,7 +71,7 @@ class World extends Phaser.Scene {
     let nowString = `${hour <= 12 ? hour : hour - 12}:${minutes.toString().padStart(2, `0`)}${hour > 11 ? "pm" : "am"}`
     introMessage.push(`It's ${nowString}.`);
     setTimeout(() => {
-      this.dialog.showMessage(introMessage);
+      if (!DEBUG) this.dialog.showMessage(introMessage);
     }, 1000);
   }
 
@@ -94,8 +94,8 @@ class World extends Phaser.Scene {
       new Phaser.Geom.Point(560, 205), // Across and past the window
       new Phaser.Geom.Point(560, 300), // Down to the door level
       new Phaser.Geom.Point(560 + 600, 300), // Through the door into the first hall
-      new Phaser.Geom.Point(560 + 600, 229), // Up to the queue level
-      new Phaser.Geom.Point(560 + 600 + 800 * 5, 229), // Off the screen (the queue barrier will sort them out)
+      new Phaser.Geom.Point(560 + 600, 228.2), // Up to the queue level
+      new Phaser.Geom.Point(560 + 600 + 800 * 5, 228.2), // Off the screen (the queue barrier will sort them out)
     ];
 
     // Queue checkpoints that all queuers who start inside walk along
@@ -148,38 +148,45 @@ class World extends Phaser.Scene {
   }
 
   update() {
+    // if (DEBUG) console.log(`super update.`)
     super.update();
 
     // Standard updates
+    // if (DEBUG) console.log(`Update player.`)
     this.player.update();
+    // if (DEBUG) console.log(`Update queuers`)
     this.queuers.children.each(q => q.update());
-
+    // if (DEBUG) console.log(`Basic player collision`)
     // Player stops on collision
     this.physics.collide(this.player, this.colliders, () => this.player.stop());
 
+    // if (DEBUG) console.log(`handleQueuerPlayerCollisions`);
     this.handleQueuerPlayerCollisions();
-
+    // if (DEBUG) console.log(`handleQueuerCollisions`);
     this.handleQueuerCollisions();
-
+    // if (DEBUG) console.log(`handleQueueLeaving`);
     this.handleQueueLeaving();
 
     // Just that they do collide (I think this can't actually happen because
     // of the sensor-based overlap)
+    // if (DEBUG) console.log(`handle basic queuer Collisions (unreal?)`);
     this.physics.collide(this.queuers, this.queuers);
 
     // This one stops them walking through anything solid, though if the simulation
     // is working they shouldn't actually try
+    // if (DEBUG) console.log(`handle Queuer Collider collisions`);
     this.physics.collide(this.queuers, this.colliders, null, (q, c) => {
       q.pause();
       return true;
     });
 
+    // if (DEBUG) console.log(`setDepths`);
     this.setDepths();
-
+    // if (DEBUG) console.log(`updateScenes`);
     this.updateScenes();
-
+    // if (DEBUG) console.log(`handleClosing`);
     this.handleClosing();
-
+    // if (DEBUG) console.log(`checkExits`);
     this.checkExits();
   }
 
@@ -199,11 +206,29 @@ class World extends Phaser.Scene {
   }
 
   handleQueueLeaving() {
+    let leftQueue = false;
+
     if (this.marinaQueue.contains(this.player)) {
-      if (this.player.body.y > QUEUE_Y + 2 * this.player.body.height ||
-        this.player.body.y < QUEUE_Y - 2 * this.player.body.height) {
-        this.marinaQueue.remove(this.player);
+      if (this.player.nextInQueue) {
+        let dist = Phaser.Math.Distance.BetweenPoints(this.player.body, this.player.nextInQueue.body);
+        // Leaving the queue vertically
+        if (this.player.body.velocity.y !== 0 && (this.player.body.y > this.player.nextInQueue.body.y + this.player.body.height ||
+            this.player.body.y < this.player.nextInQueue.body.y - this.player.body.height)) {
+          //         console.log(`py: ${this.player.body.y}
+          // ny: ${this.player.nextInQueue.body.y}
+          // bh: ${this.player.body.height}`);
+          leftQueue = true;
+        }
       }
+      // Note that if they're next we just count them as extremely rude
+      // if they walk away and they get ejected.
+    }
+
+    if (leftQueue) {
+      this.marinaQueue.remove(this.player);
+      this.player.nextInQueue = null;
+      this.player.debugText.text = NO_Q_SYMBOL;
+      this.dialog.showMessage(LEAVE_MARINA_QUEUE_MESSAGE);
     }
   }
 
@@ -211,13 +236,23 @@ class World extends Phaser.Scene {
     // When queuers and player collide we handle basic stopping/pausing
     // as well as queueing changes
     this.physics.collide(this.queuers, this.player, null, (p, q) => {
-      q.pause(this.player);
-      p.stop();
+      console.log("Queuer and Player bumped.")
+
+      let addToTicket = null;
+      let addToMarina = null;
+
+      let pvx = this.player.body.velocity.x;
+      let pvy = this.player.body.velocity.y;
+      let qvx = q.body.velocity.x;
+      let qvy = q.body.velocity.y;
+      let dx = this.player.body.x - q.body.x;
+      let dy = this.player.body.y - q.body.y;
 
       // Handle shoving by player (we can rely on it being the player who shoved
       // because the other queuers use their sensors to stop colliding)
       q.shovedCount++;
       if (q.shovedCount > 5) {
+        console.log("Ejected for pushing.")
         this.ejectPlayer(SHOVING_MESSAGE);
         return;
       }
@@ -225,24 +260,101 @@ class World extends Phaser.Scene {
       if (!this.player.hasTicket && !this.ticketQueue.contains(this.player) && this.ticketQueue.contains(q)) {
         // We bumped into someone who is in the queue, so we're in the queue
         // We only join the queue if the player is to the left of the person
-        let dx = this.player.body.x - q.body.x;
-        let dy = this.player.body.y - q.body.y;
-        if (dx < 0 && Math.abs(dy) < this.player.body.height) {
-          this.ticketQueue.add(this.player);
-          this.dialog.showMessage(JOIN_TICKET_QUEUE_MESSAGE, () => {})
-          this.player.debugText.text = TICKET_Q_SYMBOL;
+        // and are moving to the right
+        if (dx < 0 && pvx > 0) {
+          console.log("Player will join TQ via queuer")
+          addToTicket = this.player;
         }
       } else if (!this.marinaQueue.contains(this.player) && this.marinaQueue.contains(q)) {
         // We only join the queue if the player is to the left of the person
-        let dx = this.player.body.x - q.body.x;
-        let dy = this.player.body.y - q.body.y;
-        if (dx < 0 && Math.abs(dy) < this.player.body.height) {
-          this.marinaQueue.add(this.player);
+        // and is moving to the right
+        if (dx < 0 && pvx > 0) {
+          addToMarina = this.player;
           this.player.nextInQueue = q;
-          this.dialog.showMessage(JOIN_MARINA_QUEUE_MESSAGE, () => {})
-          this.player.debugText.text = MARINA_Q_SYMBOL;
+          console.log("Player will join MQ via queuer")
+        }
+        // A queuer joins the queue if they bump into the back of the player
+        // while heading right
+      } else if (this.marinaQueue.contains(this.player) && !this.marinaQueue.contains(q)) {
+        if (dx > 0 && qvx > 0) {
+          // In here we end up zeroing velocity!
+          console.log("Qer will join MQ via player.")
+          addToMarina = q;
         }
       }
+
+      // A queuer should only bother about the player bumping them if they're
+      // walking straight into them.
+      //       console.log(`queuer vel: ${q.body.velocity.x}, ${q.body.velocity.y}
+      // player vel: ${this.player.body.velocity.x}, ${this.player.body.velocity.y}`);
+      // if (q.body.velocity.x > 0 && this.player.body.velocity.x < 0 ||
+      //   q.body.velocity.x < 0 && this.player.body.velocity.x > 0 ||
+      //   q.body.velocity.y > 0 && this.player.body.velocity.y < 0 ||
+      //   q.body.velocity.y < 0 && this.player.body.velocity.y > 0) {
+      //   console.log("Qer pausing because player rammed them.");
+      //   q.pause(this.player);
+      //   // Of if the queuer is walking directly into a stationary player
+      // } else if ((q.body.velocity.x !== 0 || q.body.velocity.y !== 0) && this.player.body.velocity.x === 0 && this.player.body.velocity.y === 0) {
+      //   console.log("Qer pausing because they rammed stationary player")
+      //   q.pause(this.player);
+      // }
+      // // Or if the player is directly in front of where the queuer is going
+      //
+      // if ((q.body.velocity.x > 0 && this.player.body.velocity.x <= 0) ||
+      //   (q.body.velocity.x < 0 && this.player.body.velocity.x >= 0) ||
+      //   (q.body.velocity.y > 0 && this.player.body.velocity.y <= 0) ||
+      //   (q.body.velocity.y < 0 && this.player.body.velocity.y >= 0)) {
+      //   q.pause(this.player);
+      // }
+
+      // When should a collision with the player stop a qer?
+
+      // 1. If the player isn't moving and the qer is.
+      // 2. If the player is moving in a direction directly opposite
+      // 3. If they are both moving and the qer couldn't continue...
+      //    - If the player is to the left and the qer is moving left etc.
+      //    - But need to be cautious about this over-extending
+
+      if (pvx === 0 && pvy === 0) {
+        // 1. PLAYER ISN'T MOVING
+        q.pause(this.player);
+      } else if ((qvx > 0 && pvx < 0) ||
+        (qvx < 0 && pvx > 0) ||
+        (qvy > 0 && pvy < 0) ||
+        (qvy < 0 && pvy > 0)) {
+        // 2. DIRECTLY OPPOSED CONFRONTATION WHILE MOVING
+        q.pause(this.player);
+        this.player.stop();
+        this.player.body.updateFromGameObject();
+      } else if ((qvx > 0 && dx > 0) ||
+        (qvx < 0 && dx < 0) ||
+        (qvy > 0 && dy > 0) ||
+        (qvy < 0 && dy < 0)) {
+        // 3. PERPENDICULAR MOVEMENT COLLISION
+        q.pause(this.player);
+        // Player keeps going
+      } else {
+        this.player.stop();
+        this.player.body.updateFromGameObject();
+      }
+
+
+      if (addToTicket) {
+        this.ticketQueue.add(addToTicket);
+        addToTicket.debugText.text = TICKET_Q_SYMBOL;
+        if (addToTicket === this.player) {
+          this.dialog.showMessage(JOIN_TICKET_QUEUE_MESSAGE, () => {})
+        }
+      }
+
+      if (addToMarina) {
+        this.marinaQueue.add(addToMarina);
+        addToMarina.debugText.text = MARINA_Q_SYMBOL;
+        if (addToMarina === this.player) {
+          this.dialog.showMessage(JOIN_MARINA_QUEUE_MESSAGE)
+        }
+      }
+
       // return true;
     });
   }
@@ -286,6 +398,7 @@ class World extends Phaser.Scene {
         } else if (this.marinaQueue.contains(q2) && !this.marinaQueue.contains(q1)) {
           this.marinaQueue.add(q1);
           q1.debugText.text = MARINA_Q_SYMBOL;
+          q1.y = q2.y;
           // We bumped into someone who is in the queue, so we're in the queue
         }
       }
@@ -311,16 +424,22 @@ class World extends Phaser.Scene {
   }
 
   updateScenes() {
+    // if (DEBUG) console.log(`updateMOMAExterior`);
     updateMOMAExterior
       .bind(this)();
+    // if (DEBUG) console.log(`updateTicketHall`);
     updateTicketHall
       .bind(this)();
+    // if (DEBUG) console.log(`updateHallway1`);
     updateHallway1
       .bind(this)();
+    // if (DEBUG) console.log(`updateHallway2`);
     updateHallway2
       .bind(this)();
+    // if (DEBUG) console.log(`updateHallway3`);
     updateHallway3
       .bind(this)();
+    // if (DEBUG) console.log(`updateAtrium`);
     updateAtrium
       .bind(this)();
   }
@@ -344,9 +463,11 @@ class World extends Phaser.Scene {
   // And to do that I need a simple little "scene system" that tells me which
   // transitions are actually applicable right now. OKAY?
   checkExits() {
+    // if (DEBUG) console.log(`checkExits: Finding transitions.`)
     let transitions = this.currentScene.transitions;
     let transition = undefined;
 
+    // if (DEBUG) console.log(`checkExits: Comparing transitions.`)
     if (transitions.left && this.player.x < transitions.left.x && this.player.body.velocity.x < 0) {
       transition = transitions.left;
     } else if (transitions.right && this.player.x > transitions.right.x && this.player.body.velocity.x > 0) {
@@ -357,9 +478,11 @@ class World extends Phaser.Scene {
       transition = transitions.down;
     }
 
+    // if (DEBUG) console.log(`checkExits: ${transition}`)
     if (transition !== undefined) {
       let x = this.cameras.main.scrollX + this.game.canvas.width * transition.camOffset.x;
       let y = this.cameras.main.scrollY + this.game.canvas.height * transition.camOffset.y;
+      // if (DEBUG) console.log(`checkExits: ${transition.x}, ${transition.y}, ${transition.to}`)
       this.cameras.main.setScroll(x, y);
       this.currentScene = this.scenes[transition.to];
       this.player.obstructions = 0;
@@ -387,16 +510,16 @@ class World extends Phaser.Scene {
         this.marina.anims.play(`marina-looks-up`);
       }, MARINA_HEAD_DELAY);
       sitter.wait(sitTime, () => {
+        // AFTER THEY FINISH SITTING GET UP AND LEAVE
         this.sitter = null;
         sitter.y -= 30;
         sitter.stand();
         sitter.right();
+        // MARINA LOOKS DOWN
         this.marina.anims.play(`marina-looks-down`);
-        if (this.player.isNext && !this.player.seenInstructions) {
-          this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
-            // Now the player is allowed through
-            this.player.seenInstructions = true
-          });
+        // IF THE PLAYER IS NEXT THEN OFF THEY GO!
+        if (this.player.isNext) {
+          startPlayerSitting.bind(this)();
         }
       });
     } else {
@@ -447,14 +570,22 @@ class World extends Phaser.Scene {
   }
 
   ejectPlayer(message) {
+    this.player.body.updateFromGameObject();
     this.currentScene = this.scenes[`moma-exterior`];
     this.marinaFace.setVisible(false);
     this.ticketQueue.remove(this.player);
     this.marinaQueue.remove(this.player);
+    if (this.sitter === this.player) {
+      this.sitter = null;
+    }
     this.player.debugText.text = NO_Q_SYMBOL;
+    this.player.isNext = false;
+    this.player.sitting = false;
+    this.player.sat = false;
     this.player.obstructions = 0;
     this.player.x = 140 + this.currentScene.x * this.game.canvas.width + this.game.canvas.width / 2;
     this.player.y = this.currentScene.y * this.game.canvas.height + 300;
+    this.player.stop();
     this.player.setVelocity(0, 0);
     this.player.faceDown();
     // Point the camera at the current scene

@@ -4,6 +4,7 @@ class Queuer extends Visitor {
     super(scene, x, y);
 
     this.scene = scene;
+    this.name = "Queuer";
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -76,8 +77,14 @@ class Queuer extends Visitor {
 
   pause(blocker, callback) {
     // Don't pause while paused, y'know?
-    if (this.paused) return;
-    if (this.blocker) return;
+    if (this.paused) {
+      return;
+    }
+
+    // Don't be blocked while already blocked
+    if (this.blocker) {
+      return;
+    }
 
     this.blocker = blocker;
     this.blockCount = 0;
@@ -115,8 +122,11 @@ class Queuer extends Visitor {
             this.scene.player.obstructions++; // The player has been a dick in the queue
             // console.log("Obstructed in the queue.")
             if (this.scene.player.obstructions >= 3) {
+              this.scene.marinaQueue.remove(this.scene.player);
+              this.scene.player.nextInQueue = null;
               this.scene.player.y += 50;
               this.scene.player.obstructions = 0;
+              this.scene.player.debugText.text = NO_Q_SYMBOL;
               this.scene.dialog.showMessage(SLOW_QUEUEING_MESSAGE);
             }
           } else if (this.scene.player.nextInQueue) {

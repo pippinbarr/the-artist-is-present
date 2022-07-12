@@ -24,8 +24,8 @@ let config = {
   },
   scale: {
     // parent: 'game',
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.BOTH,
+    // mode: Phaser.Scale.FIT,
+    // autoCenter: Phaser.Scale.BOTH,
     width: 800,
     height: 400
   }

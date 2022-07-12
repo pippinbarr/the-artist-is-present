@@ -38,6 +38,7 @@ const LEAVE_MARINA_AREA = [
 
 // THE PERFORMANCE QUEUE
 const JOIN_MARINA_QUEUE_MESSAGE = [`You join the queue to see Marina Abramovic. Now all you have to do is wait.`];
+const LEAVE_MARINA_QUEUE_MESSAGE = [`You leave the queue. Maybe another time.`];
 // This is what the atrium guards say
 const GUARD_INSTRUCTIONS = [
   `"Hi. You're next."`,

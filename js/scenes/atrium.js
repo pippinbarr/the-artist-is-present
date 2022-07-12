@@ -107,6 +107,9 @@ function setupInitialQueue() {
       queueLength = 10;
     }
 
+    // FOR DEBUG
+    // queueLength = 1;
+
     for (let i = 0; i < queueLength; i++) {
       let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
       let x = this.marinaBarrier.x - 100 - i * 100;
@@ -116,6 +119,18 @@ function setupInitialQueue() {
       this.queuers.add(queuer);
       queuer.start();
     }
+
+    // FOR DEBUG
+    let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
+
+    queuer.body.updateFromGameObject();
+    let x = this.marinaBarrier.x - 100 - 10 * 100 + 200;
+    let y = this.prequeueCheckpoints[0].y - (queuer.height / 2) * queuer.scaleY + 2 * 4;
+    queuer.setPosition(x, y);
+
+    this.queuers.add(queuer);
+    queuer.start();
+
 
     // addAtriumQueuer.bind(this)(queueLength);
   }
@@ -143,10 +158,14 @@ function updateAtrium() {
   // Specialist collisions
 
   // Tape
-  this.physics.collide(this.player, this.tape, () => {
+  this.physics.collide(this.player, this.tape, null, () => {
+    console.log("Hit tape...");
     this.player.stop();
+    this.player.body.updateFromGameObject();
     this.dialog.showMessage(TAPE_MESSAGE);
+    return true;
   });
+
   this.physics.collide(this.queuers, this.tape, (q, t) => {
     q.stop();
   });
@@ -178,32 +197,37 @@ function updateAtrium() {
 
   this.physics.collide(this.player, this.marinaBarrier, null, () => {
     if (!this.player.isNext) {
-      this.player.stop();
+      this.player.isNext = true;
+
       if (!this.marinaQueue.contains(this.player)) {
         this.marinaQueue.add(this.player);
       }
-      this.player.isNext = true;
+
+      // If there's NOBODY sitting right now...
+      // This is to handle the case where the player gets
+      // to the head of the queue with NOBODY sitting.
       if (!this.sitter) {
-        this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
-          // Now the player is allowed through
-          this.player.seenInstructions = true;
-          // Start a time to sit timer!
-          setTimeout(() => {
-            if (this.sitter !== this.player) {
-              // If we get here and they're not sitting down yet then
-              // they screwed it up.
-              // Eject them.
-              this.ejectPlayer(SIT_FAIL);
-            }
-          }, TIME_TO_SIT);
-        });
+        console.log("Player reaches front with no-one sitting.");
+        this.player.stop();
+        startPlayerSitting.bind(this)();
+        return true;
       }
-      return true;
-    } else if (!this.sitter && this.player.seenInstructions) {
-      return false;
-    } else if (this.marinaQueue.contains(this.player)) {
+      // Handle collision
+      // Otherwise if there IS a sitter, they should wait.
+      else {
+        console.log("Player bumps the front with a sitter there.")
+        this.player.stop();
+        this.dialog.showMessage(PLEASE_WAIT, () => {});
+        return true;
+      }
+      // Otherwise if there's someone sitting and it's not us...
+    } else if (this.sitter && this.sitter !== this.player) {
+      console.log("There is a sitter.");
       this.player.stop();
       this.dialog.showMessage(PLEASE_WAIT, () => {});
+      return true;
+    } else {
+      return false;
     }
   });
 
@@ -222,5 +246,24 @@ function updateAtrium() {
   this.physics.collide(this.player, this.atriumRightWallGroup, (player, wall) => {
     this.player.stop();
     this.dialog.showMessage(LEAVE_MARINA_AREA, () => {});
+  });
+}
+
+function startPlayerSitting() {
+  // Give the player the instructions.
+  this.sitter = this.player;
+  this.dialog.showMessage(GUARD_INSTRUCTIONS, () => {
+    // Now the player is allowed through
+    this.player.seenInstructions = true;
+
+    // Start a time to sit timer!
+    setTimeout(() => {
+      if (!this.player.sat) {
+        // If we get here and they're not sitting down yet then
+        // they screwed it up.
+        // Eject them.
+        this.ejectPlayer(SIT_FAIL);
+      }
+    }, TIME_TO_SIT);
   });
 }
