@@ -40,9 +40,11 @@ function addAtrium(x, y) {
   // Right wall
   createColliderRect(this, x + 799, y + 0, 2, 400, this.atriumRightWallGroup);
   // Tape left top
-  createColliderLine(this, x + 380, y + 120, 80 + 4, 120 - 10, 1, 2, this.tape);
+  // createColliderLine(this, x + 380, y + 120, 80 + 4, 120 - 10, 1, 2, this.tape);
+  createColliderLine(this, x + 380, y + 120, 80 - 4, 100 - 6, 1, 2, this.tape);
   // Tape left bottom
-  createColliderLine(this, x + 456 - 8, y + 272 - 14, 80 + 8, 102, 1, 2, this.tape);
+  // createColliderLine(this, x + 456 - 8, y + 272 - 14, 80 + 8, 102, 1, 2, this.tape);
+  createColliderLine(this, x + 456 - 4, y + 272 - 8, 80 + 8, 102, 1, 2, this.tape);
   // Tape top
   createColliderRect(this, x + 384, y + 120, 400, 4, this.tape);
   // Tape bottom
@@ -52,7 +54,7 @@ function addAtrium(x, y) {
 
   // Add guards
   this.guards = this.add.group();
-  this.guard1 = new Guard(this, x + 115 * 4, y + 39 * 4 + 2, this.dialog);
+  this.guard1 = new Guard(this, x + 115 * 4, y + 39 * 4 - 12, this.dialog);
   this.guard2 = new Guard(this, x + 121 * 4, y + 52 * 4 + 2, this.dialog);
   this.guards.add(this.guard1, true);
   this.guards.add(this.guard2, true);
@@ -67,8 +69,8 @@ function addAtrium(x, y) {
   // Marina queue
   this.marinaQueue = this.physics.add.group();
 
-  this.marinaBarrier = this.physics.add.sprite(x + 464, y + 243, 'atlas', 'red-pixel.png')
-    .setScale(20, 20)
+  this.marinaBarrier = this.physics.add.sprite(x + 460, y + 240, 'atlas', 'red-pixel.png')
+    .setScale(20, 30)
     .setVisible(false)
     .setPushable(false);
 
@@ -108,7 +110,7 @@ function setupInitialQueue() {
     }
 
     // FOR DEBUG
-    // queueLength = 1;
+    if (DEBUG) queueLength = 0;
 
     for (let i = 0; i < queueLength; i++) {
       let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
@@ -121,15 +123,17 @@ function setupInitialQueue() {
     }
 
     // FOR DEBUG
-    let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
+    if (DEBUG) {
+      let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
 
-    queuer.body.updateFromGameObject();
-    let x = this.marinaBarrier.x - 100 - 10 * 100 + 200;
-    let y = this.prequeueCheckpoints[0].y - (queuer.height / 2) * queuer.scaleY + 2 * 4;
-    queuer.setPosition(x, y);
+      queuer.body.updateFromGameObject();
+      let x = this.marinaBarrier.x - 100 - 10 * 100 + 200;
+      let y = this.prequeueCheckpoints[0].y - (queuer.height / 2) * queuer.scaleY + 2 * 4;
+      queuer.setPosition(x, y);
 
-    this.queuers.add(queuer);
-    queuer.start();
+      this.queuers.add(queuer);
+      queuer.start();
+    }
 
 
     // addAtriumQueuer.bind(this)(queueLength);
@@ -196,6 +200,15 @@ function updateAtrium() {
   });
 
   this.physics.collide(this.player, this.marinaBarrier, null, () => {
+    // First lets see if the player is not in the queue and the queue is not empty
+    // as this would mean they're trying to sneak in!
+    if (this.player !== this.sitter && !this.marinaQueue.contains(this.player) && this.marinaQueue.countActive(true) !== 0) {
+      this.dialog.showDialog(CUTTING_IN_LINE_MESSAGE);
+      this.player.y += 50;
+      this.player.body.updateFromGameObject();
+      return;
+    }
+
     if (!this.player.isNext) {
       this.player.isNext = true;
 
@@ -257,7 +270,7 @@ function startPlayerSitting() {
     this.player.seenInstructions = true;
 
     // Start a time to sit timer!
-    setTimeout(() => {
+    this.sitFailTimer = setTimeout(() => {
       if (!this.player.sat) {
         // If we get here and they're not sitting down yet then
         // they screwed it up.

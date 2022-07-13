@@ -17,6 +17,9 @@
 * ~~Double dialog on TAPE message when hitting the front of the queue...~~
 * ~~Queue leaving when you're next (esp. because of no next person) is a bit of an issue.~~
 * ~~Saw queue-leaving when I was actually due to sit down (e.g. I was inside the tape, shouldn't really show it then? Maybe just no queue leaving once you're in? Or something else?)~~
+* ~~Per Jim's experience, we need a more lenient tape collision for the player if they're queueing offset~~
+* **THIS CAN'T HAPPEN BECAUSE THE PLAYER WILL PREVENT THE OTHER QUEUER FROM JOINING, OR LEAVE THE QUEUE BY MOVING VERTIALLY. AND AS FOR WEIRD DITHERING AROUND, TOUGH LUCK.** ~~What about a situation where the player is next, walks away (to left), then a Qer joins, preventing the player from rushing back to sit down? Good god. That would be a case for the player being able to leave the queue prior to pass across the taped area...~~
+* Did end up tweaking some queue leaving stuff when next and I think it works ok
 
 ## General
 * ~~Fix collisions - you seem able to walk through walls with tapping~~

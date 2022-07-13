@@ -76,6 +76,9 @@ const SLOW_QUEUEING_MESSAGE = [
 const OBSTRUCTION_MESSAGE = [
   `Museum security observes your total unwillingness to move aside for other patrons and a security guard politely escorts you off the premises.`
 ];
+const CUTTING_IN_LINE_MESSAGE = [
+  `Excuse me but you'll have to wait in the queue like everyone else.`
+];
 
 // DEBUG
 const MARINA_Q_SYMBOL = `MQ`;

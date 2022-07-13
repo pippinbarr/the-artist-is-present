@@ -210,7 +210,6 @@ class World extends Phaser.Scene {
 
     if (this.marinaQueue.contains(this.player)) {
       if (this.player.nextInQueue) {
-        let dist = Phaser.Math.Distance.BetweenPoints(this.player.body, this.player.nextInQueue.body);
         // Leaving the queue vertically
         if (this.player.body.velocity.y !== 0 && (this.player.body.y > this.player.nextInQueue.body.y + this.player.body.height ||
             this.player.body.y < this.player.nextInQueue.body.y - this.player.body.height)) {
@@ -220,8 +219,23 @@ class World extends Phaser.Scene {
           leftQueue = true;
         }
       }
-      // Note that if they're next we just count them as extremely rude
-      // if they walk away and they get ejected.
+      // Was playing with ideas of the player leaving the queue when they're next, but screw it?
+      else if (this.player.isNext) {
+        if (this.player.body.x < this.marinaBarrier.x - this.player.body.width) {
+          // Leaving the queue vertically when next if you're to the left of the barrier
+          if (this.player.body.velocity.y !== 0 && (this.player.body.y <= this.guard1.body.y ||
+              this.player.body.y >= this.guard2.body.y - 15)) {
+            clearTimeout(this.sitFailTimer);
+            leftQueue = true;
+          }
+          // Leaving the queue horizontally by walking away
+          // while still to the left
+          else if (this.player.body.velocity.x < 0 && this.marinaBarrier.body.x - this.player.body.x > 100) {
+            clearTimeout(this.sitFailTimer);
+            leftQueue = true;
+          }
+        }
+      }
     }
 
     if (leftQueue) {

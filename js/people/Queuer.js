@@ -121,7 +121,7 @@ class Queuer extends Visitor {
           if (this.scene.player.nextInQueue && !this.scene.physics.overlap(this.scene.player.sensor, this.scene.player.nextInQueue.sensor)) {
             this.scene.player.obstructions++; // The player has been a dick in the queue
             // console.log("Obstructed in the queue.")
-            if (this.scene.player.obstructions >= 3) {
+            if (this.scene.player.obstructions >= 3 && !this.scene.player.isNext) {
               this.scene.marinaQueue.remove(this.scene.player);
               this.scene.player.nextInQueue = null;
               this.scene.player.y += 50;
