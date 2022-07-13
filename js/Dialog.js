@@ -153,7 +153,7 @@ class Dialog extends Phaser.GameObjects.Container {
 
     // this.y = this.whiteBorder.y - this.whiteBorder.height / 2;
 
-    let dialogEventName = MOBILE ? 'touchstart' : 'keydown';
+    let dialogEventName = TOUCH ? 'touchstart' : 'keydown';
     document.addEventListener(dialogEventName, () => {
       this.setVisible(false);
 

@@ -82,6 +82,10 @@ Because there seemed to be people with multicolor hair showing up. I created thi
 
 Anyhow, the game is essentially done and soon to be released. This is quite a big one since it's my most "famous" game and it feels good to have got it back out into the world again. Sweat smile.
 
+## Somewhat done... right? (2022-07-13)
+
+So Jim found a number of bugs which I fixed (all to do with queueing). Then I sent it back and he found a more subtle thing (difficulty of lining up well in queueing), which I fixed. And then I made it work on mobile. And now I think I should just ship it out and be done with it?
+
 # 2011
 
 ## Simplicity kills (2011-08-24)

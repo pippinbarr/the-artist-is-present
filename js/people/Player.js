@@ -19,11 +19,11 @@ class Player extends Visitor {
 
     this.cursors = scene.input.keyboard.createCursorKeys();
 
-    if (!MOBILE) {
-      scene.input.keyboard.on('keydown', () => {
-        this.handleInput();
-      });
-    } else {
+    scene.input.keyboard.on('keydown', () => {
+      this.handleInput();
+    });
+
+    if (TOUCH) {
       scene.input.on('pointerdown', (pointer) => {
         this.handleTouchInput(pointer)
       });
@@ -41,28 +41,38 @@ class Player extends Visitor {
   handleInput(e) {
     if (!this.inputEnabled || this.sitting) return;
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
+    let left = false;
+    let right = false;
+    let up = false;
+    let down = false;
+
+    left = Phaser.Input.Keyboard.JustDown(this.cursors.left);
+    right = Phaser.Input.Keyboard.JustDown(this.cursors.right);
+    up = Phaser.Input.Keyboard.JustDown(this.cursors.up);
+    down = Phaser.Input.Keyboard.JustDown(this.cursors.down);
+
+    if (left) {
       if (this.body.velocity.x < 0) {
         this.stop();
       } else {
         this.left();
       }
     }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
+    if (right) {
       if (this.body.velocity.x > 0) {
         this.stop();
       } else {
         this.right();
       }
     }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+    if (up) {
       if (this.body.velocity.y < 0) {
         this.stop();
       } else {
         this.up();
       }
     }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+    if (down) {
       if (this.body.velocity.y > 0) {
         this.stop();
       } else {
@@ -84,8 +94,10 @@ class Player extends Visitor {
   handleTouchInput(pointer) {
     if (!this.inputEnabled || this.sitting) return;
 
-    let dx = pointer.x - this.x;
-    let dy = pointer.y - this.y;
+    console.log(pointer.worldX, pointer.worldY, this.body.center.x, this.body.center.y)
+
+    let dx = pointer.worldX - this.body.center.x;
+    let dy = pointer.worldY - this.body.center.y;
 
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0) {

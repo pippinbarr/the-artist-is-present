@@ -1,5 +1,8 @@
 # To dos
 
+## Niceties
+* **WHY NOT** ~~Mobile friendly?~~
+
 ## Buggytime
 * ~~WAY too easy to join the queue, notably because you can join vertically.~~
 * **THIS SEEMS OKAY NOW**~~Managed to freeze the game up by push up on the person at the front of the queue~~

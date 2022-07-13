@@ -1,6 +1,13 @@
 // MUSEUM MESSAGES
 
-const INTRO_MESSAGE = [`Here you finally are at the Museum of Modern Art in New York, ready to experience the performance work "The Artist Is Present" by artist Marina Abramovic.`, `(Press ARROW KEYS to move, press again to stop. Press ENTER to skip through these messages)`];
+const INTRO_MESSAGE = [
+  `Here you finally are at the Museum of Modern Art in New York, ready to experience the performance work "The Artist Is Present" by artist Marina Abramovic.`,
+];
+
+const INPUT_MESSAGE = {
+  touch: `(TOUCH the screen to move in that direction, touch again to stop. TOUCH to skip through these messages)`,
+  keyboard: `(Press ARROW KEYS to move, press again to stop. Press ENTER to skip through these messages)`
+};
 
 const LEAVING_MOMA_ON_FOOT_MESSAGE = [`You remember you came here to see Marina Abramovic and decide not to leave just yet.`];
 

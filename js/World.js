@@ -18,6 +18,8 @@ class World extends Phaser.Scene {
   }
 
   create() {
+    TOUCH = this.sys.game.device.input.touch;
+
     // Camera
     this.cameras.main.setBackgroundColor("#5F6061");
     // this.cameras.main.setBounds(0, 0, this.game.canvas.width * 6, this.game.canvas.height * 3);
@@ -64,7 +66,8 @@ class World extends Phaser.Scene {
     this.marinaBlink();
 
     // Set up the intro message
-    let introMessage = [...INTRO_MESSAGE];
+    console.log(TOUCH)
+    let introMessage = [...INTRO_MESSAGE, TOUCH ? INPUT_MESSAGE.touch : INPUT_MESSAGE.keyboard];
     let now = getNYCTime();
     let hour = now.getHours();
     let minutes = now.getMinutes();
