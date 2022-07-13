@@ -69,7 +69,7 @@ function addAtrium(x, y) {
   // Marina queue
   this.marinaQueue = this.physics.add.group();
 
-  this.marinaBarrier = this.physics.add.sprite(x + 460, y + 240, 'atlas', 'red-pixel.png')
+  this.marinaBarrier = this.physics.add.sprite(x + 462, y + 240, 'atlas', 'red-pixel.png')
     .setScale(20, 30)
     .setVisible(false)
     .setPushable(false);
@@ -114,7 +114,7 @@ function setupInitialQueue() {
 
     for (let i = 0; i < queueLength; i++) {
       let queuer = new Queuer(this, 0, 0, [...this.prequeueCheckpoints]);
-      let x = this.marinaBarrier.x - 100 - i * 100;
+      let x = this.marinaBarrier.x - 100 - i * 80;
       let y = this.prequeueCheckpoints[0].y - (queuer.height / 2) * queuer.scaleY + 2 * 4;
       queuer.setPosition(x, y);
       queuer.body.updateFromGameObject();
@@ -204,7 +204,8 @@ function updateAtrium() {
     // as this would mean they're trying to sneak in!
     if (this.player !== this.sitter && !this.marinaQueue.contains(this.player) && this.marinaQueue.countActive(true) !== 0) {
       this.dialog.showDialog(CUTTING_IN_LINE_MESSAGE);
-      this.player.y += 50;
+      // this.player.y += 50;
+      this.player.stop();
       this.player.body.updateFromGameObject();
       return;
     }

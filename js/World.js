@@ -519,7 +519,7 @@ class World extends Phaser.Scene {
     sitter.setDepth(10000000);
 
     if (sitter !== this.player) {
-      let sitTime = 1000 * SIT_TIMES[Math.floor(Math.random(0 * SIT_TIMES.length))];
+      let sitTime = 60 * 1000 * SIT_TIMES[Math.floor(Math.random(0 * SIT_TIMES.length))];
       setTimeout(() => {
         this.marina.anims.play(`marina-looks-up`);
       }, MARINA_HEAD_DELAY);
